@@ -1,0 +1,6 @@
+/cache/*
+/hbupdater/*
+*.pyc
+todo.py
+settings.txt
+/downloads/*
