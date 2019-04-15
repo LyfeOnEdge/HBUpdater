@@ -1285,8 +1285,8 @@ def setDict(dicty):
     dictlen = len(hbdict)
 
 if __name__ == '__main__':  
-	setDict(webhandler.getJsonSoftwareLinks(locations.softwarelist))
-	#setDict(webhandler.getUpdatedSoftwareLinks(locations.softwarelist))
+	#setDict(webhandler.getJsonSoftwareLinks(locations.softwarelist))
+	setDict(webhandler.getUpdatedSoftwareLinks(locations.softwarelist))
 	#setDict(webhandler.getMissingJson(locations.softwarelist))
 	for softwarechunk in hbdict:
 		softwarechunk["photopath"] = None
