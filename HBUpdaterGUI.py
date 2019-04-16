@@ -228,22 +228,16 @@ class mainPage(tk.Frame):
 		self.details_frame.configure(highlightthickness = 0)
 		
 		#past version tags listbox
-		self.tags_listbox = ScrolledListBox(self.details_frame,borderwidth=0, highlightthickness=0)
+		self.details_frame = themedframe(self.outer_frame)
+		self.details_frame.place(relx=0.0, rely=0.0, width=-infoframewidth, relheight=1, relwidth=1)
+		
+		self.tags_listbox = populatablelistbox(self.details_frame)
 		self.tags_listbox.place(relx=0.0, rely=0, relheight=1, relwidth=0.2)
-		self.tags_listbox.configure(background="white")
-		self.tags_listbox.configure(disabledforeground="#a3a3a3")
-		self.tags_listbox.configure(font="TkFixedFont")
-		self.tags_listbox.configure(foreground="black")
-		self.tags_listbox.configure(highlightbackground="#d9d9d9")
-		self.tags_listbox.configure(highlightcolor="#d9d9d9")
-		self.tags_listbox.configure(selectbackground="#c4c4c4")
-		self.tags_listbox.configure(selectforeground="black")
-		self.tags_listbox.configure(selectforeground=selectedtextforeground)
-		self.tags_listbox.configure(selectbackground=selectioncolor)
-		self.tags_listbox.configure(background=version_number_column_background)
-		self.tags_listbox.configure(foreground=version_number_color)
-		self.tags_listbox.bind('<<ListboxSelect>>',self.CurTagSelet)
+		self.tags_listbox.configure(font=tags_listbox_font)
 		self.tags_listbox.configure(font=version_number_font)
+		self.tags_listbox.bind('<<ListboxSelect>>',self.CurTagSelet)
+		
+
 
 		#patch notes 
 		self.scrolling_patch_notes = ScrolledText(self.details_frame)
@@ -258,9 +252,6 @@ class mainPage(tk.Frame):
 		self.scrolling_patch_notes.configure(wrap="none")
 		self.scrolling_patch_notes.configure(background=version_notes_column_background)
 		self.scrolling_patch_notes.configure(foreground=version_notes_color)
-
-
-
 
 
 		#Frame to hold author art, author name, title, description box, and buttons
@@ -520,7 +511,7 @@ class mainPage(tk.Frame):
 		return "break"
 
 	def configure(self,event):
-		self.updateAuthorImage(event)
+		self.updateAuthorImageEvent(event)
 
 	
 	#fill the listboxes with data
@@ -647,6 +638,7 @@ class mainPage(tk.Frame):
 		self.status_listbox.selection_set(softwarechunknumber)
 		self.status_listbox.see(softwarechunknumber)
 
+
 		softwarename = hbdict[softwarechunknumber]["software"]
 		self.updatetitle(softwarename)
 
@@ -662,48 +654,15 @@ class mainPage(tk.Frame):
 		authorimg = jfile[0]["author"]["avatar_url"]
 		# authorimgfile = homebrewcore.joinpaths(homebrewcore.cachefolder, webhandler.getfilenamefromurl(authorimg))
 
-		photopath = homebrewcore.checkphoto(homebrewcore.imagecachefolder, softwarename)
-
-		if hbdict[softwarechunknumber]["photopath"] == None:
-			hbdict[softwarechunknumber]["photopath"] = photopath
-
-		if not photopath == None:
-			photopath = homebrewcore.joinpaths(homebrewcore.imagecachefolder, photopath)
-			photoexists = homebrewcore.exists(photopath)
-		else:
-			photoexists = False
-
-		if not photoexists:
-			try:
-				photopath = webhandler.cacheimage(authorimg,softwarename)
-				hbdict[softwarechunknumber]["photopath"] = photopath
-			except: 
-				print("could not download icon image (you can safely ignore this error)")
-				photopath = homebrewcore.joinpaths(homebrewcore.assetfolder,notfoundimage)
-
-		try:
-			project_image = tk.PhotoImage(file=photopath)
-
-		except:
-			# print(exc)
-			photopath = homebrewcore.joinpaths(homebrewcore.assetfolder,notfoundimage)
-			project_image = tk.PhotoImage(file=photopath)
-			print("used not-found image due to error (you can safely ignore this error)")
-
-		imagemax = self.info_frame.winfo_width()
-		while not (project_image.width() > (imagemax - 80) and not (project_image.width() > imagemax)):
-			if project_image.width() > imagemax:
-				project_image = project_image.subsample(3)
-			if project_image.width() < (imagemax - 80):
-				project_image = project_image.zoom(4)
-
-		self.project_art_label.configure(image=project_image)
-		self.project_art_label.image = project_image
+		self.updateAuthorImage()
 
 		self.updatedescription(hbdict[softwarechunknumber]["description"])
 
+	def updateAuthorImageEvent(self,event):
+		self.updateAuthorImage()
 
-	def updateAuthorImage(self,event):
+
+	def updateAuthorImage(self):
 		global softwarechunknumber
 		global hbdict
 		softwarename = hbdict[softwarechunknumber]["software"]
@@ -1206,6 +1165,8 @@ class populatablelistbox(tk.Listbox):
 			foreground=listbox_font_color,
 			font=listbox_font,
 			disabledforeground=dark_listbox_font_color,
+			selectbackground=listboxselectionbackground,
+			selectforeground=listboxselectionforeground,
 			)
 
 class iconbutton(tk.Listbox):

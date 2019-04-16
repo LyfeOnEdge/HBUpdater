@@ -1,36 +1,40 @@
 #format.py
 
-#offset from left in listbo x
+#offset from left in listbox
 lbcolumnoffset = 10
+
+##Text Styles
+#Normal Text
+smalltext = ("Trebuchet MS",10)
+mediumtext = ("Trebuchet MS",12)
+largetext = ("Trebuchet MS",14,)
+#Bold
+smallboldtext = ("Trebuchet MS",10,"bold")
+mediumboldtext = ("Trebuchet MS",12,"bold")
+largeboldtext = ("Trebuchet MS",14,"bold")
+
+##Main colors:
+#background color
+light_color = "#1f1f1f"
+#Color for most user-interactable items
+dark_color = "#121212"
+#White
+w = "#ffffff"
+#Black
+b = "#000000"
+#ash
+ash = "#c4c4c4"
+#lgray (used for author / priject title / description
+lgray = "#acadaf"
+
+listboxselectionbackground =  "#c4c4c4",
+listboxselectionforeground = b
 
 import platform
 
 
+
 if platform.system() == 'Windows':
-
-	##Text Styles
-	#Normal Text
-	smalltext = ("Trebuchet MS",10)
-	mediumtext = ("Trebuchet MS",12)
-	largetext = ("Trebuchet MS",14,)
-	#Bold
-	smallboldtext = ("Trebuchet MS",10,"bold")
-	mediumboldtext = ("Trebuchet MS",12,"bold")
-	largeboldtext = ("Trebuchet MS",14,"bold")
-
-	##Main colors:
-	#background color
-	light_color = "#1f1f1f"
-	#Color for most user-interactable items
-	dark_color = "#121212"
-	#White
-	w = "#ffffff"
-	#Black
-	b = "#000000"
-	#ash
-	ash = "#c4c4c4"
-	#lgray (used for author / priject title / description
-	lgray = "#acadaf"
 
 	#column label 
 	columnlabelcolor = w
@@ -39,6 +43,7 @@ if platform.system() == 'Windows':
 	#Text in listbox
 	listbox_font  = mediumtext
 	listbox_font_color = w
+	tags_listbox_font = mediumtext
 	dark_listbox_font_color = "#777777"
 
 	#Text in settings menu
@@ -92,29 +97,6 @@ if platform.system() == 'Windows':
 #Macintosh
 elif platform.system() == 'Darwin':
 
-	##Text Styles
-	#Normal Text
-	smalltext = ("Trebuchet MS",10)
-	mediumtext = ("Trebuchet MS",12)
-	largetext = ("Trebuchet MS",14,)
-	#Bold
-	smallboldtext = ("Trebuchet MS",10,"bold")
-	mediumboldtext = ("Trebuchet MS",12,"bold")
-	largeboldtext = ("Trebuchet MS",14,"bold")
-
-	##Main colors:
-	#background color
-	light_color = "#1f1f1f"
-	#Color for most user-interactable items
-	dark_color = "#121212"
-	#White
-	w = "#ffffff"
-	#Black
-	b = "#000000"
-	#ash
-	ash = "#c4c4c4"
-	#lgray (used for author / priject title / description
-	lgray = "#acadaf"
 
 	#column label 
 	columnlabelcolor = w
@@ -122,6 +104,7 @@ elif platform.system() == 'Darwin':
 
 	#Text in listbox
 	listbox_font  = mediumtext
+	tags_listbox_font = mediumtext
 	listbox_font_color = w
 	dark_listbox_font_color = "#777777"
 
@@ -176,29 +159,7 @@ elif platform.system() == 'Darwin':
 #Linux
 elif platform.system() == 'Linux':
 
-	##Text Styles
-	#Normal Text
-	smalltext = ("Trebuchet MS",10)
-	mediumtext = ("Trebuchet MS",12)
-	largetext = ("Trebuchet MS",14,)
-	#Bold
-	smallboldtext = ("Trebuchet MS",10,"bold")
-	mediumboldtext = ("Trebuchet MS",12,"bold")
-	largeboldtext = ("Trebuchet MS",14,"bold")
-
-	##Main colors:
-	#background color
-	light_color = "#1f1f1f"
-	#Color for most user-interactable items
-	dark_color = "#121212"
-	#White
-	w = "#ffffff"
-	#Black
-	b = "#000000"
-	#ash
-	ash = "#c4c4c4"
-	#lgray (used for author / priject title / description
-	lgray = "#acadaf"
+	
 
 	#column label 
 	columnlabelcolor = w
@@ -206,6 +167,7 @@ elif platform.system() == 'Linux':
 
 	#Text in listbox
 	listbox_font  = mediumtext
+	tags_listbox_font = mediumtext
 	listbox_font_color = w
 	dark_listbox_font_color = "#777777"
 
@@ -259,29 +221,6 @@ elif platform.system() == 'Linux':
 
 else:
 	print("Unknown architecture, using default fonts")
-	##Text Styles
-	#Normal Text
-	smalltext = ("Trebuchet MS",10)
-	mediumtext = ("Trebuchet MS",12)
-	largetext = ("Trebuchet MS",14,)
-	#Bold
-	smallboldtext = ("Trebuchet MS",10,"bold")
-	mediumboldtext = ("Trebuchet MS",12,"bold")
-	largeboldtext = ("Trebuchet MS",14,"bold")
-
-	##Main colors:
-	#background color
-	light_color = "#1f1f1f"
-	#Color for most user-interactable items
-	dark_color = "#121212"
-	#White
-	w = "#ffffff"
-	#Black
-	b = "#000000"
-	#ash
-	ash = "#c4c4c4"
-	#lgray (used for author / priject title / description
-	lgray = "#acadaf"
 
 	#column label 
 	columnlabelcolor = w
@@ -289,6 +228,7 @@ else:
 
 	#Text in listbox
 	listbox_font  = mediumtext
+	tags_listbox_font = mediumtext
 	listbox_font_color = w
 	dark_listbox_font_color = "#777777"
 
