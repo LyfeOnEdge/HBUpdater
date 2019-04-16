@@ -1,6 +1,7 @@
 #format.py
 
-
+#offset from left in listbo x
+lbcolumnoffset = 10
 
 import platform
 

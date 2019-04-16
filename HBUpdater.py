@@ -1,15 +1,14 @@
-version = "0.2 (BETA)"
-print("HBUpdater version {}".format(version))
-
 #file handling
 import os, sys, shutil
 from zipfile import ZipFile
 import json
 
-
 #stop script if running without a frontend
 if __name__ == '__main__':
 	sys.exit("This file was not meant to run without a frontend. Exiting...")
+
+version = "0.2 (BETA)"
+print("HBUpdater version {}".format(version))
 
 #My modules
 import webhandler 
@@ -179,7 +178,7 @@ def checkversion(software):
 		return "not installed"
 
 
-#not used yet
+# not used yet
 # #checks if PyUSB is installed (required for the injector)
 # def checkifpyusbinstalled():
 # 	reqs = subprocess.check_output([sys.executable, '-m', 'pip', 'freeze'])
@@ -236,7 +235,7 @@ def checkversion(software):
 
 
 
-# 		spewToTextOutput("Injecting payload {}".format(filename))
+# 		print("Injecting payload {}".format(filename))
 
 # 		fusee_file = os.path.join(fusee_path, "fusee-launcher.py")
 # 		script_path = get_path(fusee_file)
@@ -248,3 +247,4 @@ def checkversion(software):
 # 		    for line in iter(p.stdout.readline, b''):
 # 		        spewBytesToTextOutput(line)
 # 		p.wait()
+

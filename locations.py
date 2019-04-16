@@ -36,7 +36,7 @@
 #.bin application/octet-stream
 GAME = "game"
 TOOL = "tool"
-RECCOMENDED = "reccomended"
+RECCOMENDED = "recomended"
 TITLEINSTALLER = "title installer"
 EMULATOR = "emulator"
 
@@ -440,7 +440,7 @@ Known Bugs: There appears to be some bug that causes the screen to flicker durin
 	"author" : None, 
 	"projectpage": None,
 	"description" : "Wipes personal information from your Nintendo Switch by removing it from prodinfo.",
-	"group" : TOOL,
+	"group" : "tool, REINX ONLY",
 
 	"install_subfolder": None,
 	"content_type" : None,

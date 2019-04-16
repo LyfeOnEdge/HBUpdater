@@ -1,7 +1,12 @@
+import os, sys
+
+print("Using Python {}.{}".format(sys.version_info[0],sys.version_info[1]))
+if sys.version_info[0] < 3 or sys.version_info[1] < 6:
+    sys.exit("Python 3.6 or greater is required to run this program.")
+
 version = "0.2 (BETA)"
 print("HBUpdaterGUI version {}".format(version))
 
-import os, sys
 import platform
 
 #My modules
@@ -12,7 +17,6 @@ from format import *
 
 #Backend will not rin standalone
 import HBUpdater
-
 #GUI imports (weird import format)
 import tkinter as tk
 print("using tkinter version {}".format(tk.Tcl().eval('info patchlevel')))
@@ -43,10 +47,13 @@ class appManagerGui(tk.Tk):
 	def __init__(self, *args, **kwargs):
 		tk.Tk.__init__(self, *args, **kwargs)
 
+		if platform.system() == 'Windows':
+			print("Windows detected, setting icon")
+			self.iconbitmap(homebrewcore.joinpaths(homebrewcore.assetfolder, 'HBUpdater.ico'))
 
 		# self.resizable(False,False)
-		self.geometry("770x510")   #startup size 720p
-		self.minsize(width=780, height=510) #minimum size currently supported
+		self.geometry("790x510")   #startup size 720p
+		self.minsize(width=790, height=510) #minimum size currently supported
 		# the container is where we'll stack a bunch of frames
 		# on top of each other, then the one we want visible
 		# will be raised above the others
@@ -59,7 +66,7 @@ class appManagerGui(tk.Tk):
 
 
 		self.frames = {}
-		for F in (mainPage,settingsPage):
+		for F in (mainPage,injectorPage,settingsPage):
 			page_name = F.__name__
 			frame = F(parent=container, controller=self)
 			self.frames[page_name] = frame
@@ -91,94 +98,56 @@ class mainPage(tk.Frame):
 		#Full window frame, holds everything
 		self.outer_frame = tk.Frame(self)
 		self.outer_frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
-		self.outer_frame.configure(relief='groove')
-		self.outer_frame.configure(borderwidth="2")
-		self.outer_frame.configure(relief="groove")
 		self.outer_frame.configure(background=light_color)
-		self.outer_frame.configure(highlightbackground="#d9d9d9")
-		self.outer_frame.configure(highlightcolor="black")
-		self.outer_frame.configure(borderwidth = 0)
 		self.outer_frame.configure(highlightthickness = 0)
-		
-		self.outer_frame.bind("<Escape>", self.showlistevent)
-
 
 		#Frame for main list, contains listboxes and scroll bar, and list titles
 		self.listbox_frame = tk.Frame(self.outer_frame)
 		self.listbox_frame.place(relx=0.0, rely=0.0, relheight=1, relwidth=1, width=-infoframewidth)
-		self.listbox_frame.configure(relief='groove')
-		self.listbox_frame.configure(borderwidth="0")
-		self.listbox_frame.configure(highlightthickness=0)
-		self.listbox_frame.configure(relief="groove")
 		self.listbox_frame.configure(background=dark_color)
-		self.listbox_frame.configure(highlightbackground="#d9d9d9")
-
-
-
+		self.listbox_frame.configure(highlightthickness= 0 )
 
 		#The contents of this frame are built backwards due to needing to align the searchbox with the icons
 		self.searchbox_frame = tk.Frame(self.listbox_frame)
 		self.searchbox_frame.place(relx=0.0, rely=0.0,height=searchboxheight, relwidth=1)
-		self.searchbox_frame.configure(relief='groove')
-		self.searchbox_frame.configure(borderwidth="0")
-		self.searchbox_frame.configure(relief="groove")
 		self.searchbox_frame.configure(background=light_color)
-		self.searchbox_frame.configure(highlightbackground="#d9d9d9")
+		self.searchbox_frame.configure(highlightthickness= 0 )
 
 		self.iconspacer = 0
 		
 
 		# self.settingsimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"settings.png"))
-		# #shrink image
 		# self.settingsimage = self.settingsimage.subsample(2)
-		# #iconspacer to properly space icons
 		# self.iconspacer = self.settingsimage.width()
-		# self.settingsicon = tk.Button(self.searchbox_frame,image=self.settingsimage,command=lambda: self.controller.show_frame("settingsPage"))
+		# self.settingsicon = iconbutton(self.searchbox_frame,self.settingsimage,command_name=lambda: self.controller.show_frame("settingsPage"))
 		# self.settingsicon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -self.settingsimage.height()/2,width = self.settingsimage.width(), height=self.settingsimage.height())
-		# self.settingsicon.configure(background=light_color)
-		# self.settingsicon.configure(borderwidth=0)
-		# self.settingsicon.configure(highlightthickness=0)
-		# self.settingsicon.configure(activebackground=light_color)
 
-		# #add spacing
 		# self.iconspacer += icon_and_search_bar_spacing
+
 
 		self.sdimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"sd.png"))
 		self.sdimage = self.sdimage.subsample(2)
 		self.iconspacer += self.sdimage.width()
-		self.sdicon = tk.Button(self.searchbox_frame,image=self.sdimage, command=self.setSDpath)
+		self.sdicon = iconbutton(self.searchbox_frame,self.sdimage,command_name=self.setSDpath)
 		self.sdicon.place(relx= 1, x=-self.iconspacer, rely=.5, y = -self.sdimage.height()/2,width = self.sdimage.width(), height=self.sdimage.height())
-		self.sdicon.configure(background=light_color)
-		self.sdicon.configure(borderwidth=0)
-		self.sdicon.configure(highlightthickness=0)
-		self.sdicon.configure(activebackground=light_color)
-		# self.previous_button = tk.Button(self.list_buttons_frame, image=self.previousimage, command=self.pagedown)
-		# self.previous_button.place(relx=0.00, rely=1,y=-self.previousimage.height(),  height=self.previousimage.height(), width=self.previousimage.width())
 
-		self.iconspacer += icon_and_search_bar_spacing
+
+		# self.iconspacer += icon_and_search_bar_spacing
+
 
 		# self.addrepoimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"plus.png"))
 		# self.addrepoimage = self.addrepoimage.subsample(2)
 		# self.iconspacer += self.addrepoimage.width()
-		# self.repoicon = tk.Button(self.searchbox_frame,image=self.addrepoimage)
+		# self.repoicon = iconbutton(self.searchbox_frame, self.addrepoimage,command_name=None)
 		# self.repoicon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -self.addrepoimage.height()/2,width = self.addrepoimage.width(), height=self.addrepoimage.height())
-		# self.repoicon.configure(background=light_color)
-		# self.repoicon.configure(borderwidth=0)
-		# self.repoicon.configure(highlightthickness=0)
-		# self.repoicon.configure(activebackground=light_color)
 
-		# self.iconspacer += icon_and_search_bar_spacing
+		# # self.iconspacer += icon_and_search_bar_spacing
 
 		# self.injectimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"injector.png"))
 		# self.injectimage = self.injectimage.subsample(2)
 		# self.iconspacer += self.injectimage.width()
-		# self.injecticon = tk.Button(self.searchbox_frame,image=self.injectimage,command=lambda: self.controller.show_frame("injectorPage"))
+		# self.injecticon = iconbutton(self.searchbox_frame,self.injectimage,command_name=lambda: self.controller.show_frame("injectorPage"))
 		# self.injecticon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -self.injectimage.height()/2,width = self.injectimage.width(), height=self.injectimage.height())
-		# self.injecticon.configure(background=light_color)
-		# self.injecticon.configure(borderwidth=0)
-		# self.injecticon.configure(highlightthickness=0)
-		# self.injecticon.configure(activebackground=light_color)
-
 
 		self.iconspacer += icon_and_search_bar_spacing*2
 
@@ -186,62 +155,29 @@ class mainPage(tk.Frame):
 		self.sb = SearchBox(self.searchbox_frame, command=self.search, placeholder="Type and press enter to search")
 		self.sb.place(relx=0,rely=.5, x=+icon_and_search_bar_spacing*2, relwidth=1, width=-(self.iconspacer+5), height=searchboxheight-10, y=-(searchboxheight-10)/2)
 
-
 		#Frame to hold titles of colums
-		self.column_title_frame=tk.Frame(self.listbox_frame,borderwidth=0,highlightthickness=0)
+		self.column_title_frame=themedframe(self.listbox_frame,frame_highlightthickness=0)
 		self.column_title_frame.place(relx=0.0, rely=0, y=+searchboxheight, height=columtitlesheight, relwidth=1)
 
-		self.big_software_name_label_frame = tk.Frame(self.column_title_frame, borderwidth = 0, highlightthickness = 1)
+		self.big_software_name_label_frame = themedframe(self.column_title_frame)
 		self.big_software_name_label_frame.place(relx=0.0, rely=0.0, relheight=1, relwidth=0.44)
-		self.big_software_name_label_frame.configure(background=dark_color)
-		self.big_software_name_label_frame.configure(highlightbackground=light_color)
-		self.big_software_name_label = tk.Label(self.big_software_name_label_frame)
+		self.big_software_name_label = columnlabel(self.big_software_name_label_frame, "NAME")
 		self.big_software_name_label.place(relx=0, x=+5, rely=0, relheight=1, relwidth=1, width = -5)
-		self.big_software_name_label.configure(background=dark_color)
-		self.big_software_name_label.configure(disabledforeground="#a3a3a3")
-		self.big_software_name_label.configure(foreground=columnlabelcolor)
-		self.big_software_name_label.configure(text='''NAME''')
-		self.big_software_name_label.configure(anchor="w")
-		self.big_software_name_label.configure(font=columnlabelfont)
 
-		self.big_genre_name_label_frame = tk.Frame(self.column_title_frame, borderwidth = 0, highlightthickness = 1)
+		self.big_genre_name_label_frame = themedframe(self.column_title_frame)
 		self.big_genre_name_label_frame.place(relx=0.44, rely=0, relheight=1, relwidth=0.20)
-		self.big_genre_name_label_frame.configure(background=dark_color)
-		self.big_genre_name_label_frame.configure(highlightbackground=light_color)
-		self.big_genre_name_label = tk.Label(self.big_genre_name_label_frame)
-		self.big_genre_name_label.place(relx=0, x=+5, rely=0, relheight=1, relwidth=1, width=-5)
-		self.big_genre_name_label.configure(background=dark_color)
-		self.big_genre_name_label.configure(disabledforeground="#a3a3a3")
-		self.big_genre_name_label.configure(foreground=columnlabelcolor)
-		self.big_genre_name_label.configure(text='''GENRE''')
-		self.big_genre_name_label.configure(anchor="w")
-		self.big_genre_name_label.configure(font=columnlabelfont)
+		self.big_genre_name_label = columnlabel(self.big_genre_name_label_frame, "GENRE")
+		self.big_genre_name_label.place(relx=0, x=+5, rely=0, relheight=1, relwidth=1, width = -5)
 
-		self.big_software_version_label_frame = tk.Frame(self.column_title_frame, borderwidth = 0, highlightthickness = 1)
+		self.big_software_version_label_frame = themedframe(self.column_title_frame)
 		self.big_software_version_label_frame.place(relx=0.64, rely=0, relheight=1, relwidth=0.18)
-		self.big_software_version_label_frame.configure(background=dark_color)
-		self.big_software_version_label_frame.configure(highlightbackground=light_color)
-		self.big_software_version_label = tk.Label(self.big_software_version_label_frame)
-		self.big_software_version_label.place(relx=0, x=+5, rely=0, relheight=1, relwidth=1, width=-5)
-		self.big_software_version_label.configure(background=dark_color)
-		self.big_software_version_label.configure(disabledforeground="#a3a3a3")
-		self.big_software_version_label.configure(foreground=columnlabelcolor)
-		self.big_software_version_label.configure(text='''VERSION''')
-		self.big_software_version_label.configure(anchor="w")
-		self.big_software_version_label.configure(font=columnlabelfont)
+		self.big_software_version_label = columnlabel(self.big_software_version_label_frame, "VERSION")
+		self.big_software_version_label.place(relx=0, x=+5, rely=0, relheight=1, relwidth=1, width = -5)
 
-		self.big_install_status_label_frame = tk.Frame(self.column_title_frame, borderwidth = 0, highlightthickness = 1)
+		self.big_install_status_label_frame = themedframe(self.column_title_frame)
 		self.big_install_status_label_frame.place(relx=0.82, rely=0, relheight=1, relwidth=0.18)
-		self.big_install_status_label_frame.configure(background=dark_color)
-		self.big_install_status_label_frame.configure(highlightbackground=light_color)
-		self.big_install_status_label = tk.Label(self.big_install_status_label_frame)
-		self.big_install_status_label.place(relx=0, x=+5, rely=0, relheight=1, relwidth=1, width=-5)
-		self.big_install_status_label.configure(background=dark_color)
-		self.big_install_status_label.configure(disabledforeground="#a3a3a3")
-		self.big_install_status_label.configure(foreground=columnlabelcolor)
-		self.big_install_status_label.configure(text='''INSTALLED''')
-		self.big_install_status_label.configure(anchor="w")
-		self.big_install_status_label.configure(font=columnlabelfont)
+		self.big_install_status_label = columnlabel(self.big_install_status_label_frame, "INSTALLED")
+		self.big_install_status_label.place(relx=0, x=+5, rely=0, relheight=1, relwidth=1, width = -5)
 
 
 		#vertical scroll bar (Not placed, trying to make it only appear when needed)
@@ -252,77 +188,43 @@ class mainPage(tk.Frame):
 		self.list_frame = tk.Frame(self.listbox_frame, borderwidth=0, highlightthickness=0)
 		self.list_frame.place(relx=0,rely=0,y=searchboxheight+columtitlesheight, relheight=1, height=-(searchboxheight+columtitlesheight),relwidth=1)
 
-		self.homebrew_listbox_frame = tk.Frame(self.list_frame, borderwidth = 0, highlightthickness = 1)
-		self.homebrew_listbox_frame.place(relx=0.0, rely=0, relheight=1, relwidth=0.44,)
-		self.homebrew_listbox_frame.configure(background=dark_color)
-		self.homebrew_listbox_frame.configure(highlightbackground=light_color)
-		self.homebrew_listbox_frame.configure(highlightcolor=light_color)
-		self.homebrew_listbox = tk.Listbox(self.homebrew_listbox_frame,borderwidth=0, highlightthickness=0,exportselection = False,yscrollcommand=self.vsb.set)
-		self.homebrew_listbox.place(relx=0.0, rely=0, x=+10, relheight=1, relwidth=1, width=-10)
-		self.homebrew_listbox.configure(background=dark_color)
-		self.homebrew_listbox.configure(foreground=listbox_font_color)
-		self.homebrew_listbox.configure(font=listbox_font)
-		self.homebrew_listbox.configure(selectforeground="white")
-		self.homebrew_listbox.configure(selectbackground =light_color)
-		self.homebrew_listbox.configure(activestyle="none")
-		self.homebrew_listbox.configure(highlightbackground=light_color)
+		self.homebrew_listbox_frame = themedframe(self.list_frame,)
+		self.homebrew_listbox_frame.place(relx=0.0,rely=0,relheight=1,relwidth=0.44)
+		self.homebrew_listbox = populatablelistbox(self.homebrew_listbox_frame,)
+		self.homebrew_listbox.place(relheight=1,relwidth=1, x=+lbcolumnoffset, width=-lbcolumnoffset)
 
+		self.genre_listbox_frame = themedframe(self.list_frame,)
+		self.genre_listbox_frame.place(relx=0.44,rely=0,relheight=1,relwidth=0.20)
+		self.genre_listbox = populatablelistbox(self.genre_listbox_frame,)
+		self.genre_listbox.place(relheight=1,relwidth=1, x=+lbcolumnoffset, width=-lbcolumnoffset)
 
-
-		self.genre_listbox_frame = tk.Frame(self.list_frame, borderwidth = 0, highlightthickness = 1)
-		self.genre_listbox_frame.place(relx=0.44, rely=0, relheight=1, relwidth=0.20)
-		self.genre_listbox_frame.configure(background=dark_color)
-		self.genre_listbox_frame.configure(highlightbackground=light_color)
-		self.genre_listbox = tk.Listbox(self.genre_listbox_frame,highlightthickness=0,borderwidth=0,exportselection = False,yscrollcommand=self.vsb.set)
-		self.genre_listbox.place(relx=0, x=+10, rely=0, relheight=1, relwidth=1, width =-10)
-		self.genre_listbox.configure(background=dark_color)
-		self.genre_listbox.configure(foreground=listbox_font_color)
-		self.genre_listbox.configure(disabledforeground=dark_listbox_font_color)
-		self.genre_listbox.configure(font=listbox_font)
-
-		self.version_listbox_frame = tk.Frame(self.list_frame, borderwidth = 0, highlightthickness = 1)
+		self.version_listbox_frame = themedframe(self.list_frame,)
 		self.version_listbox_frame.place(relx=0.64, rely=0, relheight=1, relwidth=0.18)
-		self.version_listbox_frame.configure(background=dark_color)
-		self.version_listbox_frame.configure(highlightbackground=light_color)
-		self.version_listbox = tk.Listbox(self.version_listbox_frame, highlightthickness=0,borderwidth=0,exportselection = False,yscrollcommand=self.vsb.set)
-		self.version_listbox.place(relx=0, x=+10, rely=0, relheight=1, relwidth=1, width=-10)
-		self.version_listbox.configure(background=dark_color)
-		self.version_listbox.configure(disabledforeground=dark_listbox_font_color)
-		self.version_listbox.configure(font=listbox_font)
-		self.version_listbox.configure(foreground=dark_listbox_font_color)
-		self.version_listbox.configure(relief="flat")
-		self.version_listbox.configure(highlightbackground=light_color)
+		self.version_listbox = populatablelistbox(self.version_listbox_frame,)
+		self.version_listbox.place(relheight=1,relwidth=1, x=+lbcolumnoffset, width=-lbcolumnoffset)
 
-		self.status_listbox_frame = tk.Frame(self.list_frame, borderwidth = 0, highlightthickness = 1)
+		self.status_listbox_frame = themedframe(self.list_frame,)
 		self.status_listbox_frame.place(relx=0.82, rely=0, relheight=1, relwidth=0.18)
-		self.status_listbox_frame.configure(background=dark_color)
-		self.status_listbox_frame.configure(highlightbackground=light_color)
-		self.status_listbox = tk.Listbox(self.status_listbox_frame,borderwidth=0, highlightthickness=0,exportselection = False)
-		self.status_listbox.place(relx=0, x=+10, rely=0, relheight=1, relwidth=1, width =-10)
-		self.status_listbox.configure(background=dark_color)
-		self.status_listbox.configure(disabledforeground=dark_listbox_font_color)
-		self.status_listbox.configure(font=listbox_font)
-		self.status_listbox.configure(foreground=dark_listbox_font_color)
-		self.status_listbox.configure(highlightbackground=light_color)
-		self.status_listbox.configure(relief="flat")
+		self.status_listbox = populatablelistbox(self.status_listbox_frame,)
+		self.status_listbox.place(relheight=1,relwidth=1, x=+lbcolumnoffset, width=-lbcolumnoffset)
 		
-		self.homebrew_listbox.bind('<Double-Button-1>', self.showdetailsevent)
-
 		#bind listboxes to move with mouse
 		self.homebrew_listbox.bind("<MouseWheel>", self.OnMouseWheel)
 		self.genre_listbox.bind("<MouseWheel>", self.OnMouseWheel)
 		self.version_listbox.bind("<MouseWheel>", self.OnMouseWheel)
 		self.status_listbox.bind("<MouseWheel>", self.OnMouseWheel)
 
+		#Bind double-click to open details:
+		self.homebrew_listbox.bind('<Double-Button-1>', self.showdetailsevent)
+
+
+
 		#Frame for details (raised when details button clicked)
 		self.details_frame = tk.Frame(self.outer_frame)
 		self.details_frame.place(relx=0.0, rely=0.0, width=-infoframewidth, relheight=1, relwidth=1)
-		self.details_frame.configure(relief='groove')
-		self.details_frame.configure(borderwidth="2")
 		self.details_frame.configure(background=dark_color)
 		self.details_frame.configure(highlightbackground="#d9d9d9")
 		self.details_frame.configure(highlightcolor=light_color)
-		self.details_frame.configure(borderwidth = 0)
 		self.details_frame.configure(highlightthickness = 0)
 		
 		#past version tags listbox
@@ -938,6 +840,101 @@ class mainPage(tk.Frame):
 		except:
 			pass
 
+
+
+
+
+
+
+class settingsPage(tk.Frame):
+	def __init__(self, parent, controller):
+		tk.Frame.__init__(self,parent)
+
+		self.style = ttk.Style()
+		if sys.platform == "win32":
+			self.style.theme_use('winnative')
+
+		#Full window frame, holds everything
+		self.outer_frame = tk.Frame(self)
+		self.outer_frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
+		self.outer_frame.configure(relief='groove')
+		self.outer_frame.configure(borderwidth="2")
+		self.outer_frame.configure(relief="groove")
+		self.outer_frame.configure(background=light_color)
+		self.outer_frame.configure(highlightbackground="#d9d9d9")
+		self.outer_frame.configure(highlightcolor="black")
+		self.outer_frame.configure(borderwidth = 0)
+		self.outer_frame.configure(highlightthickness = 0)
+
+		#back to main page button
+		self.returnimage = tk.PhotoImage(file=os.path.join(homebrewcore.assetfolder,"returnbutton.png"))
+		self.returnimage = self.returnimage.zoom((3)).subsample(5)
+		self.backtomain_button = tk.Button(self.outer_frame, image=self.returnimage, command=lambda: controller.show_frame("mainPage"))
+		self.backtomain_button.place(relx=1, rely=1, x=-(self.returnimage.width() + 20), y=-(self.returnimage.height()+20), height=self.returnimage.height(), width=self.returnimage.width())
+		self.backtomain_button.configure(background=light_color)
+		self.backtomain_button.configure(borderwidth=0)
+		self.backtomain_button.configure(pady="0")
+		self.backtomain_button.configure(activebackground=light_color)
+
+
+
+
+
+class injectorPage(tk.Frame):
+	def __init__(self, parent, controller):
+		tk.Frame.__init__(self,parent)
+
+		self.style = ttk.Style()
+		if sys.platform == "win32":
+			self.style.theme_use('winnative')
+
+		#Full window frame, holds everything
+		self.outer_frame = tk.Frame(self)
+		self.outer_frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
+		self.outer_frame.configure(relief='groove')
+		self.outer_frame.configure(borderwidth="2")
+		self.outer_frame.configure(relief="groove")
+		self.outer_frame.configure(background=light_color)
+		self.outer_frame.configure(highlightbackground="#d9d9d9")
+		self.outer_frame.configure(highlightcolor="black")
+		self.outer_frame.configure(borderwidth = 0)
+		self.outer_frame.configure(highlightthickness = 0)
+
+		#back to main page button
+		self.returnimage = tk.PhotoImage(file=os.path.join(homebrewcore.assetfolder,"returnbutton.png"))
+		self.returnimage = self.returnimage.zoom((3)).subsample(5)
+		self.backtomain_button = tk.Button(self.outer_frame, image=self.returnimage, command=lambda: controller.show_frame("mainPage"))
+		self.backtomain_button.place(relx=1, rely=1, x=-(self.returnimage.width() + 20), y=-(self.returnimage.height()+20), height=self.returnimage.height(), width=self.returnimage.width())
+		self.backtomain_button.configure(background=light_color)
+		self.backtomain_button.configure(borderwidth=0)
+		self.backtomain_button.configure(pady="0")
+		self.backtomain_button.configure(activebackground=light_color)
+
+		self.textoutheight = 10
+		self.textoutputwidth = 50
+		self.textoutput = tk.Text(self.outer_frame, height=self.textoutheight, width = 50, font=smalltext)
+		self.textoutput.place(relx=0,rely=.7,relwidth=.6,relheight=.3)
+		self.textoutput.configure(background = b)
+		self.textoutput.configure(foreground = w)
+		self.textoutput.configure(state=DISABLED)
+		self.textoutput.configure(borderwidth = 0)
+
+		def spewToTextOutput(self,textToSpew):
+			self.textoutput.config(state=NORMAL)
+			self.textoutput.insert(END, textToSpew + "\n\n")
+			self.textoutput.config(state=DISABLED)
+			self.textoutput.see(END)
+			print(textToSpew)
+
+		def spewBytesToTextOutput(self,textToSpew):
+			self.textoutput.config(state=NORMAL)
+			self.textoutput.insert(END, (textToSpew.decode("utf-8") + "\n\n"))
+			self.textoutput.config(state=DISABLED)
+			self.textoutput.see(END)
+			print(textToSpew)
+
+
+
 #Mit License
 def hex2rgb(str_rgb):
     try:
@@ -1145,7 +1142,6 @@ class ScrolledListBox(AutoScroll, tk.Listbox):
 		tk.Listbox.__init__(self, master, **kw)
 		AutoScroll.__init__(self, master)
 
-import platform
 def _bound_to_mousewheel(event, widget):
 	child = widget.winfo_children()[0]
 	if platform.system() == 'Windows' or platform.system() == 'Darwin':
@@ -1190,92 +1186,50 @@ def _on_shiftmouse(event, widget):
 			widget.xview_scroll(1, 'units')
 
 
+class themedframe(tk.Frame):
+	def __init__(self,parent,frame_borderwidth = 0,frame_highlightthickness = 1,background_color = dark_color):
+		tk.Frame.__init__(self,parent, 
+			background = background_color,
+			highlightthickness=frame_highlightthickness,
+			highlightbackground=light_color,
+			borderwidth = frame_borderwidth,
+			)
 
-class settingsPage(tk.Frame):
-	def __init__(self, parent, controller):
-		tk.Frame.__init__(self,parent)
+class populatablelistbox(tk.Listbox):
+	def __init__(self,frame, **kw, ):
+		tk.Listbox.__init__(self,frame,**kw,
+			highlightthickness=0,
+			highlightbackground=light_color,
+			borderwidth=0,
+			exportselection = False, 
+			background=dark_color,
+			foreground=listbox_font_color,
+			font=listbox_font,
+			disabledforeground=dark_listbox_font_color,
+			)
 
-		self.style = ttk.Style()
-		if sys.platform == "win32":
-			self.style.theme_use('winnative')
+class iconbutton(tk.Listbox):
+	def __init__(self,frame, image_object,command_name,):
+		tk.Button.__init__(self,frame,
+			background = light_color, 
+			activebackground = light_color,
+			borderwidth = 0,
+			highlightthickness = 0,
+			image = image_object,
+			command = command_name,
+			)
 
-		#Full window frame, holds everything
-		self.outer_frame = tk.Frame(self)
-		self.outer_frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
-		self.outer_frame.configure(relief='groove')
-		self.outer_frame.configure(borderwidth="2")
-		self.outer_frame.configure(relief="groove")
-		self.outer_frame.configure(background=light_color)
-		self.outer_frame.configure(highlightbackground="#d9d9d9")
-		self.outer_frame.configure(highlightcolor="black")
-		self.outer_frame.configure(borderwidth = 0)
-		self.outer_frame.configure(highlightthickness = 0)
-
-		#back to main page button
-		self.returnimage = tk.PhotoImage(file=os.path.join(homebrewcore.assetfolder,"returnbutton.png"))
-		self.returnimage = self.returnimage.zoom((3)).subsample(5)
-		self.backtomain_button = tk.Button(self.outer_frame, image=self.returnimage, command=lambda: controller.show_frame("mainPage"))
-		self.backtomain_button.place(relx=1, rely=1, x=-(self.returnimage.width() + 20), y=-(self.returnimage.height()+20), height=self.returnimage.height(), width=self.returnimage.width())
-		self.backtomain_button.configure(background=light_color)
-		self.backtomain_button.configure(borderwidth=0)
-		self.backtomain_button.configure(pady="0")
-		self.backtomain_button.configure(activebackground=light_color)
-
-# class injectorWindow(tk.Frame):
-# 	def __init__(self, parent, controller):
-# 		tk.Frame.__init__(self,parent)
-
-# 		self.style = ttk.Style()
-# 		if sys.platform == "win32":
-# 			self.style.theme_use('winnative')
-
-# 		#Full window frame, holds everything
-# 		self.outer_frame = tk.Frame(self)
-# 		self.outer_frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
-# 		self.outer_frame.configure(relief='groove')
-# 		self.outer_frame.configure(borderwidth="2")
-# 		self.outer_frame.configure(relief="groove")
-# 		self.outer_frame.configure(background=light_color)
-# 		self.outer_frame.configure(highlightbackground="#d9d9d9")
-# 		self.outer_frame.configure(highlightcolor="black")
-# 		self.outer_frame.configure(borderwidth = 0)
-# 		self.outer_frame.configure(highlightthickness = 0)
-
-# 		#back to main page button
-# 		self.returnimage = tk.PhotoImage(file=os.path.join(homebrewcore.assetfolder,"returnbutton.png"))
-# 		self.returnimage = self.returnimage.zoom((3)).subsample(5)
-# 		self.backtomain_button = tk.Button(self.outer_frame, image=self.returnimage, command=lambda: controller.show_frame("mainPage"))
-# 		self.backtomain_button.place(relx=1, rely=1, x=-(self.returnimage.width() + 20), y=-(self.returnimage.height()+20), height=self.returnimage.height(), width=self.returnimage.width())
-# 		self.backtomain_button.configure(background=light_color)
-# 		self.backtomain_button.configure(borderwidth=0)
-# 		self.backtomain_button.configure(pady="0")
-# 		self.backtomain_button.configure(activebackground=light_color)
-
-
-
-# 		self.textoutput = tk.Text(self.outer_frame, height=10, width = 90, font=smalltext)
-# 		self.textoutput.place(x=0,y=0)
-# 		self.textoutput.configure(background = b)
-# 		self.textoutput.configure(foreground = w)
-# 		self.textoutput.configure(state=DISABLED)
-# 		self.textoutput.configure(borderwidth = 0)
-
-# 		def spewToTextOutput(self,textToSpew):
-# 			self.textoutput.config(state=NORMAL)
-# 			self.textoutput.insert(END, textToSpew + "\n\n")
-# 			self.textoutput.config(state=DISABLED)
-# 			self.textoutput.see(END)
-# 			print(textToSpew)
-
-# 		def spewBytesToTextOutput(self,textToSpew):
-# 			self.textoutput.config(state=NORMAL)
-# 			self.textoutput.insert(END, (textToSpew.decode("utf-8") + "\n\n"))
-# 			self.textoutput.config(state=DISABLED)
-# 			self.textoutput.see(END)
-# 			print(textToSpew)
-
-	
-
+class columnlabel(tk.Label):
+	def __init__(self,frame,label_text):
+		tk.Button.__init__(self,frame,
+			background = dark_color, 
+			foreground = columnlabelcolor,
+			borderwidth = 0,
+			highlightthickness = 0,
+			font = columnlabelfont,
+			anchor = "w",
+			text = label_text,
+			)
 
 def setDict(dicty):
     global hbdict
@@ -1301,12 +1255,3 @@ if __name__ == '__main__':
 #     setDict(HBUpdater.software)
 #     gui = appManagerGui()
 #     gui.mainloop()
-
-
-
-
-
-
-
-
-

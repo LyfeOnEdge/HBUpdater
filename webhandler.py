@@ -50,18 +50,14 @@ def cacheimage(url,softwarename):
 	return file
 
 
-
-
-
-
 def getUpdatedSoftwareLinks(dicttopopulate):
+	print("Downloading software json files from github")
 	for softwarechunk in dicttopopulate:
 		githubjsonlink = softwarechunk["githubapi"]
 		softwarename = softwarechunk["software"]
 
 		jsonfile = homebrewcore.joinpaths(homebrewcore.jsoncachefolder, softwarename + ".json")
 
-		print("Downloading software json files from github")
 		try:
 			urllib.request.urlretrieve(githubjsonlink,jsonfile)
 			print("Successfully downloaded {} to {}".format(githubjsonlink, jsonfile))
