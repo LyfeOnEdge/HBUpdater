@@ -1,1 +1,1 @@
-python.exe %cd%\HBUpdaterGUI.py %*
+python.exe "HBUpdaterGUI.py" %*

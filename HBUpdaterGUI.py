@@ -183,7 +183,7 @@ class mainPage(tk.Frame):
 		self.iconspacer += icon_and_search_bar_spacing*2
 
 		#search box, custom class
-		self.sb = SearchBox(self.searchbox_frame, command=self.search, placeholder="Type and press enter")
+		self.sb = SearchBox(self.searchbox_frame, command=self.search, placeholder="Type and press enter to search")
 		self.sb.place(relx=0,rely=.5, x=+icon_and_search_bar_spacing*2, relwidth=1, width=-(self.iconspacer+5), height=searchboxheight-10, y=-(searchboxheight-10)/2)
 
 
