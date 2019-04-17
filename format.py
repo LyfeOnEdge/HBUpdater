@@ -3,6 +3,9 @@
 #offset from left in listbox
 lbcolumnoffset = 10
 
+#width infoframe takes up
+infoframewidth = 225 
+
 ##Text Styles
 #Normal Text
 smalltext = ("Trebuchet MS",10)

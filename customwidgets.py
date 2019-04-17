@@ -1,5 +1,6 @@
 import tkinter as tk
 import tkinter.ttk as ttk
+from tkinter.constants import *
 from format import *
 
 #Mit License
@@ -315,6 +316,38 @@ class navbutton(tk.Button):
 			command=command_name,
 			)
 
+class navbox(themedframe):
+	def __init__(self,frame,
+		primary_button_image,
+		primary_button_command,
+		etc_button_image,
+		etc_button_command,
+		left_context_image,
+		left_context_command,
+		right_context_image,
+		right_context_command,
+		):
+		themedframe.__init__(self,frame, background_color=light_color)
+
+		#back to list button
+		self.etc_button = navbutton(self, image_object=etc_button_image, command_name=etc_button_command)
+		self.etc_button.place(relx=1, rely=0, x=-etc_button_image.width(), height=etc_button_image.height(), width=etc_button_image.width())
+
+		#install_button
+		self.primary_button = navbutton(self, image_object = primary_button_image, command_name = primary_button_command)
+		self.primary_button.place(relx=0.00, rely=0, height=primary_button_image.height(), width=primary_button_image.width())
+
+		#previous button in details menu
+		self.left_context_button = navbutton(self, image_object = left_context_image, command_name = left_context_command)
+		self.left_context_button.place(relx=0.00, rely=1,y=-left_context_image.height(),  height=left_context_image.height(), width=left_context_image.width())
+
+		#next button in details menu
+		self.right_context_button = navbutton(self, image_object=right_context_image, command_name=right_context_command)
+		self.right_context_button.place(relx=1, rely=1, y=-right_context_image.height(), height=right_context_image.height(), x=-right_context_image.width(), width =right_context_image.width())
+
+
+
+
 #themed author/ etc label
 class themedlabel(tk.Label):
 	def __init__(self,frame,label_text,label_font=smalltext,label_color=w,text_variable=None):
@@ -327,3 +360,86 @@ class themedlabel(tk.Label):
 			foreground= label_color,
 			textvariable = text_variable,
 			)
+
+
+
+
+
+
+class infobox(themedframe):
+	def __init__(self,frame):
+		themedframe.__init__(self,frame,background_color=light_color)
+
+		#holds author picture
+		self.project_art_label =themedlabel(self,label_text = "project_art",)
+		self.project_art_label.place(relx=0.0, rely=0.0, height=infoframewidth, relwidth=1)
+
+		#Homebrew Title
+		self.titlevar = tk.StringVar()
+		self.titlevar.set("title_var")
+		self.project_title_label = themedlabel(self, 
+			label_text = "project_title", 
+			text_variable = self.titlevar, 
+			label_color=info_softwarename_color, 
+			label_font=info_softwarename_font
+			)
+		self.project_title_label.place(relx=0.0, rely=0.0, y=infoframewidth-30, relwidth=1.0)
+
+
+		#author name
+		self.authorvar = tk.StringVar()
+		self.authorvar.set("author_var")
+		self.author_name_label = themedlabel(self,
+			label_text = "author_name", 
+			text_variable = self.authorvar, 
+			label_color=info_author_color, 
+			label_font=info_author_font
+			)
+		self.author_name_label.place(relx=0.0, rely=0, y=+infoframewidth, relwidth=1.0)
+
+
+		#Description
+		self.project_description = ScrolledText(self)
+		self.project_description.place(relx=0.0, rely=0.0, y=+infoframewidth+30, relheight=1, height=-(infoframewidth+30+100), relwidth=.98)
+		self.project_description.configure(background=light_color)
+		self.project_description.configure(foreground=info_description_color)
+		self.project_description.configure(font=info_description_font)
+		self.project_description.configure(wrap="word")
+		self.project_description.configure(state=NORMAL)
+		self.project_description.delete('1.0', END)
+		self.project_description.insert(END, "Project description")
+		self.project_description.configure(state=DISABLED)
+		self.project_description.configure(borderwidth=0)
+
+	def updatetitle(self,title):
+		self.titlevar.set(title)
+
+	#update author information
+	def updateauthor(self,author):
+		self.authorvar.set("by {}".format(author))
+
+	def updateimage(self,art_image):
+
+		imagemax = infoframewidth
+		while not (art_image.width() > (imagemax - 80) and not (art_image.width() > imagemax)):
+			if art_image.width() > imagemax:
+				art_image = art_image.subsample(2)
+			if art_image.width() < (imagemax - 80):
+				art_image = art_image.zoom(3)
+
+		self.project_art_label.configure(image=art_image)
+		self.project_art_label.image = art_image
+
+	#update project description
+	def updatedescription(self, desc):
+		self.project_description.configure(state=NORMAL)
+		self.project_description.delete('1.0', END)
+		self.project_description.insert(END, desc)
+		self.project_description.configure(state=DISABLED)
+
+	#update all info in the info box
+	def updateinfo(self, softwarechunknumber):
+
+		self.updateAuthorImage()
+
+		self.updatedescription(hbdict[softwarechunknumber]["description"])

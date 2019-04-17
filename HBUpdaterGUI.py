@@ -38,7 +38,7 @@ notfoundimage = "notfound.png"
 softwarechunknumber = 0 #variable to track where we are in the list of homebrew
 tagversionnumber = 0 #variable to track currently selected tag number
 taglen=0 #variable to track number of items in version listbox 
-infoframewidth = 225 #width infoframe takes up
+
 searchboxheight=35 #Height of searhbox
 columtitlesheight= 25 #Height of the frames holding the column titles
 
@@ -242,111 +242,48 @@ class mainPage(tk.Frame):
 		self.scrolling_patch_notes.configure(background=version_notes_column_background)
 		self.scrolling_patch_notes.configure(foreground=version_notes_color)
 
-		self.info_frame = cw.themedframe(self.outer_frame)
-		self.info_frame.place(relx=1, x=-infoframewidth, rely=0.0, relheight=.999, width=infoframewidth)
-		self.info_frame.configure(background=light_color)
-		self.info_frame.bind("<Configure>", self.configure)
 
-		#holds author picture
-		self.project_art_label =cw.themedlabel(self.info_frame,label_text = "project_art",)
-		self.project_art_label.place(relx=0.0, rely=0.0, height=infoframewidth, relwidth=1)
-
-		#Homebrew Title
-		self.titlevar = tk.StringVar()
-		self.titlevar.set("title_var")
-		self.project_title_label = cw.themedlabel(self.info_frame, 
-			label_text = "project_title", 
-			text_variable = self.titlevar, 
-			label_color=info_softwarename_color, 
-			label_font=info_softwarename_font
-			)
-		self.project_title_label.place(relx=0.0, rely=0.0, y=infoframewidth-30, relwidth=1.0)
+		self.infobox = cw.infobox(self.outer_frame)
+		self.infobox.place(relx=1, x=-infoframewidth, rely=0.0, relheight=.999, width=infoframewidth)
+		self.infobox.bind("<Configure>", self.configure)
 
 
-		#author name
-		self.authorvar = tk.StringVar()
-		self.authorvar.set("author_var")
-		self.author_name_label = cw.themedlabel(self.info_frame,
-			label_text = "author_name", 
-			text_variable = self.authorvar, 
-			label_color=info_author_color, 
-			label_font=info_author_font
-			)
-		self.author_name_label.place(relx=0.0, rely=0, y=+infoframewidth, relwidth=1.0)
-
-
-		#Description
-		self.project_description = cw.ScrolledText(self.info_frame)
-		self.project_description.place(relx=0.0, rely=0.0, y=+infoframewidth+30, relheight=1, height=-(infoframewidth+30+100), relwidth=.98)
-		self.project_description.configure(background=light_color)
-		self.project_description.configure(foreground=info_description_color)
-		self.project_description.configure(font=info_description_font)
-		self.project_description.configure(wrap="word")
-		self.project_description.configure(state=NORMAL)
-		self.project_description.delete('1.0', END)
-		self.project_description.insert(END, "Project description")
-		self.project_description.configure(state=DISABLED)
-		self.project_description.configure(borderwidth=0)
 
 
 		#Shared images
-		self.installimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"installbutton.png"))
-		self.installimage = self.installimage.zoom(3).subsample(5)
-		self.infoimage = tk.PhotoImage(file=os.path.join(homebrewcore.assetfolder,"info.png"))
-		self.infoimage = self.infoimage.zoom(3).subsample(5)
-		self.previousimage = tk.PhotoImage(file=os.path.join(homebrewcore.assetfolder,"prev.png"))
-		self.previousimage = self.previousimage.zoom((3)).subsample(5)
-		self.nextimage = tk.PhotoImage(file=os.path.join(homebrewcore.assetfolder,"next.png"))
-		self.nextimage = self.nextimage.zoom((3)).subsample(5)
-		self.backbutton = tk.PhotoImage(file=os.path.join(homebrewcore.assetfolder,"back.png"))
-		self.backbutton = self.backbutton.zoom((3)).subsample(5)
-		self.returnimage = tk.PhotoImage(file=os.path.join(homebrewcore.assetfolder,"returnbutton.png"))
-		self.returnimage = self.returnimage.zoom((3)).subsample(5)
+		self.installimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"installbutton.png")).zoom(3).subsample(5)
+		self.infoimage = tk.PhotoImage(file=os.path.join(homebrewcore.assetfolder,"info.png")).zoom(3).subsample(5)
+		self.previousimage = tk.PhotoImage(file=os.path.join(homebrewcore.assetfolder,"prev.png")).zoom(3).subsample(5)
+		self.nextimage = tk.PhotoImage(file=os.path.join(homebrewcore.assetfolder,"next.png")).zoom(3).subsample(5)
+		self.backbutton = tk.PhotoImage(file=os.path.join(homebrewcore.assetfolder,"back.png")).zoom(3).subsample(5)
+		self.returnimage = tk.PhotoImage(file=os.path.join(homebrewcore.assetfolder,"returnbutton.png")).zoom(3).subsample(5)
 
 
 		#Back to list button frame, placed first so the details button covers it
-		self.details_buttons_frame =cw.themedframe(self.info_frame,background_color=light_color,frame_borderwidth=0)
+		self.details_buttons_frame =cw.navbox(self.infobox,
+			primary_button_image = self.installimage,
+			primary_button_command = self.specificinstall,
+			etc_button_image = self.returnimage,
+			etc_button_command = self.showlist,
+			left_context_image = self.previousimage,
+			left_context_command = self.versioncusordown,
+			right_context_image = self.nextimage,
+			right_context_command = self.versioncursorup,
+			)
 		self.details_buttons_frame.place(relx=.5, rely=1, x=-100, y=-87.5, height= 75, width=200)
 
 
-		#back to list button
-		self.backtolist_button = cw.navbutton(self.details_buttons_frame, image_object=self.returnimage, command_name=self.showlist)
-		self.backtolist_button.place(relx=1, rely=0, x=-self.infoimage.width(), height=self.infoimage.height(), width=self.infoimage.width())
-
-
-		#install_button
-		self.details_install_button = cw.navbutton(self.details_buttons_frame, image_object = self.installimage, command_name = self.specificinstall)
-		self.details_install_button.place(relx=0.00, rely=0, height=self.installimage.height(), width=self.installimage.width())
-
-		#previous button in details menu
-		self.details_previous_button = cw.navbutton(self.details_buttons_frame, image_object = self.previousimage, command_name = self.versioncusordown)
-		self.details_previous_button.place(relx=0.00, rely=1,y=-self.previousimage.height(),  height=self.previousimage.height(), width=self.previousimage.width())
-
-		#next button in details menu
-		self.details_next_button = cw.navbutton(self.details_buttons_frame, image_object=self.nextimage, command_name=self.versioncursorup)
-		self.details_next_button.place(relx=1, rely=1, y=-self.nextimage.height(), height=self.nextimage.height(), x=-self.nextimage.width(), width =self.nextimage.width())
-
-
-		#frame to hold details button
-		self.list_buttons_frame = cw.themedframe(self.info_frame,background_color=light_color,frame_borderwidth=0)
+		self.list_buttons_frame = cw.navbox(self.infobox,
+			primary_button_image = self.installimage,
+			primary_button_command = self.install,
+			etc_button_image = self.infoimage,
+			etc_button_command = self.showdetails,
+			left_context_image = self.previousimage,
+			left_context_command = self.pagedown,
+			right_context_image = self.nextimage,
+			right_context_command = self.pageup,
+			)
 		self.list_buttons_frame.place(relx=.5, rely=1, x=-100, y=-87.5, height= 75, width=200)
-
-		#install button
-		self.install_button = cw.navbutton(self.list_buttons_frame, image_object = self.installimage, command_name=self.install)
-		self.install_button.place(relx=0.00, rely=0, height=self.installimage.height(), width=self.installimage.width())
-
-		#go-to-details button
-		self.details_button = cw.navbutton(self.list_buttons_frame, image_object=self.infoimage, command_name=self.showdetails)
-		self.details_button.place(relx=1, rely=0, x=-self.infoimage.width(), height=self.infoimage.height(), width=self.infoimage.width())
-
-		#previous button, goes up one section on the list
-		self.previous_button = cw.navbutton(self.list_buttons_frame, image_object=self.previousimage, command_name=self.pagedown)
-		self.previous_button.place(relx=0.00, rely=1,y=-self.previousimage.height(),  height=self.previousimage.height(), width=self.previousimage.width())
-
-		#next button, goes down one section on the list
-		self.next_button = cw.navbutton(self.list_buttons_frame, image_object=self.nextimage, command_name=self.pageup)
-		self.next_button.place(relx=1, rely=1, y=-self.nextimage.height(), height=self.nextimage.height(), x=-self.nextimage.width(), width =self.nextimage.width())
-
 
 		#initial update of the info frame
 		self.showlist()
@@ -390,15 +327,12 @@ class mainPage(tk.Frame):
 			else:
 				print("SD Path Not set, not installing")
 
-	
-
 	#raises the details frame
 	def showdetails(self):
 		self.details_frame.tkraise()
 		self.details_buttons_frame.tkraise()
 	def showdetailsevent(self,event):
 		self.showdetails()
-
 
     #raises the list frame
 	def showlist(self):
@@ -407,7 +341,6 @@ class mainPage(tk.Frame):
 	def showlistevent(self,event):
 		self.showlist()
 
-		
     #listbox scrollbar 
 	def OnVsb(self, *args):
 		self.homebrew_listbox.yview(*args)
@@ -512,12 +445,6 @@ class mainPage(tk.Frame):
 		widget = event.widget
 		selection=widget.curselection()
 		picked = widget.get(selection[0])
-		# softwarenumber = 0
-		# for softwarechunk in hbdict:
-		#     if softwarechunk["software"] == picked:
-		#         softwarechunknumber = softwarenumber
-		#     softwarenumber+= 1
-		#index is superior method
 		softwarechunknumber = widget.get(0, "end").index(picked)
 		self.updateinfo(softwarechunknumber)
 		self.refreshdetailwindow(softwarechunknumber)
@@ -555,23 +482,18 @@ class mainPage(tk.Frame):
 
 
 		softwarename = hbdict[softwarechunknumber]["software"]
-		self.updatetitle(softwarename)
+		self.infobox.updatetitle(softwarename)
 
 		with open(hbdict[softwarechunknumber]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
 			jfile = json.load(json_file)
 
 		#update author
 		author = jfile[0]["author"]["login"]
-		self.updateauthor(author)
-
-		#update author url
-		authorurl = jfile[0]["author"]["html_url"]
-		authorimg = jfile[0]["author"]["avatar_url"]
-		# authorimgfile = homebrewcore.joinpaths(homebrewcore.cachefolder, webhandler.getfilenamefromurl(authorimg))
+		self.infobox.updateauthor(author)
 
 		self.updateAuthorImage()
 
-		self.updatedescription(hbdict[softwarechunknumber]["description"])
+		self.infobox.updatedescription(hbdict[softwarechunknumber]["description"])
 
 	def updateAuthorImageEvent(self,event):
 		self.updateAuthorImage()
@@ -608,15 +530,8 @@ class mainPage(tk.Frame):
 			project_image = tk.PhotoImage(file=photopath)
 			print("used not-found image due to error (you can safely ignore this error)")
 
-		imagemax = self.info_frame.winfo_width()
-		while not (project_image.width() > (imagemax - 80) and not (project_image.width() > imagemax)):
-			if project_image.width() > imagemax:
-				project_image = project_image.subsample(3)
-			if project_image.width() < (imagemax - 80):
-				project_image = project_image.zoom(4)
+		self.infobox.updateimage(art_image = project_image)
 
-		self.project_art_label.configure(image=project_image)
-		self.project_art_label.image = project_image
 
 	#movement buttons, moves through homebrewlist or brew version
 	def pageup(self):
@@ -632,6 +547,7 @@ class mainPage(tk.Frame):
 			softwarechunknumber -= 1
 			self.updateinfo(softwarechunknumber)
 			self.refreshdetailwindow(softwarechunknumber)
+
 
 
 	#movement buttons, moves through homebrewlist or brew version
@@ -652,6 +568,8 @@ class mainPage(tk.Frame):
 			self.updatetagnotes()
 			# self.updateinfo(softwarechunknumber)
 			# self.updatedetailwindow(softwarechunknumber)
+
+
 
 	def updatetagsbox(self):
 		global tagversionnumber
@@ -685,6 +603,7 @@ class mainPage(tk.Frame):
 
 		self.updatetagnotes()
 
+
 	def refreshdetailwindow(self,softwarechunknumber):
 		global taglen
 		global tagversionnumber
@@ -708,7 +627,6 @@ class mainPage(tk.Frame):
 		try:
 			widget = event.widget
 			tagversionnumber=widget.curselection()[0]
-			# self.gettagdescription(picked)
 			self.updatetagsbox()
 			self.updatetagnotes()
 		except:
@@ -780,16 +698,6 @@ class injectorPage(tk.Frame):
 			self.textoutput.config(state=DISABLED)
 			self.textoutput.see(END)
 			print(textToSpew)
-
-
-
-
-
-
-
-
-
-
 
 
 def setDict(dicty):
