@@ -258,6 +258,7 @@ class themedframe(tk.Frame):
 	def __init__(self,parent,frame_borderwidth = 0,frame_highlightthickness = 1,background_color = dark_color):
 		tk.Frame.__init__(self,parent, 
 			background = background_color,
+			highlightcolor = background_color,
 			highlightthickness=frame_highlightthickness,
 			highlightbackground=light_color,
 			borderwidth = frame_borderwidth,

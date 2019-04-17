@@ -22,6 +22,20 @@ sdpathset = False
 trackingfolder = ""
 trackingfile = ""
 
+hbdict = {}
+softwarechunknumber = 0 #variable to track where we are in the list of homebrew
+dictlen = 0 
+tagversionnumber = 0 #variable to track currently selected tag number
+taglen=0 #variable to track number of items in version listbox 
+
+
+def setDict(dicty):
+	global hbdict
+	global dictlen
+	hbdict = dicty
+	dictlen = len(hbdict)
+
+
 #update global "chosensdpath"
 def setSDpath(sdpath):
 	global chosensdpath

@@ -6,6 +6,15 @@ lbcolumnoffset = 10
 #width infoframe takes up
 infoframewidth = 225 
 
+#Height of searhbox
+searchboxheight=35 
+
+#Height of the frames holding the column titles
+columtitlesheight= 25 
+
+#Image for when there is an author image incompatible with tkinter
+notfoundimage = "notfound.png"
+
 ##Text Styles
 #Normal Text
 smalltext = ("Trebuchet MS",10)
