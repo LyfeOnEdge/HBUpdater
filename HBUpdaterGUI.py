@@ -249,11 +249,6 @@ class mainPage(tk.Frame):
 		#holds author picture
 		self.project_art_label =themedlabel(self.info_frame,label_text = "project_art",)
 		self.project_art_label.place(relx=0.0, rely=0.0, height=infoframewidth, relwidth=1)
-		# self.project_art_label.configure(background=light_color)
-		# self.project_art_label.configure(highlightbackground="#d9d9d9")
-		# self.project_art_label.configure(highlightcolor="black")
-		# self.project_art_label.configure(text='''project_art''')
-		# self.project_art_label.configure(anchor="n")
 
 		#Homebrew Title
 		self.titlevar = tk.StringVar()
@@ -1037,7 +1032,7 @@ def _on_shiftmouse(event, widget):
 		elif event.num == 5:
 			widget.xview_scroll(1, 'units')
 
-
+#Frame themed properly from format.py
 class themedframe(tk.Frame):
 	def __init__(self,parent,frame_borderwidth = 0,frame_highlightthickness = 1,background_color = dark_color):
 		tk.Frame.__init__(self,parent, 
@@ -1047,6 +1042,7 @@ class themedframe(tk.Frame):
 			borderwidth = frame_borderwidth,
 			)
 
+#listbox themed properly from format.py
 class customlistbox(tk.Listbox):
 	def __init__(self,frame, **kw, ):
 		tk.Listbox.__init__(self,frame,**kw,
@@ -1062,6 +1058,7 @@ class customlistbox(tk.Listbox):
 			selectforeground=listboxselectionforeground,
 			)
 
+#search bar icons with theme
 class iconbutton(tk.Listbox):
 	def __init__(self,frame, image_object,command_name,):
 		tk.Button.__init__(self,frame,
@@ -1073,6 +1070,7 @@ class iconbutton(tk.Listbox):
 			command = command_name,
 			)
 
+#themed colum label
 class columnlabel(tk.Label):
 	def __init__(self,frame,label_text):
 		tk.Label.__init__(self,frame,
@@ -1085,6 +1083,7 @@ class columnlabel(tk.Label):
 			text = label_text,
 			)
 
+#themed nav button
 class navbutton(tk.Button):
 	def __init__(self,frame,image_object,command_name):
 		tk.Button.__init__(self,frame,
@@ -1096,7 +1095,7 @@ class navbutton(tk.Button):
 			command=command_name,
 			)
 
-
+#themed author/ etc label
 class themedlabel(tk.Label):
 	def __init__(self,frame,label_text,label_font=smalltext,label_color=w,text_variable=None):
 		tk.Label.__init__(self,frame,
@@ -1124,8 +1123,8 @@ def setDict(dicty):
     dictlen = len(hbdict)
 
 if __name__ == '__main__':  
-	setDict(webhandler.getJsonSoftwareLinks(locations.softwarelist))
-	#setDict(webhandler.getUpdatedSoftwareLinks(locations.softwarelist))
+	#setDict(webhandler.getJsonSoftwareLinks(locations.softwarelist))
+	setDict(webhandler.getUpdatedSoftwareLinks(locations.softwarelist))
 	#setDict(webhandler.getMissingJson(locations.softwarelist))
 	for softwarechunk in hbdict:
 		softwarechunk["photopath"] = None
