@@ -96,26 +96,21 @@ class mainPage(tk.Frame):
 			self.style.theme_use('winnative')
 
 		#Full window frame, holds everything
-		self.outer_frame = tk.Frame(self)
+		self.outer_frame = themedframe(self)
 		self.outer_frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
-		self.outer_frame.configure(background=light_color)
-		self.outer_frame.configure(highlightthickness = 0)
 
 		#Frame for main list, contains listboxes and scroll bar, and list titles
-		self.listbox_frame = tk.Frame(self.outer_frame)
-		self.listbox_frame.place(relx=0.0, rely=0.0, relheight=1, relwidth=1, width=-infoframewidth)
+		self.listbox_frame = themedframe(self.outer_frame,frame_highlightthickness= 0)
+		self.listbox_frame.place(relx=0.0, rely=0.0, relheight=1, relwidth=1, width=-infoframewidth,)
 		self.listbox_frame.configure(background=dark_color)
-		self.listbox_frame.configure(highlightthickness= 0 )
 
 		#The contents of this frame are built backwards due to needing to align the searchbox with the icons
-		self.searchbox_frame = tk.Frame(self.listbox_frame)
-		self.searchbox_frame.place(relx=0.0, rely=0.0,height=searchboxheight, relwidth=1)
-		self.searchbox_frame.configure(background=light_color)
-		self.searchbox_frame.configure(highlightthickness= 0 )
+		self.searchbox_frame = themedframe(self.listbox_frame,frame_highlightthickness= 1,background_color=light_color)
+		self.searchbox_frame.place(relx=0.0, rely=0.0,height=searchboxheight, relwidth=1,)
 
+		#Variable to track place searchbox icons in correct location
 		self.iconspacer = 0
 		
-
 		# self.settingsimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"settings.png"))
 		# self.settingsimage = self.settingsimage.subsample(2)
 		# self.iconspacer = self.settingsimage.width()
@@ -185,27 +180,27 @@ class mainPage(tk.Frame):
 		# self.vsb.place(relx=0.975, rely=0.15, relheight=0.94, relwidth=0.025)
 
 
-		self.list_frame = tk.Frame(self.listbox_frame, borderwidth=0, highlightthickness=0)
+		self.list_frame = themedframe(self.listbox_frame,frame_highlightthickness=0)
 		self.list_frame.place(relx=0,rely=0,y=searchboxheight+columtitlesheight, relheight=1, height=-(searchboxheight+columtitlesheight),relwidth=1)
 
 		self.homebrew_listbox_frame = themedframe(self.list_frame,)
 		self.homebrew_listbox_frame.place(relx=0.0,rely=0,relheight=1,relwidth=0.44)
-		self.homebrew_listbox = populatablelistbox(self.homebrew_listbox_frame,)
+		self.homebrew_listbox = customlistbox(self.homebrew_listbox_frame,)
 		self.homebrew_listbox.place(relheight=1,relwidth=1, x=+lbcolumnoffset, width=-lbcolumnoffset)
 
 		self.genre_listbox_frame = themedframe(self.list_frame,)
 		self.genre_listbox_frame.place(relx=0.44,rely=0,relheight=1,relwidth=0.20)
-		self.genre_listbox = populatablelistbox(self.genre_listbox_frame,)
+		self.genre_listbox = customlistbox(self.genre_listbox_frame,)
 		self.genre_listbox.place(relheight=1,relwidth=1, x=+lbcolumnoffset, width=-lbcolumnoffset)
 
 		self.version_listbox_frame = themedframe(self.list_frame,)
 		self.version_listbox_frame.place(relx=0.64, rely=0, relheight=1, relwidth=0.18)
-		self.version_listbox = populatablelistbox(self.version_listbox_frame,)
+		self.version_listbox = customlistbox(self.version_listbox_frame,)
 		self.version_listbox.place(relheight=1,relwidth=1, x=+lbcolumnoffset, width=-lbcolumnoffset)
 
 		self.status_listbox_frame = themedframe(self.list_frame,)
 		self.status_listbox_frame.place(relx=0.82, rely=0, relheight=1, relwidth=0.18)
-		self.status_listbox = populatablelistbox(self.status_listbox_frame,)
+		self.status_listbox = customlistbox(self.status_listbox_frame,)
 		self.status_listbox.place(relheight=1,relwidth=1, x=+lbcolumnoffset, width=-lbcolumnoffset)
 		
 		#bind listboxes to move with mouse
@@ -220,24 +215,17 @@ class mainPage(tk.Frame):
 
 
 		#Frame for details (raised when details button clicked)
-		self.details_frame = tk.Frame(self.outer_frame)
-		self.details_frame.place(relx=0.0, rely=0.0, width=-infoframewidth, relheight=1, relwidth=1)
-		self.details_frame.configure(background=dark_color)
-		self.details_frame.configure(highlightbackground="#d9d9d9")
-		self.details_frame.configure(highlightcolor=light_color)
-		self.details_frame.configure(highlightthickness = 0)
 		
 		#past version tags listbox
 		self.details_frame = themedframe(self.outer_frame)
 		self.details_frame.place(relx=0.0, rely=0.0, width=-infoframewidth, relheight=1, relwidth=1)
 		
-		self.tags_listbox = populatablelistbox(self.details_frame)
+		self.tags_listbox = customlistbox(self.details_frame)
 		self.tags_listbox.place(relx=0.0, rely=0, relheight=1, relwidth=0.2)
 		self.tags_listbox.configure(font=tags_listbox_font)
 		self.tags_listbox.configure(font=version_number_font)
 		self.tags_listbox.bind('<<ListboxSelect>>',self.CurTagSelet)
 		
-
 
 		#patch notes 
 		self.scrolling_patch_notes = ScrolledText(self.details_frame)
@@ -253,62 +241,43 @@ class mainPage(tk.Frame):
 		self.scrolling_patch_notes.configure(background=version_notes_column_background)
 		self.scrolling_patch_notes.configure(foreground=version_notes_color)
 
-
-		#Frame to hold author art, author name, title, description box, and buttons
-		self.info_frame = tk.Frame(self.outer_frame)
+		self.info_frame = themedframe(self.outer_frame)
 		self.info_frame.place(relx=1, x=-infoframewidth, rely=0.0, relheight=.999, width=infoframewidth)
-		self.info_frame.configure(relief='groove')
-		self.info_frame.configure(borderwidth="2")
-		self.info_frame.configure(relief="groove")
 		self.info_frame.configure(background=light_color)
-		self.info_frame.configure(highlightbackground="#d9d9d9")
-		self.info_frame.configure(highlightcolor="black")
-		self.info_frame.configure(borderwidth=0)
 		self.info_frame.bind("<Configure>", self.configure)
 
 		#holds author picture
-		self.project_art_label = tk.Label(self.info_frame)
+		self.project_art_label =themedlabel(self.info_frame,label_text = "project_art",)
 		self.project_art_label.place(relx=0.0, rely=0.0, height=infoframewidth, relwidth=1)
-		self.project_art_label.configure(activebackground="#f9f9f9")
-		self.project_art_label.configure(activeforeground="black")
-		self.project_art_label.configure(background=light_color)
-		self.project_art_label.configure(disabledforeground="#a3a3a3")
-		self.project_art_label.configure(foreground="#000000")
-		self.project_art_label.configure(highlightbackground="#d9d9d9")
-		self.project_art_label.configure(highlightcolor="black")
-		self.project_art_label.configure(text='''project_art''')
-		self.project_art_label.configure(anchor="n")
+		# self.project_art_label.configure(background=light_color)
+		# self.project_art_label.configure(highlightbackground="#d9d9d9")
+		# self.project_art_label.configure(highlightcolor="black")
+		# self.project_art_label.configure(text='''project_art''')
+		# self.project_art_label.configure(anchor="n")
 
 		#Homebrew Title
 		self.titlevar = tk.StringVar()
 		self.titlevar.set("title_var")
-		self.project_title_label = tk.Label(self.info_frame, textvariable = self.titlevar)
-		self.project_title_label.place(relx=0.0, rely=0.0, y=infoframewidth-30, height=20, relwidth=1.0)
-		self.project_title_label.configure(activebackground="#f9f9f9")
-		self.project_title_label.configure(activeforeground="black")
-		self.project_title_label.configure(background=light_color)
-		self.project_title_label.configure(disabledforeground="#a3a3a3")
-		self.project_title_label.configure(foreground=info_softwarename_color)
-		self.project_title_label.configure(font=info_softwarename_font)
-		self.project_title_label.configure(highlightbackground="#d9d9d9")
-		self.project_title_label.configure(highlightcolor="black")
-		self.project_title_label.configure(text='''project_title''')
+		self.project_title_label = themedlabel(self.info_frame, 
+			label_text = "project_title", 
+			text_variable = self.titlevar, 
+			label_color=info_softwarename_color, 
+			label_font=info_softwarename_font
+			)
+		self.project_title_label.place(relx=0.0, rely=0.0, y=infoframewidth-30, relwidth=1.0)
+
 
 		#author name
 		self.authorvar = tk.StringVar()
 		self.authorvar.set("author_var")
-		self.author_name_label = tk.Label(self.info_frame,textvariable =self.authorvar)
-		self.author_name_label.place(relx=0.0, rely=0, y=+infoframewidth, height=15, relwidth=1.0)
-		self.author_name_label.configure(activebackground="#f9f9f9")
-		self.author_name_label.configure(activeforeground="black")
-		self.author_name_label.configure(background=light_color)
-		self.author_name_label.configure(disabledforeground="#a3a3a3")
-		self.author_name_label.configure(foreground=info_author_color)
-		self.author_name_label.configure(font=info_author_font)
-		self.author_name_label.configure(highlightbackground="#d9d9d9")
-		self.author_name_label.configure(highlightcolor="black")
-		self.author_name_label.configure(justify='left')
-		self.author_name_label.configure(text='''author_name''')
+		self.author_name_label = themedlabel(self.info_frame,
+			label_text = "author_name", 
+			text_variable = self.authorvar, 
+			label_color=info_author_color, 
+			label_font=info_author_font
+			)
+		self.author_name_label.place(relx=0.0, rely=0, y=+infoframewidth, relwidth=1.0)
+
 
 		#Description
 		self.project_description = ScrolledText(self.info_frame)
@@ -324,8 +293,7 @@ class mainPage(tk.Frame):
 		self.project_description.configure(borderwidth=0)
 
 
-
-
+		#Shared images
 		self.installimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"installbutton.png"))
 		self.installimage = self.installimage.zoom(3).subsample(5)
 		self.infoimage = tk.PhotoImage(file=os.path.join(homebrewcore.assetfolder,"info.png"))
@@ -341,95 +309,48 @@ class mainPage(tk.Frame):
 
 
 		#Back to list button frame, placed first so the details button covers it
-		self.details_buttons_frame = tk.Frame(self.info_frame)
+		self.details_buttons_frame =themedframe(self.info_frame,background_color=light_color,frame_borderwidth=0)
 		self.details_buttons_frame.place(relx=.5, rely=1, x=-100, y=-87.5, height= 75, width=200)
-		self.details_buttons_frame.configure(relief='groove')
-		self.details_buttons_frame.configure(borderwidth="2")
-		self.details_buttons_frame.configure(relief="groove")
-		self.details_buttons_frame.configure(background=light_color)
-		self.details_buttons_frame.configure(highlightbackground="#d9d9d9")
-		self.details_buttons_frame.configure(highlightcolor="black")
-		self.details_buttons_frame.configure(borderwidth = 0)
-		self.details_buttons_frame.configure(highlightthickness = 0)
 
 
 		#back to list button
-		self.backtolist_button = tk.Button(self.details_buttons_frame, image=self.returnimage, command=self.showlist)
+		self.backtolist_button = navbutton(self.details_buttons_frame, image_object=self.returnimage, command_name=self.showlist)
 		self.backtolist_button.place(relx=1, rely=0, x=-self.infoimage.width(), height=self.infoimage.height(), width=self.infoimage.width())
-		self.backtolist_button.configure(background=light_color)
-		self.backtolist_button.configure(borderwidth=0)
-		self.backtolist_button.configure(pady="0")
-		self.backtolist_button.configure(activebackground=light_color)
+
 
 		#install_button
-		self.details_install_button = tk.Button(self.details_buttons_frame, image = self.installimage, command=self.specificinstall)
+		self.details_install_button = navbutton(self.details_buttons_frame, image_object = self.installimage, command_name = self.specificinstall)
 		self.details_install_button.place(relx=0.00, rely=0, height=self.installimage.height(), width=self.installimage.width())
-		self.details_install_button.configure(activebackground=light_color)
-		self.details_install_button.configure(background=light_color)
-		self.details_install_button.configure(borderwidth=0)
-		self.details_install_button.configure(pady="0")
 
-
-		self.details_previous_button = tk.Button(self.details_buttons_frame, image=self.previousimage, command=self.versioncusordown)
+		#previous button in details menu
+		self.details_previous_button = navbutton(self.details_buttons_frame, image_object = self.previousimage, command_name = self.versioncusordown)
 		self.details_previous_button.place(relx=0.00, rely=1,y=-self.previousimage.height(),  height=self.previousimage.height(), width=self.previousimage.width())
-		self.details_previous_button.configure(activebackground=light_color)
-		self.details_previous_button.configure(background=light_color)
-		self.details_previous_button.configure(borderwidth=0)
-		self.details_previous_button.configure(pady="0")
 
-		self.details_next_button = tk.Button(self.details_buttons_frame, image=self.nextimage, command=self.versioncursorup)
+		#next button in details menu
+		self.details_next_button = navbutton(self.details_buttons_frame, image_object=self.nextimage, command_name=self.versioncursorup)
 		self.details_next_button.place(relx=1, rely=1, y=-self.nextimage.height(), height=self.nextimage.height(), x=-self.nextimage.width(), width =self.nextimage.width())
-		self.details_next_button.configure(activebackground=light_color)
-		self.details_next_button.configure(background=light_color)
-		self.details_next_button.configure(borderwidth=0)
-		self.details_next_button.configure(pady="0")
-
 
 
 		#frame to hold details button
-		self.list_buttons_frame = tk.Frame(self.info_frame)
+		self.list_buttons_frame = themedframe(self.info_frame,background_color=light_color,frame_borderwidth=0)
 		self.list_buttons_frame.place(relx=.5, rely=1, x=-100, y=-87.5, height= 75, width=200)
-		self.list_buttons_frame.configure(relief='groove')
-		self.list_buttons_frame.configure(borderwidth="2")
-		self.list_buttons_frame.configure(relief="groove")
-		self.list_buttons_frame.configure(background=light_color)
-		self.list_buttons_frame.configure(highlightbackground="#d9d9d9")
-		self.list_buttons_frame.configure(highlightcolor="black")
-		self.list_buttons_frame.configure(borderwidth = 0)
-		self.list_buttons_frame.configure(highlightthickness = 0)
 
 		#install button
-		
-		self.install_button = tk.Button(self.list_buttons_frame, image = self.installimage, command=self.install)
+		self.install_button = navbutton(self.list_buttons_frame, image_object = self.installimage, command_name=self.install)
 		self.install_button.place(relx=0.00, rely=0, height=self.installimage.height(), width=self.installimage.width())
-		self.install_button.configure(activebackground=light_color)
-		self.install_button.configure(background=light_color)
-		self.install_button.configure(borderwidth=0)
-		self.install_button.configure(pady="0")
 
 		#go-to-details button
-		self.details_button = tk.Button(self.list_buttons_frame, image=self.infoimage, command=self.showdetails)
+		self.details_button = navbutton(self.list_buttons_frame, image_object=self.infoimage, command_name=self.showdetails)
 		self.details_button.place(relx=1, rely=0, x=-self.infoimage.width(), height=self.infoimage.height(), width=self.infoimage.width())
-		self.details_button.configure(background=light_color)
-		self.details_button.configure(borderwidth=0)
-		self.details_button.configure(pady="0")
-		self.details_button.configure(activebackground=light_color)
 
 		#previous button, goes up one section on the list
-		self.previous_button = tk.Button(self.list_buttons_frame, image=self.previousimage, command=self.pagedown)
+		self.previous_button = navbutton(self.list_buttons_frame, image_object=self.previousimage, command_name=self.pagedown)
 		self.previous_button.place(relx=0.00, rely=1,y=-self.previousimage.height(),  height=self.previousimage.height(), width=self.previousimage.width())
-		self.previous_button.configure(activebackground=light_color)
-		self.previous_button.configure(background=light_color)
-		self.previous_button.configure(borderwidth=0)
-		self.previous_button.configure(pady="0")
 
 		#next button, goes down one section on the list
-		self.next_button = tk.Button(self.list_buttons_frame, image=self.nextimage, command=self.pageup)
+		self.next_button = navbutton(self.list_buttons_frame, image_object=self.nextimage, command_name=self.pageup)
 		self.next_button.place(relx=1, rely=1, y=-self.nextimage.height(), height=self.nextimage.height(), x=-self.nextimage.width(), width =self.nextimage.width())
-		self.next_button.configure(activebackground=light_color)
-		self.next_button.configure(background=light_color)
-		self.next_button.configure(borderwidth=0)
-		self.next_button.configure(pady="0")
+
 
 		#initial update of the info frame
 		self.showlist()
@@ -479,10 +400,8 @@ class mainPage(tk.Frame):
 	def showdetails(self):
 		self.details_frame.tkraise()
 		self.details_buttons_frame.tkraise()
-	#for double-click
 	def showdetailsevent(self,event):
-		self.details_frame.tkraise()
-		self.details_buttons_frame.tkraise()
+		self.showdetails()
 
 
     #raises the list frame
@@ -490,8 +409,8 @@ class mainPage(tk.Frame):
 		self.listbox_frame.tkraise()
 		self.list_buttons_frame.tkraise()
 	def showlistevent(self,event):
-		self.listbox_frame.tkraise()
-		self.list_buttons_frame.tkraise()
+		self.showlist()
+
 		
     #listbox scrollbar 
 	def OnVsb(self, *args):
@@ -800,11 +719,6 @@ class mainPage(tk.Frame):
 			pass
 
 
-
-
-
-
-
 class settingsPage(tk.Frame):
 	def __init__(self, parent, controller):
 		tk.Frame.__init__(self,parent)
@@ -814,29 +728,15 @@ class settingsPage(tk.Frame):
 			self.style.theme_use('winnative')
 
 		#Full window frame, holds everything
-		self.outer_frame = tk.Frame(self)
+		self.outer_frame = themedframe(self)
 		self.outer_frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
-		self.outer_frame.configure(relief='groove')
-		self.outer_frame.configure(borderwidth="2")
-		self.outer_frame.configure(relief="groove")
-		self.outer_frame.configure(background=light_color)
-		self.outer_frame.configure(highlightbackground="#d9d9d9")
-		self.outer_frame.configure(highlightcolor="black")
-		self.outer_frame.configure(borderwidth = 0)
-		self.outer_frame.configure(highlightthickness = 0)
+
 
 		#back to main page button
 		self.returnimage = tk.PhotoImage(file=os.path.join(homebrewcore.assetfolder,"returnbutton.png"))
 		self.returnimage = self.returnimage.zoom((3)).subsample(5)
-		self.backtomain_button = tk.Button(self.outer_frame, image=self.returnimage, command=lambda: controller.show_frame("mainPage"))
+		self.backtomain_button = navbutton(self.outer_frame, image_object=self.returnimage, command_name=lambda: controller.show_frame("mainPage"))
 		self.backtomain_button.place(relx=1, rely=1, x=-(self.returnimage.width() + 20), y=-(self.returnimage.height()+20), height=self.returnimage.height(), width=self.returnimage.width())
-		self.backtomain_button.configure(background=light_color)
-		self.backtomain_button.configure(borderwidth=0)
-		self.backtomain_button.configure(pady="0")
-		self.backtomain_button.configure(activebackground=light_color)
-
-
-
 
 
 class injectorPage(tk.Frame):
@@ -848,16 +748,9 @@ class injectorPage(tk.Frame):
 			self.style.theme_use('winnative')
 
 		#Full window frame, holds everything
-		self.outer_frame = tk.Frame(self)
+		self.outer_frame = themedframe(self)
 		self.outer_frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
-		self.outer_frame.configure(relief='groove')
-		self.outer_frame.configure(borderwidth="2")
-		self.outer_frame.configure(relief="groove")
-		self.outer_frame.configure(background=light_color)
-		self.outer_frame.configure(highlightbackground="#d9d9d9")
-		self.outer_frame.configure(highlightcolor="black")
-		self.outer_frame.configure(borderwidth = 0)
-		self.outer_frame.configure(highlightthickness = 0)
+
 
 		#back to main page button
 		self.returnimage = tk.PhotoImage(file=os.path.join(homebrewcore.assetfolder,"returnbutton.png"))
@@ -1154,7 +1047,7 @@ class themedframe(tk.Frame):
 			borderwidth = frame_borderwidth,
 			)
 
-class populatablelistbox(tk.Listbox):
+class customlistbox(tk.Listbox):
 	def __init__(self,frame, **kw, ):
 		tk.Listbox.__init__(self,frame,**kw,
 			highlightthickness=0,
@@ -1182,7 +1075,7 @@ class iconbutton(tk.Listbox):
 
 class columnlabel(tk.Label):
 	def __init__(self,frame,label_text):
-		tk.Button.__init__(self,frame,
+		tk.Label.__init__(self,frame,
 			background = dark_color, 
 			foreground = columnlabelcolor,
 			borderwidth = 0,
@@ -1192,6 +1085,37 @@ class columnlabel(tk.Label):
 			text = label_text,
 			)
 
+class navbutton(tk.Button):
+	def __init__(self,frame,image_object,command_name):
+		tk.Button.__init__(self,frame,
+			background=light_color,
+			borderwidth=0,
+			activebackground=light_color,
+			#pady="0",
+			image=image_object,
+			command=command_name,
+			)
+
+
+class themedlabel(tk.Label):
+	def __init__(self,frame,label_text,label_font=smalltext,label_color=w,text_variable=None):
+		tk.Label.__init__(self,frame,
+			background = light_color,
+			highlightthickness=0,
+			anchor="n",
+			text = label_text,
+			font=label_font,
+			foreground= label_color,
+			textvariable = text_variable,
+			)
+
+
+
+
+
+
+
+
 def setDict(dicty):
     global hbdict
     hbdict = dicty
@@ -1200,8 +1124,8 @@ def setDict(dicty):
     dictlen = len(hbdict)
 
 if __name__ == '__main__':  
-	#setDict(webhandler.getJsonSoftwareLinks(locations.softwarelist))
-	setDict(webhandler.getUpdatedSoftwareLinks(locations.softwarelist))
+	setDict(webhandler.getJsonSoftwareLinks(locations.softwarelist))
+	#setDict(webhandler.getUpdatedSoftwareLinks(locations.softwarelist))
 	#setDict(webhandler.getMissingJson(locations.softwarelist))
 	for softwarechunk in hbdict:
 		softwarechunk["photopath"] = None
