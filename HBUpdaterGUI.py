@@ -14,6 +14,7 @@ import webhandler
 import homebrewcore
 import locations
 from format import *
+import customwidgets as cw
 
 #Backend will not rin standalone
 import HBUpdater
@@ -96,16 +97,16 @@ class mainPage(tk.Frame):
 			self.style.theme_use('winnative')
 
 		#Full window frame, holds everything
-		self.outer_frame = themedframe(self)
+		self.outer_frame = cw.themedframe(self)
 		self.outer_frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
 
 		#Frame for main list, contains listboxes and scroll bar, and list titles
-		self.listbox_frame = themedframe(self.outer_frame,frame_highlightthickness= 0)
+		self.listbox_frame = cw.themedframe(self.outer_frame,frame_highlightthickness= 0)
 		self.listbox_frame.place(relx=0.0, rely=0.0, relheight=1, relwidth=1, width=-infoframewidth,)
 		self.listbox_frame.configure(background=dark_color)
 
 		#The contents of this frame are built backwards due to needing to align the searchbox with the icons
-		self.searchbox_frame = themedframe(self.listbox_frame,frame_highlightthickness= 1,background_color=light_color)
+		self.searchbox_frame = cw.themedframe(self.listbox_frame,frame_highlightthickness= 1,background_color=light_color)
 		self.searchbox_frame.place(relx=0.0, rely=0.0,height=searchboxheight, relwidth=1,)
 
 		#Variable to track place searchbox icons in correct location
@@ -114,7 +115,7 @@ class mainPage(tk.Frame):
 		# self.settingsimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"settings.png"))
 		# self.settingsimage = self.settingsimage.subsample(2)
 		# self.iconspacer = self.settingsimage.width()
-		# self.settingsicon = iconbutton(self.searchbox_frame,self.settingsimage,command_name=lambda: self.controller.show_frame("settingsPage"))
+		# self.settingsicon = cw.iconbutton(self.searchbox_frame,self.settingsimage,command_name=lambda: self.controller.show_frame("settingsPage"))
 		# self.settingsicon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -self.settingsimage.height()/2,width = self.settingsimage.width(), height=self.settingsimage.height())
 
 		# self.iconspacer += icon_and_search_bar_spacing
@@ -123,7 +124,7 @@ class mainPage(tk.Frame):
 		self.sdimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"sd.png"))
 		self.sdimage = self.sdimage.subsample(2)
 		self.iconspacer += self.sdimage.width()
-		self.sdicon = iconbutton(self.searchbox_frame,self.sdimage,command_name=self.setSDpath)
+		self.sdicon = cw.iconbutton(self.searchbox_frame,self.sdimage,command_name=self.setSDpath)
 		self.sdicon.place(relx= 1, x=-self.iconspacer, rely=.5, y = -self.sdimage.height()/2,width = self.sdimage.width(), height=self.sdimage.height())
 
 
@@ -133,45 +134,45 @@ class mainPage(tk.Frame):
 		# self.addrepoimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"plus.png"))
 		# self.addrepoimage = self.addrepoimage.subsample(2)
 		# self.iconspacer += self.addrepoimage.width()
-		# self.repoicon = iconbutton(self.searchbox_frame, self.addrepoimage,command_name=None)
+		# self.repoicon = cw.iconbutton(self.searchbox_frame, self.addrepoimage,command_name=None)
 		# self.repoicon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -self.addrepoimage.height()/2,width = self.addrepoimage.width(), height=self.addrepoimage.height())
 
-		# # self.iconspacer += icon_and_search_bar_spacing
+		self.iconspacer += icon_and_search_bar_spacing
 
-		# self.injectimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"injector.png"))
-		# self.injectimage = self.injectimage.subsample(2)
-		# self.iconspacer += self.injectimage.width()
-		# self.injecticon = iconbutton(self.searchbox_frame,self.injectimage,command_name=lambda: self.controller.show_frame("injectorPage"))
-		# self.injecticon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -self.injectimage.height()/2,width = self.injectimage.width(), height=self.injectimage.height())
+		self.injectimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"injector.png"))
+		self.injectimage = self.injectimage.subsample(2)
+		self.iconspacer += self.injectimage.width()
+		self.injecticon = cw.iconbutton(self.searchbox_frame,self.injectimage,command_name=lambda: self.controller.show_frame("injectorPage"))
+		self.injecticon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -self.injectimage.height()/2,width = self.injectimage.width(), height=self.injectimage.height())
 
 		self.iconspacer += icon_and_search_bar_spacing*2
 
 		#search box, custom class
-		self.sb = SearchBox(self.searchbox_frame, command=self.search, placeholder="Type and press enter to search")
+		self.sb = cw.SearchBox(self.searchbox_frame, command=self.search, placeholder="Type and press enter to search")
 		self.sb.place(relx=0,rely=.5, x=+icon_and_search_bar_spacing*2, relwidth=1, width=-(self.iconspacer+5), height=searchboxheight-10, y=-(searchboxheight-10)/2)
 
 		#Frame to hold titles of colums
-		self.column_title_frame=themedframe(self.listbox_frame,frame_highlightthickness=0)
+		self.column_title_frame=cw.themedframe(self.listbox_frame,frame_highlightthickness=0)
 		self.column_title_frame.place(relx=0.0, rely=0, y=+searchboxheight, height=columtitlesheight, relwidth=1)
 
-		self.big_software_name_label_frame = themedframe(self.column_title_frame)
+		self.big_software_name_label_frame = cw.themedframe(self.column_title_frame)
 		self.big_software_name_label_frame.place(relx=0.0, rely=0.0, relheight=1, relwidth=0.44)
-		self.big_software_name_label = columnlabel(self.big_software_name_label_frame, "NAME")
+		self.big_software_name_label = cw.columnlabel(self.big_software_name_label_frame, "NAME")
 		self.big_software_name_label.place(relx=0, x=+5, rely=0, relheight=1, relwidth=1, width = -5)
 
-		self.big_genre_name_label_frame = themedframe(self.column_title_frame)
+		self.big_genre_name_label_frame = cw.themedframe(self.column_title_frame)
 		self.big_genre_name_label_frame.place(relx=0.44, rely=0, relheight=1, relwidth=0.20)
-		self.big_genre_name_label = columnlabel(self.big_genre_name_label_frame, "GENRE")
+		self.big_genre_name_label = cw.columnlabel(self.big_genre_name_label_frame, "GENRE")
 		self.big_genre_name_label.place(relx=0, x=+5, rely=0, relheight=1, relwidth=1, width = -5)
 
-		self.big_software_version_label_frame = themedframe(self.column_title_frame)
+		self.big_software_version_label_frame = cw.themedframe(self.column_title_frame)
 		self.big_software_version_label_frame.place(relx=0.64, rely=0, relheight=1, relwidth=0.18)
-		self.big_software_version_label = columnlabel(self.big_software_version_label_frame, "VERSION")
+		self.big_software_version_label = cw.columnlabel(self.big_software_version_label_frame, "VERSION")
 		self.big_software_version_label.place(relx=0, x=+5, rely=0, relheight=1, relwidth=1, width = -5)
 
-		self.big_install_status_label_frame = themedframe(self.column_title_frame)
+		self.big_install_status_label_frame = cw.themedframe(self.column_title_frame)
 		self.big_install_status_label_frame.place(relx=0.82, rely=0, relheight=1, relwidth=0.18)
-		self.big_install_status_label = columnlabel(self.big_install_status_label_frame, "INSTALLED")
+		self.big_install_status_label = cw.columnlabel(self.big_install_status_label_frame, "INSTALLED")
 		self.big_install_status_label.place(relx=0, x=+5, rely=0, relheight=1, relwidth=1, width = -5)
 
 
@@ -180,27 +181,27 @@ class mainPage(tk.Frame):
 		# self.vsb.place(relx=0.975, rely=0.15, relheight=0.94, relwidth=0.025)
 
 
-		self.list_frame = themedframe(self.listbox_frame,frame_highlightthickness=0)
+		self.list_frame = cw.themedframe(self.listbox_frame,frame_highlightthickness=0)
 		self.list_frame.place(relx=0,rely=0,y=searchboxheight+columtitlesheight, relheight=1, height=-(searchboxheight+columtitlesheight),relwidth=1)
 
-		self.homebrew_listbox_frame = themedframe(self.list_frame,)
+		self.homebrew_listbox_frame = cw.themedframe(self.list_frame,)
 		self.homebrew_listbox_frame.place(relx=0.0,rely=0,relheight=1,relwidth=0.44)
-		self.homebrew_listbox = customlistbox(self.homebrew_listbox_frame,)
+		self.homebrew_listbox = cw.customlistbox(self.homebrew_listbox_frame,)
 		self.homebrew_listbox.place(relheight=1,relwidth=1, x=+lbcolumnoffset, width=-lbcolumnoffset)
 
-		self.genre_listbox_frame = themedframe(self.list_frame,)
+		self.genre_listbox_frame = cw.themedframe(self.list_frame,)
 		self.genre_listbox_frame.place(relx=0.44,rely=0,relheight=1,relwidth=0.20)
-		self.genre_listbox = customlistbox(self.genre_listbox_frame,)
+		self.genre_listbox = cw.customlistbox(self.genre_listbox_frame,)
 		self.genre_listbox.place(relheight=1,relwidth=1, x=+lbcolumnoffset, width=-lbcolumnoffset)
 
-		self.version_listbox_frame = themedframe(self.list_frame,)
+		self.version_listbox_frame = cw.themedframe(self.list_frame,)
 		self.version_listbox_frame.place(relx=0.64, rely=0, relheight=1, relwidth=0.18)
-		self.version_listbox = customlistbox(self.version_listbox_frame,)
+		self.version_listbox = cw.customlistbox(self.version_listbox_frame,)
 		self.version_listbox.place(relheight=1,relwidth=1, x=+lbcolumnoffset, width=-lbcolumnoffset)
 
-		self.status_listbox_frame = themedframe(self.list_frame,)
+		self.status_listbox_frame = cw.themedframe(self.list_frame,)
 		self.status_listbox_frame.place(relx=0.82, rely=0, relheight=1, relwidth=0.18)
-		self.status_listbox = customlistbox(self.status_listbox_frame,)
+		self.status_listbox = cw.customlistbox(self.status_listbox_frame,)
 		self.status_listbox.place(relheight=1,relwidth=1, x=+lbcolumnoffset, width=-lbcolumnoffset)
 		
 		#bind listboxes to move with mouse
@@ -217,10 +218,10 @@ class mainPage(tk.Frame):
 		#Frame for details (raised when details button clicked)
 		
 		#past version tags listbox
-		self.details_frame = themedframe(self.outer_frame)
+		self.details_frame = cw.themedframe(self.outer_frame)
 		self.details_frame.place(relx=0.0, rely=0.0, width=-infoframewidth, relheight=1, relwidth=1)
 		
-		self.tags_listbox = customlistbox(self.details_frame)
+		self.tags_listbox = cw.customlistbox(self.details_frame)
 		self.tags_listbox.place(relx=0.0, rely=0, relheight=1, relwidth=0.2)
 		self.tags_listbox.configure(font=tags_listbox_font)
 		self.tags_listbox.configure(font=version_number_font)
@@ -228,7 +229,7 @@ class mainPage(tk.Frame):
 		
 
 		#patch notes 
-		self.scrolling_patch_notes = ScrolledText(self.details_frame)
+		self.scrolling_patch_notes = cw.ScrolledText(self.details_frame)
 		self.scrolling_patch_notes.place(relx=0.2, rely=0, relheight=1, relwidth=0.8)
 		self.scrolling_patch_notes.configure(background="white")
 		self.scrolling_patch_notes.configure(font=version_notes_font)
@@ -241,19 +242,19 @@ class mainPage(tk.Frame):
 		self.scrolling_patch_notes.configure(background=version_notes_column_background)
 		self.scrolling_patch_notes.configure(foreground=version_notes_color)
 
-		self.info_frame = themedframe(self.outer_frame)
+		self.info_frame = cw.themedframe(self.outer_frame)
 		self.info_frame.place(relx=1, x=-infoframewidth, rely=0.0, relheight=.999, width=infoframewidth)
 		self.info_frame.configure(background=light_color)
 		self.info_frame.bind("<Configure>", self.configure)
 
 		#holds author picture
-		self.project_art_label =themedlabel(self.info_frame,label_text = "project_art",)
+		self.project_art_label =cw.themedlabel(self.info_frame,label_text = "project_art",)
 		self.project_art_label.place(relx=0.0, rely=0.0, height=infoframewidth, relwidth=1)
 
 		#Homebrew Title
 		self.titlevar = tk.StringVar()
 		self.titlevar.set("title_var")
-		self.project_title_label = themedlabel(self.info_frame, 
+		self.project_title_label = cw.themedlabel(self.info_frame, 
 			label_text = "project_title", 
 			text_variable = self.titlevar, 
 			label_color=info_softwarename_color, 
@@ -265,7 +266,7 @@ class mainPage(tk.Frame):
 		#author name
 		self.authorvar = tk.StringVar()
 		self.authorvar.set("author_var")
-		self.author_name_label = themedlabel(self.info_frame,
+		self.author_name_label = cw.themedlabel(self.info_frame,
 			label_text = "author_name", 
 			text_variable = self.authorvar, 
 			label_color=info_author_color, 
@@ -275,7 +276,7 @@ class mainPage(tk.Frame):
 
 
 		#Description
-		self.project_description = ScrolledText(self.info_frame)
+		self.project_description = cw.ScrolledText(self.info_frame)
 		self.project_description.place(relx=0.0, rely=0.0, y=+infoframewidth+30, relheight=1, height=-(infoframewidth+30+100), relwidth=.98)
 		self.project_description.configure(background=light_color)
 		self.project_description.configure(foreground=info_description_color)
@@ -304,46 +305,46 @@ class mainPage(tk.Frame):
 
 
 		#Back to list button frame, placed first so the details button covers it
-		self.details_buttons_frame =themedframe(self.info_frame,background_color=light_color,frame_borderwidth=0)
+		self.details_buttons_frame =cw.themedframe(self.info_frame,background_color=light_color,frame_borderwidth=0)
 		self.details_buttons_frame.place(relx=.5, rely=1, x=-100, y=-87.5, height= 75, width=200)
 
 
 		#back to list button
-		self.backtolist_button = navbutton(self.details_buttons_frame, image_object=self.returnimage, command_name=self.showlist)
+		self.backtolist_button = cw.navbutton(self.details_buttons_frame, image_object=self.returnimage, command_name=self.showlist)
 		self.backtolist_button.place(relx=1, rely=0, x=-self.infoimage.width(), height=self.infoimage.height(), width=self.infoimage.width())
 
 
 		#install_button
-		self.details_install_button = navbutton(self.details_buttons_frame, image_object = self.installimage, command_name = self.specificinstall)
+		self.details_install_button = cw.navbutton(self.details_buttons_frame, image_object = self.installimage, command_name = self.specificinstall)
 		self.details_install_button.place(relx=0.00, rely=0, height=self.installimage.height(), width=self.installimage.width())
 
 		#previous button in details menu
-		self.details_previous_button = navbutton(self.details_buttons_frame, image_object = self.previousimage, command_name = self.versioncusordown)
+		self.details_previous_button = cw.navbutton(self.details_buttons_frame, image_object = self.previousimage, command_name = self.versioncusordown)
 		self.details_previous_button.place(relx=0.00, rely=1,y=-self.previousimage.height(),  height=self.previousimage.height(), width=self.previousimage.width())
 
 		#next button in details menu
-		self.details_next_button = navbutton(self.details_buttons_frame, image_object=self.nextimage, command_name=self.versioncursorup)
+		self.details_next_button = cw.navbutton(self.details_buttons_frame, image_object=self.nextimage, command_name=self.versioncursorup)
 		self.details_next_button.place(relx=1, rely=1, y=-self.nextimage.height(), height=self.nextimage.height(), x=-self.nextimage.width(), width =self.nextimage.width())
 
 
 		#frame to hold details button
-		self.list_buttons_frame = themedframe(self.info_frame,background_color=light_color,frame_borderwidth=0)
+		self.list_buttons_frame = cw.themedframe(self.info_frame,background_color=light_color,frame_borderwidth=0)
 		self.list_buttons_frame.place(relx=.5, rely=1, x=-100, y=-87.5, height= 75, width=200)
 
 		#install button
-		self.install_button = navbutton(self.list_buttons_frame, image_object = self.installimage, command_name=self.install)
+		self.install_button = cw.navbutton(self.list_buttons_frame, image_object = self.installimage, command_name=self.install)
 		self.install_button.place(relx=0.00, rely=0, height=self.installimage.height(), width=self.installimage.width())
 
 		#go-to-details button
-		self.details_button = navbutton(self.list_buttons_frame, image_object=self.infoimage, command_name=self.showdetails)
+		self.details_button = cw.navbutton(self.list_buttons_frame, image_object=self.infoimage, command_name=self.showdetails)
 		self.details_button.place(relx=1, rely=0, x=-self.infoimage.width(), height=self.infoimage.height(), width=self.infoimage.width())
 
 		#previous button, goes up one section on the list
-		self.previous_button = navbutton(self.list_buttons_frame, image_object=self.previousimage, command_name=self.pagedown)
+		self.previous_button = cw.navbutton(self.list_buttons_frame, image_object=self.previousimage, command_name=self.pagedown)
 		self.previous_button.place(relx=0.00, rely=1,y=-self.previousimage.height(),  height=self.previousimage.height(), width=self.previousimage.width())
 
 		#next button, goes down one section on the list
-		self.next_button = navbutton(self.list_buttons_frame, image_object=self.nextimage, command_name=self.pageup)
+		self.next_button = cw.navbutton(self.list_buttons_frame, image_object=self.nextimage, command_name=self.pageup)
 		self.next_button.place(relx=1, rely=1, y=-self.nextimage.height(), height=self.nextimage.height(), x=-self.nextimage.width(), width =self.nextimage.width())
 
 
@@ -723,14 +724,14 @@ class settingsPage(tk.Frame):
 			self.style.theme_use('winnative')
 
 		#Full window frame, holds everything
-		self.outer_frame = themedframe(self)
+		self.outer_frame = cw.themedframe(self)
 		self.outer_frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
 
 
 		#back to main page button
 		self.returnimage = tk.PhotoImage(file=os.path.join(homebrewcore.assetfolder,"returnbutton.png"))
 		self.returnimage = self.returnimage.zoom((3)).subsample(5)
-		self.backtomain_button = navbutton(self.outer_frame, image_object=self.returnimage, command_name=lambda: controller.show_frame("mainPage"))
+		self.backtomain_button = cw.navbutton(self.outer_frame, image_object=self.returnimage, command_name=lambda: controller.show_frame("mainPage"))
 		self.backtomain_button.place(relx=1, rely=1, x=-(self.returnimage.width() + 20), y=-(self.returnimage.height()+20), height=self.returnimage.height(), width=self.returnimage.width())
 
 
@@ -743,7 +744,7 @@ class injectorPage(tk.Frame):
 			self.style.theme_use('winnative')
 
 		#Full window frame, holds everything
-		self.outer_frame = themedframe(self)
+		self.outer_frame = cw.themedframe(self)
 		self.outer_frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
 
 
@@ -782,331 +783,7 @@ class injectorPage(tk.Frame):
 
 
 
-#Mit License
-def hex2rgb(str_rgb):
-    try:
-        rgb = str_rgb[1:]
 
-        if len(rgb) == 6:
-            r, g, b = rgb[0:2], rgb[2:4], rgb[4:6]
-        elif len(rgb) == 3:
-            r, g, b = rgb[0] * 2, rgb[1] * 2, rgb[2] * 2
-        else:
-            raise ValueError()
-    except:
-        raise ValueError("Invalid value %r provided for rgb color."% str_rgb)
-
-    return tuple(int(v, 16) for v in (r, g, b))
-
-class Placeholder_State(object):
-     __slots__ = 'normal_color', 'normal_font', 'placeholder_text', 'placeholder_color', 'placeholder_font', 'contains_placeholder'
-
-def add_placeholder_to(entry, placeholder, color="grey", font=None):
-    normal_color = entry.cget("fg")
-    normal_font = entry.cget("font")
-    
-    if font is None:
-        font = normal_font
-
-    state = Placeholder_State()
-    state.normal_color=normal_color
-    state.normal_font=normal_font
-    state.placeholder_color=color
-    state.placeholder_font=font
-    state.placeholder_text = placeholder
-    state.contains_placeholder=True
-
-    def on_focusin(event, entry=entry, state=state):
-        if state.contains_placeholder:
-            entry.delete(0, "end")
-            entry.config(fg = state.normal_color, font=state.normal_font)
-        
-            state.contains_placeholder = False
-
-    def on_focusout(event, entry=entry, state=state):
-        if entry.get() == '':
-            entry.insert(0, state.placeholder_text)
-            entry.config(fg = state.placeholder_color, font=state.placeholder_font)
-            
-            state.contains_placeholder = True
-
-    entry.insert(0, placeholder)
-    entry.config(fg = color, font=font)
-
-    entry.bind('<FocusIn>', on_focusin, add="+")
-    entry.bind('<FocusOut>', on_focusout, add="+")
-    
-    entry.placeholder_state = state
-
-    return state
-
-#Searchbox, mit license.
-class SearchBox(tk.Frame):
-    def __init__(self, master, entry_width=30, entry_font=search_font, entry_background=dark_color, entry_foreground=search_font_color, button_text="Search", button_ipadx=10, button_background=dark_color, button_foreground="white", button_font=None, opacity=0.8, placeholder=place_holder_text, placeholder_font=place_holder_font, placeholder_color=place_holder_color, spacing=3, command=None):
-        tk.Frame.__init__(self, master, borderwidth=0, highlightthickness=0,background=entry_background)
-        
-        self._command = command
-
-        self.entry = tk.Entry(self, width=entry_width, background=entry_background, highlightcolor=button_background, highlightthickness=0, foreground = entry_foreground,borderwidth=0)
-        self.entry.place(x=0,y=0,relwidth=1,relheight=1)
-        
-        if entry_font:
-            self.entry.configure(font=entry_font)
-
-        if placeholder:
-            add_placeholder_to(self.entry, placeholder, color=placeholder_color, font=placeholder_font)
-
-        self.entry.bind("<Escape>", lambda event: self.entry.nametowidget(".").focus())
-        self.entry.bind("<Return>", self._on_execute_command)
-
-        opacity = float(opacity)
-
-        if button_background.startswith("#"):
-            r,g,b = hex2rgb(button_background)
-        else:
-            # Color name
-            r,g,b = master.winfo_rgb(button_background)
-
-        r = int(opacity*r)
-        g = int(opacity*g)
-        b = int(opacity*b)
-
-        if r <= 255 and g <= 255 and b <=255:
-            self._button_activebackground = '#%02x%02x%02x' % (r,g,b)
-        else:
-            self._button_activebackground = '#%04x%04x%04x' % (r,g,b)
-
-        self._button_background = button_background
-
-    def get_text(self):
-        entry = self.entry
-        if hasattr(entry, "placeholder_state"):
-            if entry.placeholder_state.contains_placeholder:
-                return ""
-            else:
-                return entry.get()
-        else:
-            return entry.get()
-        
-    def set_text(self, text):
-        entry = self.entry
-        if hasattr(entry, "placeholder_state"):
-            entry.placeholder_state.contains_placeholder = False
-
-        entry.delete(0, END)
-        entry.insert(0, text)
-        
-    def clear(self):
-        self.entry_var.set("")
-        
-    def focus(self):
-        self.entry.focus()
-
-    def _on_execute_command(self, event):
-        text = self.get_text()
-        self._command(text)
-
-    def _state_normal(self, event):
-        self.button_label.configure(background=self._button_background)
-
-    def _state_active(self, event):
-        self.button_label.configure(background=self._button_activebackground)
-
-
-
-#Automatic scrollbar on labels
-class AutoScroll(object):
-	def __init__(self, master):
-		try:
-			vsb = ttk.Scrollbar(master, orient='vertical', command=self.yview)
-		except:
-			pass
-		hsb = ttk.Scrollbar(master, orient='horizontal', command=self.xview)
-
-		try:
-			self.configure(yscrollcommand=self._autoscroll(vsb))
-		except:
-			pass
-		self.configure(xscrollcommand=self._autoscroll(hsb))
-
-		self.grid(column=0, row=0, sticky='nsew')
-		try:
-			vsb.grid(column=1, row=0, sticky='ns')
-		except:
-			pass
-		hsb.grid(column=0, row=1, sticky='ew')
-
-		master.grid_columnconfigure(0, weight=1)
-		master.grid_rowconfigure(0, weight=1)
-
-		if py3:
-			methods = tk.Pack.__dict__.keys() | tk.Grid.__dict__.keys() \
-				| tk.Place.__dict__.keys()
-		else:
-			methods = tk.Pack.__dict__.keys() + tk.Grid.__dict__.keys() \
-				+ tk.Place.__dict__.keys()
-
-		for meth in methods:
-			if meth[0] != '_' and meth not in ('config', 'configure'):
-				setattr(self, meth, getattr(master, meth))
-
-	@staticmethod
-	def _autoscroll(sbar):
-		'''Hide and show scrollbar as needed.'''
-		def wrapped(first, last):
-			first, last = float(first), float(last)
-			if first <= 0 and last >= 1:
-				sbar.grid_remove()
-			else:
-				sbar.grid()
-			sbar.set(first, last)
-		return wrapped
-
-	def __str__(self):
-		return str(self.master)
-
-def _create_container(func):
-	'''Creates a ttk Frame with a given master, and use this new frame to
-	place the scrollbars and the widget.'''
-	def wrapped(cls, master, **kw):
-		container = ttk.Frame(master)
-		container.bind('<Enter>', lambda e: _bound_to_mousewheel(e, container))
-		container.bind('<Leave>', lambda e: _unbound_to_mousewheel(e, container))
-		return func(cls, container, **kw)
-	return wrapped
-
-class ScrolledText(AutoScroll, tk.Text):
-	'''A standard Tkinter Text widget with scrollbars that will
-	automatically show/hide as needed.'''
-	@_create_container
-	def __init__(self, master, **kw):
-		tk.Text.__init__(self, master, **kw)
-		AutoScroll.__init__(self, master)
-
-class ScrolledListBox(AutoScroll, tk.Listbox):
-	@_create_container
-	def __init__(self, master, **kw):
-		tk.Listbox.__init__(self, master, **kw)
-		AutoScroll.__init__(self, master)
-
-def _bound_to_mousewheel(event, widget):
-	child = widget.winfo_children()[0]
-	if platform.system() == 'Windows' or platform.system() == 'Darwin':
-		child.bind_all('<MouseWheel>', lambda e: _on_mousewheel(e, child))
-		child.bind_all('<Shift-MouseWheel>', lambda e: _on_shiftmouse(e, child))
-	else:
-		child.bind_all('<Button-4>', lambda e: _on_mousewheel(e, child))
-		child.bind_all('<Button-5>', lambda e: _on_mousewheel(e, child))
-		child.bind_all('<Shift-Button-4>', lambda e: _on_shiftmouse(e, child))
-		child.bind_all('<Shift-Button-5>', lambda e: _on_shiftmouse(e, child))
-
-def _unbound_to_mousewheel(event, widget):
-	if platform.system() == 'Windows' or platform.system() == 'Darwin':
-		widget.unbind_all('<MouseWheel>')
-		widget.unbind_all('<Shift-MouseWheel>')
-	else:
-		widget.unbind_all('<Button-4>')
-		widget.unbind_all('<Button-5>')
-		widget.unbind_all('<Shift-Button-4>')
-		widget.unbind_all('<Shift-Button-5>')
-
-def _on_mousewheel(event, widget):
-	if platform.system() == 'Windows':
-		widget.yview_scroll(-1*int(event.delta/120),'units')
-	elif platform.system() == 'Darwin':
-		widget.yview_scroll(-1*int(event.delta),'units')
-	else:
-		if event.num == 4:
-			widget.yview_scroll(-1, 'units')
-		elif event.num == 5:
-			widget.yview_scroll(1, 'units')
-
-def _on_shiftmouse(event, widget):
-	if platform.system() == 'Windows':
-		widget.xview_scroll(-1*int(event.delta/120), 'units')
-	elif platform.system() == 'Darwin':
-		widget.xview_scroll(-1*int(event.delta), 'units')
-	else:
-		if event.num == 4:
-			widget.xview_scroll(-1, 'units')
-		elif event.num == 5:
-			widget.xview_scroll(1, 'units')
-
-#Frame themed properly from format.py
-class themedframe(tk.Frame):
-	def __init__(self,parent,frame_borderwidth = 0,frame_highlightthickness = 1,background_color = dark_color):
-		tk.Frame.__init__(self,parent, 
-			background = background_color,
-			highlightthickness=frame_highlightthickness,
-			highlightbackground=light_color,
-			borderwidth = frame_borderwidth,
-			)
-
-#listbox themed properly from format.py
-class customlistbox(tk.Listbox):
-	def __init__(self,frame, **kw, ):
-		tk.Listbox.__init__(self,frame,**kw,
-			highlightthickness=0,
-			highlightbackground=light_color,
-			borderwidth=0,
-			exportselection = False, 
-			background=dark_color,
-			foreground=listbox_font_color,
-			font=listbox_font,
-			disabledforeground=dark_listbox_font_color,
-			selectbackground=listboxselectionbackground,
-			selectforeground=listboxselectionforeground,
-			)
-
-#search bar icons with theme
-class iconbutton(tk.Listbox):
-	def __init__(self,frame, image_object,command_name,):
-		tk.Button.__init__(self,frame,
-			background = light_color, 
-			activebackground = light_color,
-			borderwidth = 0,
-			highlightthickness = 0,
-			image = image_object,
-			command = command_name,
-			)
-
-#themed colum label
-class columnlabel(tk.Label):
-	def __init__(self,frame,label_text):
-		tk.Label.__init__(self,frame,
-			background = dark_color, 
-			foreground = columnlabelcolor,
-			borderwidth = 0,
-			highlightthickness = 0,
-			font = columnlabelfont,
-			anchor = "w",
-			text = label_text,
-			)
-
-#themed nav button
-class navbutton(tk.Button):
-	def __init__(self,frame,image_object,command_name):
-		tk.Button.__init__(self,frame,
-			background=light_color,
-			borderwidth=0,
-			activebackground=light_color,
-			#pady="0",
-			image=image_object,
-			command=command_name,
-			)
-
-#themed author/ etc label
-class themedlabel(tk.Label):
-	def __init__(self,frame,label_text,label_font=smalltext,label_color=w,text_variable=None):
-		tk.Label.__init__(self,frame,
-			background = light_color,
-			highlightthickness=0,
-			anchor="n",
-			text = label_text,
-			font=label_font,
-			foreground= label_color,
-			textvariable = text_variable,
-			)
 
 
 
