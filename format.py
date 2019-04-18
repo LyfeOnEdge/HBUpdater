@@ -4,13 +4,16 @@
 lbcolumnoffset = 10
 
 #width infoframe takes up
-infoframewidth = 225 
+infoframewidth = 200
 
 #Height of searhbox
-searchboxheight=35 
+searchboxheight=36
 
 #Height of the frames holding the column titles
 columtitlesheight= 25 
+
+#secondary column relwidth
+column_relwidth = .20
 
 #Image for when there is an author image incompatible with tkinter
 notfoundimage = "notfound.png"
@@ -46,260 +49,79 @@ import platform
 
 
 
-if platform.system() == 'Windows':
 
-	#column label 
-	columnlabelcolor = w
-	columnlabelfont = mediumboldtext
+#column label 
+columnlabelcolor = w
+columnlabelfont = mediumboldtext
 
-	#Text in listbox
-	listbox_font  = mediumtext
-	listbox_font_color = w
-	tags_listbox_font = mediumtext
-	dark_listbox_font_color = "#777777"
+#Text in listbox
+listbox_font  = mediumtext
+listbox_font_color = w
+tags_listbox_font = mediumtext
+dark_listbox_font_color = "#777777"
 
-	#Text in settings menu
-	settings_font = largetext
-	settings_font_color = w
+#Text in settings menu
+settings_font = largetext
+settings_font_color = w
 
-	#Font when typing in search box
-	search_font = smalltext
-	search_font_color = w
-	
-	#font for placeholder in search bar
-	place_holder_font = smallboldtext
-	place_holder_color = "gray"
-	place_holder_text = "Type and press enter to search"
+#Font when typing in search box
+search_font = smalltext
+search_font_color = w
 
-	#Spacing for buttons in line with search bar
-	icon_and_search_bar_spacing = 5
-
-	#font color of hilighted text in versions details
-	selectedtextforeground = w
-
-	##text for details view
-	#version number listbox colors
-	version_number_color = w
-	version_number_font = mediumboldtext
-	version_number_column_background = dark_color
-	#version detail colors
-	version_notes_color = w
-	version_notes_font = smalltext
-	version_notes_column_background = dark_color
-	#color of hightlight when selecting text in version notes
-	version_notes_selection_foreground = b
-	version_notes_selection_background = ash
-
-	#Info column 
-	info_author_color= lgray
-	info_author_font = smallboldtext
-
-	info_softwarename_color = lgray
-	info_softwarename_font = largeboldtext
-
-	info_description_color = lgray
-	info_description_font = smalltext
-
-	#Main selesction and version selection highlight color
-	selectioncolor = "#595959"
-
-	#other:
-	checkmark = u'\u2713'
-
-#Macintosh
-elif platform.system() == 'Darwin':
+#font for placeholder in search bar
+place_holder_font = smallboldtext
+place_holder_color = "gray"
+place_holder_text = "Type and press enter to search"
 
 
-	#column label 
-	columnlabelcolor = w
-	columnlabelfont = mediumboldtext
 
-	#Text in listbox
-	listbox_font  = mediumtext
-	tags_listbox_font = mediumtext
-	listbox_font_color = w
-	dark_listbox_font_color = "#777777"
+#font color of hilighted text in versions details
+selectedtextforeground = w
 
-	#Text in settings menu
-	settings_font = largetext
-	settings_font_color = w
+##text for details view
+#version number listbox colors
+version_number_color = w
+version_number_font = mediumboldtext
+version_number_column_background = dark_color
+#version detail colors
+version_notes_color = w
+version_notes_font = smalltext
+version_notes_column_background = dark_color
+#color of hightlight when selecting text in version notes
+version_notes_selection_foreground = b
+version_notes_selection_background = ash
 
-	#Font when typing in search box
-	search_font = smalltext
-	search_font_color = w
-	
-	#font for placeholder in search bar
-	place_holder_font = smallboldtext
-	place_holder_color = "gray"
-	place_holder_text = "Type and press enter to search"
+#Info column 
+info_author_color= lgray
+info_author_font = smallboldtext
 
-	#Spacing for buttons in line with search bar
-	icon_and_search_bar_spacing = 5
+info_softwarename_color = w
+info_softwarename_font = largeboldtext
 
-	#font color of hilighted text in versions details
-	selectedtextforeground = w
+info_description_color = w
+info_description_font = smalltext
 
-	##text for details view
-	#version number listbox colors
-	version_number_color = w
-	version_number_font = mediumboldtext
-	version_number_column_background = dark_color
-	#version detail colors
-	version_notes_color = w
-	version_notes_font = smalltext
-	version_notes_column_background = dark_color
-	#color of hightlight when selecting text in version notes
-	version_notes_selection_foreground = b
-	version_notes_selection_background = ash
+#Main selesction and version selection highlight color
+selectioncolor = "#595959"
 
-	#Info column 
-	info_author_color= lgray
-	info_author_font = smallboldtext
+#other:
+checkmark = u'\u2713'
 
-	info_softwarename_color = lgray
-	info_softwarename_font = largeboldtext
 
-	info_description_color = lgray
-	info_description_font = smalltext
+#Width of nav button box
+navboxwidth = infoframewidth
+navbuttonheight = 40
+navbuttonfont = mediumboldtext
+navbuttonspacing = 4
+etcbuttonwidth = navbuttonheight
 
-	#Main selesction and version selection highlight color
-	selectioncolor = "#595959"
-
-	#other:
-	checkmark = u'\u2713'
-
-#Linux
-elif platform.system() == 'Linux':
-
-	
-
-	#column label 
-	columnlabelcolor = w
-	columnlabelfont = mediumboldtext
-
-	#Text in listbox
-	listbox_font  = mediumtext
-	tags_listbox_font = mediumtext
-	listbox_font_color = w
-	dark_listbox_font_color = "#777777"
-
-	#Text in settings menu
-	settings_font = largetext
-	settings_font_color = w
-
-	#Font when typing in search box
-	search_font = smalltext
-	search_font_color = w
-	
-	#font for placeholder in search bar
-	place_holder_font = smallboldtext
-	place_holder_color = "gray"
-	place_holder_text = "Type and press enter to search"
-
-	#Spacing for buttons in line with search bar
-	icon_and_search_bar_spacing = 5
-
-	#font color of hilighted text in versions details
-	selectedtextforeground = w
-
-	##text for details view
-	#version number listbox colors
-	version_number_color = w
-	version_number_font = mediumboldtext
-	version_number_column_background = dark_color
-	#version detail colors
-	version_notes_color = w
-	version_notes_font = smalltext
-	version_notes_column_background = dark_color
-	#color of hightlight when selecting text in version notes
-	version_notes_selection_foreground = b
-	version_notes_selection_background = ash
-
-	#Info column 
-	info_author_color= lgray
-	info_author_font = smallboldtext
-
-	info_softwarename_color = lgray
-	info_softwarename_font = largeboldtext
-
-	info_description_color = lgray
-	info_description_font = smalltext
-
-	#Main selesction and version selection highlight color
-	selectioncolor = "#595959"
-
-	#other:
-	checkmark = u'\u2713'
-
-else:
-	print("Unknown architecture, using default fonts")
-
-	#column label 
-	columnlabelcolor = w
-	columnlabelfont = mediumboldtext
-
-	#Text in listbox
-	listbox_font  = mediumtext
-	tags_listbox_font = mediumtext
-	listbox_font_color = w
-	dark_listbox_font_color = "#777777"
-
-	#Text in settings menu
-	settings_font = largetext
-	settings_font_color = w
-
-	#Font when typing in search box
-	search_font = smalltext
-	search_font_color = w
-	
-	#font for placeholder in search bar
-	place_holder_font = smallboldtext
-	place_holder_color = "gray"
-	place_holder_text = "Type and press enter to search"
-
-	#Spacing for buttons in line with search bar
-	icon_and_search_bar_spacing = 5
-
-	#font color of hilighted text in versions details
-	selectedtextforeground = w
-
-	##text for details view
-	#version number listbox colors
-	version_number_color = w
-	version_number_font = mediumboldtext
-	version_number_column_background = dark_color
-	#version detail colors
-	version_notes_color = w
-	version_notes_font = smalltext
-	version_notes_column_background = dark_color
-	#color of hightlight when selecting text in version notes
-	version_notes_selection_foreground = b
-	version_notes_selection_background = ash
-
-	#Info column 
-	info_author_color= lgray
-	info_author_font = smallboldtext
-
-	info_softwarename_color = lgray
-	info_softwarename_font = largeboldtext
-
-	info_description_color = lgray
-	info_description_font = smalltext
-
-	#Main selesction and version selection highlight color
-	selectioncolor = "#595959"
-
-	#other:
-	checkmark = u'\u2713'
+#Spacing for buttons in line with search bar
+icon_and_search_bar_spacing = navbuttonspacing
 
 
 
 
 
 
-
-
-
-#Windows only:
-# if platform.system() == 'Windows':
-#TODO: Make icon
+##Injector Page
+consoletext = smalltext

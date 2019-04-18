@@ -3,22 +3,6 @@ import tkinter.ttk as ttk
 from tkinter.constants import *
 from format import *
 
-#Mit License
-def hex2rgb(str_rgb):
-    try:
-        rgb = str_rgb[1:]
-
-        if len(rgb) == 6:
-            r, g, b = rgb[0:2], rgb[2:4], rgb[4:6]
-        elif len(rgb) == 3:
-            r, g, b = rgb[0] * 2, rgb[1] * 2, rgb[2] * 2
-        else:
-            raise ValueError()
-    except:
-        raise ValueError("Invalid value %r provided for rgb color."% str_rgb)
-
-    return tuple(int(v, 16) for v in (r, g, b))
-
 class Placeholder_State(object):
      __slots__ = 'normal_color', 'normal_font', 'placeholder_text', 'placeholder_color', 'placeholder_font', 'contains_placeholder'
 
@@ -63,7 +47,7 @@ def add_placeholder_to(entry, placeholder, color="grey", font=None):
 
 #Searchbox, mit license.
 class SearchBox(tk.Frame):
-    def __init__(self, master, entry_width=30, entry_font=search_font, entry_background=dark_color, entry_foreground=search_font_color, button_text="Search", button_ipadx=10, button_background=dark_color, button_foreground="white", button_font=None, opacity=0.8, placeholder=place_holder_text, placeholder_font=place_holder_font, placeholder_color=place_holder_color, spacing=3, command=None):
+    def __init__(self, master, entry_width=30, entry_font=search_font, entry_background=dark_color, entry_foreground=search_font_color, button_text="Search", button_ipadx=10, button_background=dark_color, button_foreground="white", button_font=None, placeholder=place_holder_text, placeholder_font=place_holder_font, placeholder_color=place_holder_color, spacing=3, command=None):
         tk.Frame.__init__(self, master, borderwidth=0, highlightthickness=0,background=entry_background)
         
         self._command = command
@@ -79,25 +63,6 @@ class SearchBox(tk.Frame):
 
         self.entry.bind("<Escape>", lambda event: self.entry.nametowidget(".").focus())
         self.entry.bind("<Return>", self._on_execute_command)
-
-        opacity = float(opacity)
-
-        if button_background.startswith("#"):
-            r,g,b = hex2rgb(button_background)
-        else:
-            # Color name
-            r,g,b = master.winfo_rgb(button_background)
-
-        r = int(opacity*r)
-        g = int(opacity*g)
-        b = int(opacity*b)
-
-        if r <= 255 and g <= 255 and b <=255:
-            self._button_activebackground = '#%02x%02x%02x' % (r,g,b)
-        else:
-            self._button_activebackground = '#%04x%04x%04x' % (r,g,b)
-
-        self._button_background = button_background
 
     def get_text(self):
         entry = self.entry
@@ -127,11 +92,6 @@ class SearchBox(tk.Frame):
         text = self.get_text()
         self._command(text)
 
-    def _state_normal(self, event):
-        self.button_label.configure(background=self._button_background)
-
-    def _state_active(self, event):
-        self.button_label.configure(background=self._button_activebackground)
 
 
 
@@ -284,7 +244,7 @@ class customlistbox(tk.Listbox):
 class iconbutton(tk.Listbox):
 	def __init__(self,frame, image_object,command_name,):
 		tk.Button.__init__(self,frame,
-			background = light_color, 
+			background = dark_color, 
 			activebackground = light_color,
 			borderwidth = 0,
 			highlightthickness = 0,
@@ -307,44 +267,48 @@ class columnlabel(tk.Label):
 
 #themed nav button
 class navbutton(tk.Button):
-	def __init__(self,frame,image_object,command_name):
+	def __init__(self,frame,command_name=None,image_object= None,text_string=None):
 		tk.Button.__init__(self,frame,
-			background=light_color,
+			background=dark_color,
 			borderwidth=0,
 			activebackground=light_color,
 			#pady="0",
 			image=image_object,
 			command=command_name,
+			text = text_string,
+			font = navbuttonfont,
+			foreground = w
 			)
 
 class navbox(themedframe):
 	def __init__(self,frame,
-		primary_button_image,
+		
 		primary_button_command,
-		etc_button_image,
 		etc_button_command,
-		left_context_image,
 		left_context_command,
-		right_context_image,
 		right_context_command,
+		etc_button_image,
+		primary_button_text = "INSTALL",
+		left_context_text = "PREV",
+		right_context_text = "NEXT",
 		):
-		themedframe.__init__(self,frame, background_color=light_color)
+		themedframe.__init__(self,frame, background_color=light_color, frame_borderwidth=0)
 
-		#back to list button
+		#big button
+		self.primary_button = navbutton(self, text_string = primary_button_text, command_name = primary_button_command)
+		self.primary_button.place(relx=0.0, rely=0, x=+navbuttonspacing, height=navbuttonheight, width=(navboxwidth - navbuttonheight) - 3.5 * navbuttonspacing)
+
+		#etc button
 		self.etc_button = navbutton(self, image_object=etc_button_image, command_name=etc_button_command)
-		self.etc_button.place(relx=1, rely=0, x=-etc_button_image.width(), height=etc_button_image.height(), width=etc_button_image.width())
+		self.etc_button.place(relx=0, rely=0, x=navboxwidth - (navbuttonheight + 1.5 * navbuttonspacing), height=navbuttonheight, width=navbuttonheight)
 
-		#install_button
-		self.primary_button = navbutton(self, image_object = primary_button_image, command_name = primary_button_command)
-		self.primary_button.place(relx=0.00, rely=0, height=primary_button_image.height(), width=primary_button_image.width())
+		#previous in context
+		self.left_context_button = navbutton(self, text_string = left_context_text, command_name = left_context_command)
+		self.left_context_button.place(relx=0.0, rely=0, x=+navbuttonspacing, y=navbuttonheight + navbuttonspacing,  height=navbuttonheight, width = ((navboxwidth)*0.5) - 1.5 * navbuttonspacing)
 
-		#previous button in details menu
-		self.left_context_button = navbutton(self, image_object = left_context_image, command_name = left_context_command)
-		self.left_context_button.place(relx=0.00, rely=1,y=-left_context_image.height(),  height=left_context_image.height(), width=left_context_image.width())
-
-		#next button in details menu
-		self.right_context_button = navbutton(self, image_object=right_context_image, command_name=right_context_command)
-		self.right_context_button.place(relx=1, rely=1, y=-right_context_image.height(), height=right_context_image.height(), x=-right_context_image.width(), width =right_context_image.width())
+		#next in context
+		self.right_context_button = navbutton(self, text_string=right_context_text, command_name=right_context_command)
+		self.right_context_button.place(relx=0, rely=0, y=navbuttonheight + navbuttonspacing, height=navbuttonheight, x=((navboxwidth + navbuttonspacing) *0.5), width = ((navboxwidth)*0.5) - 2 * navbuttonspacing)
 
 
 
@@ -369,7 +333,7 @@ class themedlabel(tk.Label):
 
 class infobox(themedframe):
 	def __init__(self,frame):
-		themedframe.__init__(self,frame,background_color=light_color)
+		themedframe.__init__(self,frame,background_color=light_color,frame_borderwidth=0)
 
 		#holds author picture
 		self.project_art_label =themedlabel(self,label_text = "project_art",)
@@ -384,7 +348,7 @@ class infobox(themedframe):
 			label_color=info_softwarename_color, 
 			label_font=info_softwarename_font
 			)
-		self.project_title_label.place(relx=0.0, rely=0.0, y=infoframewidth-30, relwidth=1.0)
+		self.project_title_label.place(relx=0.0, rely=0.0, y=infoframewidth, relwidth=1.0)
 
 
 		#author name
@@ -396,12 +360,17 @@ class infobox(themedframe):
 			label_color=info_author_color, 
 			label_font=info_author_font
 			)
-		self.author_name_label.place(relx=0.0, rely=0, y=+infoframewidth, relwidth=1.0)
+		self.author_name_label.place(relx=0.0, rely=0, y=infoframewidth + 25,  relwidth=1.0)
 
+		self.topsep = themedframe(self,
+			background_color = lgray,
+			frame_borderwidth = 2,
+		)
+		self.topsep.place(x = (infoframewidth / 2), y = infoframewidth+52, height = 4, relwidth = 0.9, anchor="center")
 
 		#Description
 		self.project_description = ScrolledText(self)
-		self.project_description.place(relx=0.0, rely=0.0, y=+infoframewidth+30, relheight=1, height=-(infoframewidth+30+100), relwidth=.98)
+		self.project_description.place(relx=0.5, rely=0.0, y=+infoframewidth+55, relheight = 1, height=-(infoframewidth + 55 + 100), relwidth=0.85, anchor = "n")
 		self.project_description.configure(background=light_color)
 		self.project_description.configure(foreground=info_description_color)
 		self.project_description.configure(font=info_description_font)
@@ -411,6 +380,13 @@ class infobox(themedframe):
 		self.project_description.insert(END, "Project description")
 		self.project_description.configure(state=DISABLED)
 		self.project_description.configure(borderwidth=0)
+
+		self.topsep = themedframe(self,
+			background_color = lgray,
+			frame_borderwidth = 2,
+		)
+		self.topsep.place(x = (infoframewidth / 2), rely = 1, y = -95, height = 4, relwidth = 0.9, anchor="center")
+
 
 	def updatetitle(self,title):
 		self.titlevar.set(title)
@@ -444,3 +420,31 @@ class infobox(themedframe):
 		self.updateAuthorImage()
 
 		self.updatedescription(hbdict[softwarechunknumber]["description"])
+
+
+class consolebox(themedframe):
+	def __init__(self,frame,frame_borderwidth=0, frame_highlightthickness=0):
+		themedframe.__init__(self,frame,)
+
+		self.textoutput = tk.Text(self)
+		self.textoutput.place(x=0,y=0,relwidth=1,relheight=1)
+		self.textoutput.configure(background = b)
+		self.textoutput.configure(foreground = w)
+		self.textoutput.insert(END,"Connect Switch, select payload, and press inject.")
+		self.textoutput.configure(state=DISABLED)
+		self.textoutput.configure(font=consoletext)
+		self.textoutput.configure(borderwidth = 0)
+
+		def print(self,textToPrint):
+			self.textoutput.config(state=NORMAL)
+			self.textoutput.insert(END, textToPrint + "\n\n")
+			self.textoutput.config(state=DISABLED)
+			self.textoutput.see(END)
+			print(textToSpew)
+
+		def printbytes(self,bytesToPrint):
+			self.textoutput.config(state=NORMAL)
+			self.textoutput.insert(END, (bytesToPrint.decode("utf-8") + "\n\n"))
+			self.textoutput.config(state=DISABLED)
+			self.textoutput.see(END)
+			print(textToSpew)

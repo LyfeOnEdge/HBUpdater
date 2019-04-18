@@ -1,4 +1,4 @@
-import os, sys
+import os, sys, platform
 
 print("Using Python {}.{}".format(sys.version_info[0],sys.version_info[1]))
 if sys.version_info[0] < 3 or sys.version_info[1] < 6:
@@ -6,8 +6,6 @@ if sys.version_info[0] < 3 or sys.version_info[1] < 6:
 
 version = "0.2 (BETA)"
 print("HBUpdaterGUI version {}".format(version))
-
-import platform
 
 #My modules
 import webhandler 
@@ -31,10 +29,6 @@ py3 = True
 
 import injectorpage as ip
 import mainpage as mp
-
-
-
-
 #Main frame handler, raises and lowers pages in z layer
 class appManagerGui(tk.Tk):
 	#import pages for appManager (Needs to be done after dict is populated)
@@ -94,14 +88,11 @@ class settingsPage(tk.Frame):
 		self.outer_frame = cw.themedframe(self)
 		self.outer_frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
 
-
 		#back to main page button
 		self.returnimage = tk.PhotoImage(file=os.path.join(homebrewcore.assetfolder,"returnbutton.png"))
 		self.returnimage = self.returnimage.zoom((3)).subsample(5)
 		self.backtomain_button = cw.navbutton(self.outer_frame, image_object=self.returnimage, command_name=lambda: controller.show_frame("mainPage"))
 		self.backtomain_button.place(relx=1, rely=1, x=-(self.returnimage.width() + 20), y=-(self.returnimage.height()+20), height=self.returnimage.height(), width=self.returnimage.width())
-
-
 
 
 

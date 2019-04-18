@@ -576,145 +576,112 @@ Known Bugs: There appears to be some bug that causes the screen to flicker durin
 # 		"zip_items": None,
 # 	},
 
-# 	{
-# 	"software": "Hekete",
-# 	"githubapi": "https://api.github.com/repos/CTCaer/hekate/releases",
-# 	"github_asset" : None, 
-# 	"gihubjson" : None,
-
-# 	"author" : None, 
-# 	"projectpage": None,
-# 	"description": """Custom Nintendo Switch bootloader, firmware patcher, and more.
-# This version supports booting ALL current OS/CS CFW, Linux chainloading and payload tools.
-# No more SD card removals""",
-# 	"group": "PAYLOADS",
-
-# 	"install_subfolder": None,
-# 	"content_type" : None,
-# 	"zip_items": None,
-# 	},
 
 
-# 	{
-# 	"software": "fusee-primary",
-# 	"githubapi": "https://api.github.com/repos/Atmosphere-NX/Atmosphere/releases/latest",
-# 	"github_asset" : None, 
-# 	"gihubjson" : None,
 
-# 	"author" : "SciresM", 
-# 	"projectpage": None,
-# 	"description" : "Bootloader for Atmosphere",
-# 	"group" : "PAYLOADS",
+payloadlist = [
+	{
+	"software": "Hekete",
+	"githubapi": "https://api.github.com/repos/CTCaer/hekate/releases",
+	"github_asset" : None, 
+	"gihubjson" : None,
 
-# 	"install_subfolder": None,
-# 	"content_type" : None,
-# 	"zip_items": None,
-# 	},
-	
+	"author" : None, 
+	"projectpage": None,
+	"description": """Custom Nintendo Switch bootloader, firmware patcher, and more.
+This version supports booting ALL current OS/CS CFW, Linux chainloading and payload tools.
+No more SD card removals""",
+	"group": "PAYLOADS",
 
-# 	{
-# 	"software": "ReiNX Payload",
-# 	"githubapi": "https://api.github.com/repos/Reisyukaku/ReiNX/releases/latest",
-# 	"projectpage": "https://reinx.guide/",
-# 	"directlink": None,
-	
-# 	"itemslist": {"payload" : "ReiNX.bin"},
-# 	"asset" : 0,
-# 	"author": "ReiNX Team",
-# 	"image" : None,
-# 	"description": "Launcher for ReiNX",
-# 	"group": "PAYLOADS",
-	
-		
-	
-	
-# # 	},
-
-# 	{
-# 	"software": "Argon-NX payload",
-# 	"githubapi": "https://api.github.com/repos/Guillem96/argon-nx/releases/latest",
-# 	"projectpage": "https://github.com/Guillem96/argon-nx/",
-# 	"directlink": None,
-	
-	
-# 	"author": "Guillem96",
-# 	"image" : None,
-# 	"asset" : 1,
-# 	"description": """
-# What Argon is?
-# 	Argon is a noble gas. "Argon" comes from Greek "Argon", neuter of "argos" meaning lazy , idle or inactive. Argon recieved this name because of its chemical inactivity.
-
-# 	Argon NX is an immutable payload which is injected to your Nintendo Switch via Fusee Gelee exploit.
-
-# Purpose
-# 	The purpose of Argon NX is to stay immutable, so you can always inject it, without caring about other payloads getting updated (Always use ArgonNX for TegraSmash, TegraGUI, TrinkedM0...).
-
-# How can it be immutable?
-# 	When Argon NX is injected, it automatically launches the payload.bin locacted at argon directory on your SD Card root.
-
-# 	If payload.bin is not present or VOLUME DOWN button is pressed on payload injection, Argon NX will list all payloads located at argon/payloads, and you will be able to select one of them to launch it.
-# """,
-# 	"group": "PAYLOADS",
-	
-	
-	
-# 	},
-
-# 	{
-# 	"software": "SXOS Payload",
-# 	"githubapi": None,
-# 	"projectpage": "https://team-xecuter.com/",
-# 	"directlink": "https://sx.xecuter.com/download/payload.bin",
-	
-	
-# 	"asset" : 0,
-# 	"author": "team-xecuter",
-# 	"image" : teamxlogo,
-# 	"description": "Launcher for SXOS",
-# 	"group": "PAYLOADS",
-	
-	
-	
-	
-# 	},
+	"install_subfolder": None,
+	"content_type" : None,
+	"zip_items": None,
+	},
 
 
-# 	{
-# 	"software": "Lockpick RCM",
-# 	"githubapi": "https://api.github.com/repos/shchmue/Lockpick_RCM/releases/latest",
-# 	"projectpage": "https://github.com/shchmue/Lockpick_RCM/",
-# 	"directlink": None,
-	
-	
-# 	"author": "schmue",
-# 	"image" : None,
-# 	"asset" : 0,
-# 	"description": """Lockpick_RCM is a bare metal Nintendo Switch payload that derives encryption keys for use in Switch file handling software like hactool, hactoolnet/LibHac, ChoiDujour, etc. without booting Horizon OS.
+	{
+	"software": "fusee-primary",
+	"githubapi": "https://api.github.com/repos/Atmosphere-NX/Atmosphere/releases/latest",
+	"github_asset" : None, 
+	"gihubjson" : None,
 
-# Due to changes imposed by firmware 7.0.0, Lockpick homebrew can no longer derive the latest keys. In the boot-time environment however, there are fewer limitations.""",
-# 	"group":"PAYLOADS",
-	
-	
-	
-# 	},
+	"author" : None, 
+	"projectpage": None,
+	"description" : "Bootloader for Atmosphere",
+	"group" : "PAYLOADS",
 
-# 	{
-# 	"software": "biskeydumpv8 (7.0+)",
-# 	"githubapi": None,
-# 	"projectpage": "https://switchtools.sshnuke.net/",
-# 	"directlink": "https://files.sshnuke.net/biskeydumpv8.zip",
+	"install_subfolder": None,
+	"content_type" : None,
+	"zip_items": None,
+	},
 	
-	
-# 	"author": "rajkosto",
-# 	"image" : "https://avatars1.githubusercontent.com/u/205276?s=400&v=4",
-# 	"asset" : 0,
-# 	"description": """Dumps all your Switch BIS keys for eMMC contents decryption, to be used as a fusee payload.
 
-# With all your BIS keys and your RawNand.bin (or the physical eMMC attached via microSD reader or using a mass storage gadget mode in u-boot/linux) you can explore/modify your eMMC partitions using my HacDiskMount tool below""",
-# 	"group":"PAYLOADS",
 	
+
+	{
+	"software" : "Argon-NX payload",
+	"githubapi" : "https://api.github.com/repos/Guillem96/argon-nx/releases",
+	"github_asset" : 1, 
+	"gihubjson" : None,
+
+	"author" : None, 
+	"projectpage": None,
+	"description": """
+What Argon is?
+	Argon is a noble gas. "Argon" comes from Greek "Argon", neuter of "argos" meaning lazy , idle or inactive. Argon recieved this name because of its chemical inactivity.
+
+	Argon NX is an immutable payload which is injected to your Nintendo Switch via Fusee Gelee exploit.
+
+Purpose
+	The purpose of Argon NX is to stay immutable, so you can always inject it, without caring about other payloads getting updated (Always use ArgonNX for TegraSmash, TegraGUI, TrinkedM0...).
+
+How can it be immutable?
+	When Argon NX is injected, it automatically launches the payload.bin locacted at argon directory on your SD Card root.
+
+	If payload.bin is not present or VOLUME DOWN button is pressed on payload injection, Argon NX will list all payloads located at argon/payloads, and you will be able to select one of them to launch it.
+""",
+	"group" : "PAYLOADS",
+
+	"install_subfolder": None,
+	"content_type" : None,
+	"zip_items": None,
+	},
+
+	{
+	"software" : "Lockpick RCM",
+	"githubapi" : "https://api.github.com/repos/shchmue/Lockpick_RCM/releases",
+	"github_asset" : None, 
+	"gihubjson" : None,
+
+	"author" : None, 
+	"projectpage": None,
+	"description": """Lockpick_RCM is a bare metal Nintendo Switch payload that derives encryption keys for use in Switch file handling software like hactool, hactoolnet/LibHac, ChoiDujour, etc. without booting Horizon OS.
+
+Due to changes imposed by firmware 7.0.0, Lockpick homebrew can no longer derive the latest keys. In the boot-time environment however, there are fewer limitations.""",
+	"group" : "PAYLOADS",
+
+	"install_subfolder": None,
+	"content_type" : None,
+	"zip_items": None,
+	},
+
+
+]
 	
+
+# {
+	# "software": "ReiNX Payload",
+	# "githubapi": "https://api.github.com/repos/Reisyukaku/ReiNX/releases/latest",
+	# "projectpage": "https://reinx.guide/",
+	# "directlink": None,
 	
+	# "itemslist": {"payload" : "ReiNX.bin"},
+	# "asset" : 0,
+	# "author": "ReiNX Team",
+	# "image" : None,
+	# "description": "Launcher for ReiNX",
+	# "group": "PAYLOADS",
+	# },
 
 # 	},
 # #other switch content

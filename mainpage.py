@@ -1,12 +1,13 @@
 import HBUpdater
 from format import * 
 import homebrewcore
-
+import webhandler
 
 import tkinter as tk
 from tkinter.constants import *
 from tkinter import filedialog
 import customwidgets as cw
+
 import json
 
 
@@ -20,7 +21,7 @@ class mainPage(tk.Frame,):
 
 
 		#Full window frame, holds everything
-		self.outer_frame = cw.themedframe(self)
+		self.outer_frame = cw.themedframe(self,frame_borderwidth=0)
 		self.outer_frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
 
 		#Frame for main list, contains listboxes and scroll bar, and list titles
@@ -29,11 +30,11 @@ class mainPage(tk.Frame,):
 		self.listbox_frame.configure(background=dark_color)
 
 		#The contents of this frame are built backwards due to needing to align the searchbox with the icons
-		self.searchbox_frame = cw.themedframe(self.listbox_frame,frame_highlightthickness= 1,background_color=light_color)
+		self.searchbox_frame = cw.themedframe(self.listbox_frame,frame_highlightthickness= 0,background_color=light_color, frame_borderwidth = 0)
 		self.searchbox_frame.place(relx=0.0, rely=0.0,height=searchboxheight, relwidth=1,)
 
 		#Variable to track place searchbox icons in correct location
-		self.iconspacer = 0
+		self.iconspacer = icon_and_search_bar_spacing
 		
 		# self.settingsimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"settings.png"))
 		# self.settingsimage = self.settingsimage.subsample(2)
@@ -60,19 +61,19 @@ class mainPage(tk.Frame,):
 		# self.repoicon = cw.iconbutton(self.searchbox_frame, self.addrepoimage,command_name=None)
 		# self.repoicon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -self.addrepoimage.height()/2,width = self.addrepoimage.width(), height=self.addrepoimage.height())
 
-		self.iconspacer += icon_and_search_bar_spacing
+		# self.iconspacer += icon_and_search_bar_spacing
 
-		self.injectimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"injector.png"))
-		self.injectimage = self.injectimage.subsample(2)
-		self.iconspacer += self.injectimage.width()
-		self.injecticon = cw.iconbutton(self.searchbox_frame,self.injectimage,command_name=lambda: self.controller.show_frame("injectorScreen"))
-		self.injecticon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -self.injectimage.height()/2,width = self.injectimage.width(), height=self.injectimage.height())
+		# self.injectimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"injector.png"))
+		# self.injectimage = self.injectimage.subsample(2)
+		# self.iconspacer += self.injectimage.width()
+		# self.injecticon = cw.iconbutton(self.searchbox_frame,self.injectimage,command_name=lambda: self.controller.show_frame("injectorScreen"))
+		# self.injecticon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -self.injectimage.height()/2,width = self.injectimage.width(), height=self.injectimage.height())
 
 		self.iconspacer += icon_and_search_bar_spacing*2
 
 		#search box, custom class
 		self.sb = cw.SearchBox(self.searchbox_frame, command=self.search, placeholder="Type and press enter to search")
-		self.sb.place(relx=0,rely=.5, x=+icon_and_search_bar_spacing*2, relwidth=1, width=-(self.iconspacer+5), height=searchboxheight-10, y=-(searchboxheight-10)/2)
+		self.sb.place(relx=0,rely=.5, x=+icon_and_search_bar_spacing, relwidth=1, width=-(self.iconspacer), height=searchboxheight-2*icon_and_search_bar_spacing, y=-((searchboxheight)/2) + icon_and_search_bar_spacing ) 
 
 		#Frame to hold titles of colums
 		self.column_title_frame=cw.themedframe(self.listbox_frame,frame_highlightthickness=0)
@@ -167,43 +168,37 @@ class mainPage(tk.Frame,):
 
 
 		self.infobox = cw.infobox(self.outer_frame)
-		self.infobox.place(relx=1, x=-infoframewidth, rely=0.0, relheight=.999, width=infoframewidth)
+		self.infobox.place(relx=1, x=-infoframewidth, rely=0.0, relheight=1, width=infoframewidth)
 
 
 		#Shared images
-		self.installimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"installbutton.png")).zoom(3).subsample(5)
+		#self.installimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"installbutton.png")).zoom(3).subsample(5)
 		self.infoimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"info.png")).zoom(3).subsample(5)
-		self.previousimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"prev.png")).zoom(3).subsample(5)
-		self.nextimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"next.png")).zoom(3).subsample(5)
-		self.backbutton = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"back.png")).zoom(3).subsample(5)
+		#self.previousimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"prev.png")).zoom(3).subsample(5)
+		#self.nextimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"next.png")).zoom(3).subsample(5)
+		#self.backbutton = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"back.png")).zoom(3).subsample(5)
 		self.returnimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"returnbutton.png")).zoom(3).subsample(5)
 
 
 		#Back to list button frame, placed first so the details button covers it
 		self.details_buttons_frame =cw.navbox(self.infobox,
-			primary_button_image = self.installimage,
 			primary_button_command = self.specificinstall,
 			etc_button_image = self.returnimage,
 			etc_button_command = self.showlist,
-			left_context_image = self.previousimage,
 			left_context_command = self.versioncusordown,
-			right_context_image = self.nextimage,
 			right_context_command = self.versioncursorup,
 			)
-		self.details_buttons_frame.place(relx=.5, rely=1, x=-100, y=-87.5, height= 75, width=200)
+		self.details_buttons_frame.place(relx=.5, rely=1, x=-100, y=-87.5, height= 87.5, width=200)
 
 
 		self.list_buttons_frame = cw.navbox(self.infobox,
-			primary_button_image = self.installimage,
 			primary_button_command = self.install,
 			etc_button_image = self.infoimage,
 			etc_button_command = self.showdetails,
-			left_context_image = self.previousimage,
 			left_context_command = self.pagedown,
-			right_context_image = self.nextimage,
 			right_context_command = self.pageup,
 			)
-		self.list_buttons_frame.place(relx=.5, rely=1, x=-100, y=-87.5, height= 75, width=200)
+		self.list_buttons_frame.place(relx=.5, rely=1, x=-100, y=-87.5, height= 87.5, width=200)
 
 		#initial update of the info frame
 		self.showlist()
@@ -395,6 +390,9 @@ class mainPage(tk.Frame,):
 		self.status_listbox.selection_clear(0,HBUpdater.dictlen-1)
 		self.status_listbox.selection_set(HBUpdater.softwarechunknumber)
 		self.status_listbox.see(HBUpdater.softwarechunknumber)
+		self.genre_listbox.selection_clear(0,HBUpdater.dictlen-1)
+		self.genre_listbox.selection_set(HBUpdater.softwarechunknumber)
+		self.genre_listbox.see(HBUpdater.softwarechunknumber)
 
 		if not HBUpdater.hbdict == {}:
 
