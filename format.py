@@ -7,7 +7,7 @@ lbcolumnoffset = 10
 infoframewidth = 200
 
 #Height of searhbox
-searchboxheight=36
+searchboxheight=45
 
 #Height of the frames holding the column titles
 columtitlesheight= 25 
@@ -65,11 +65,11 @@ settings_font = largetext
 settings_font_color = w
 
 #Font when typing in search box
-search_font = smalltext
+search_font = mediumtext
 search_font_color = w
 
 #font for placeholder in search bar
-place_holder_font = smallboldtext
+place_holder_font = mediumboldtext
 place_holder_color = "gray"
 place_holder_text = "Type and press enter to search"
 
@@ -118,8 +118,19 @@ etcbuttonwidth = navbuttonheight
 #Spacing for buttons in line with search bar
 icon_and_search_bar_spacing = navbuttonspacing
 
+guidetext = smalltext
+guidetextcolor = lgray
+RCMGUIDETEXT = """INSTRUCTIONS:
 
+- Enter RCM on your Nintendo Switch.
 
+- Select the payload you wish to inject.
+
+- Inject payload.
+
+If you receive an error it likely means your Nintendo Switch is not in RCM.
+You can ensure you have turned your switch off by holding the power button for 13 seconds.
+"""
 
 
 

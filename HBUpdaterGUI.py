@@ -26,16 +26,12 @@ print("using tkinter version {}".format(tk.Tcl().eval('info patchlevel')))
 py3 = True
 
 
-
+#import pages for appManager (Needs to be done after dict is populated)
 import injectorpage as ip
 import mainpage as mp
+import settingspage as sp
 #Main frame handler, raises and lowers pages in z layer
-class appManagerGui(tk.Tk):
-	#import pages for appManager (Needs to be done after dict is populated)
-	
-
-
-
+class FrameManager(tk.Tk):
 	def __init__(self, *args, **kwargs):
 		tk.Tk.__init__(self, *args, **kwargs)
 
@@ -58,7 +54,7 @@ class appManagerGui(tk.Tk):
 
 
 		self.frames = {}
-		for F in (mp.mainPage,ip.injectorScreen,settingsPage):
+		for F in (mp.mainPage,ip.injectorScreen,sp.settingsPage):
 			page_name = F.__name__
 			frame = F(parent=container, controller=self, back_command = lambda: self.controller.show_frame("mainPage"))
 			self.frames[page_name] = frame
@@ -77,34 +73,23 @@ class appManagerGui(tk.Tk):
 
 
 
+def UseCachedJson():
+	HBUpdater.setDict(webhandler.getJsonSoftwareLinks(locations.softwarelist)) #Get software links from pre-downloaded jsons (TESTING FUNCTION, IF YOU GET AN ERROR FROM THIS LINE BECUASE I FORGOT TO COMMENT IT ON A COMMIT JUST COMMENT THIS LINE AND UNCOMMENT THE ONE BEFORE)
+	HBUpdater.setIJDict(webhandler.getJsonSoftwareLinks(locations.payloadlist))
 
-
-
-class settingsPage(tk.Frame):
-	def __init__(self, parent, controller,back_command):
-		tk.Frame.__init__(self,parent)
-
-		#Full window frame, holds everything
-		self.outer_frame = cw.themedframe(self)
-		self.outer_frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
-
-		#back to main page button
-		self.returnimage = tk.PhotoImage(file=os.path.join(homebrewcore.assetfolder,"returnbutton.png"))
-		self.returnimage = self.returnimage.zoom((3)).subsample(5)
-		self.backtomain_button = cw.navbutton(self.outer_frame, image_object=self.returnimage, command_name=lambda: controller.show_frame("mainPage"))
-		self.backtomain_button.place(relx=1, rely=1, x=-(self.returnimage.width() + 20), y=-(self.returnimage.height()+20), height=self.returnimage.height(), width=self.returnimage.width())
-
-
-
-
+def GetUpdatedJson():
+	HBUpdater.setDict(webhandler.getUpdatedSoftwareLinks(locations.softwarelist)) #Get fresh software links, falls back on old ones if they don't exist
+	HBUpdater.setIJDict(webhandler.getUpdatedSoftwareLinks(locations.payloadlist))
 
 if __name__ == '__main__':  
-	#HBUpdater.setDict(webhandler.getJsonSoftwareLinks(locations.softwarelist))
-	HBUpdater.setDict(webhandler.getUpdatedSoftwareLinks(locations.softwarelist))
-	#HBUpdater.setDict(webhandler.getMissingJson(locations.softwarelist))
+	#UseCachedJson()
+	GetUpdatedJson()
+	#HBUpdater.setDict(webhandler.getMissingJson(locations.softwarelist)) 
+	
 	for softwarechunk in HBUpdater.hbdict:
 		softwarechunk["photopath"] = None
-	gui = appManagerGui()
+
+	gui = FrameManager()
 	gui.title("HBUpdater")
 	gui.mainloop()
 

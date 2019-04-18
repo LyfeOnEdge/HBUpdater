@@ -21,11 +21,11 @@ class mainPage(tk.Frame,):
 
 
 		#Full window frame, holds everything
-		self.outer_frame = cw.themedframe(self,frame_borderwidth=0)
+		self.outer_frame = cw.themedframe(self,frame_borderwidth=0,frame_highlightthickness= 0)
 		self.outer_frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
 
 		#Frame for main list, contains listboxes and scroll bar, and list titles
-		self.listbox_frame = cw.themedframe(self.outer_frame,frame_highlightthickness= 0)
+		self.listbox_frame = cw.themedframe(self.outer_frame,frame_borderwidth=0,frame_highlightthickness= 0)
 		self.listbox_frame.place(relx=0.0, rely=0.0, relheight=1, relwidth=1, width=-infoframewidth,)
 		self.listbox_frame.configure(background=dark_color)
 
@@ -47,9 +47,9 @@ class mainPage(tk.Frame,):
 
 		self.sdimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"sd.png"))
 		self.sdimage = self.sdimage.subsample(2)
-		self.iconspacer += self.sdimage.width()
+		self.iconspacer += searchboxheight-2*icon_and_search_bar_spacing
 		self.sdicon = cw.iconbutton(self.searchbox_frame,self.sdimage,command_name=self.setSDpath)
-		self.sdicon.place(relx= 1, x=-self.iconspacer, rely=.5, y = -self.sdimage.height()/2,width = self.sdimage.width(), height=self.sdimage.height())
+		self.sdicon.place(relx= 1, x=-self.iconspacer, rely=.5, y = -((searchboxheight)/2) + icon_and_search_bar_spacing,width =searchboxheight-2*icon_and_search_bar_spacing, height=searchboxheight-2*icon_and_search_bar_spacing)
 
 
 		# self.iconspacer += icon_and_search_bar_spacing
@@ -65,9 +65,9 @@ class mainPage(tk.Frame,):
 
 		# self.injectimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"injector.png"))
 		# self.injectimage = self.injectimage.subsample(2)
-		# self.iconspacer += self.injectimage.width()
+		# self.iconspacer += searchboxheight-2*icon_and_search_bar_spacing
 		# self.injecticon = cw.iconbutton(self.searchbox_frame,self.injectimage,command_name=lambda: self.controller.show_frame("injectorScreen"))
-		# self.injecticon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -self.injectimage.height()/2,width = self.injectimage.width(), height=self.injectimage.height())
+		# self.injecticon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -((searchboxheight)/2) + icon_and_search_bar_spacing,width = searchboxheight-2*icon_and_search_bar_spacing, height=searchboxheight-2*icon_and_search_bar_spacing)
 
 		self.iconspacer += icon_and_search_bar_spacing*2
 
@@ -91,7 +91,7 @@ class mainPage(tk.Frame,):
 
 		self.big_software_version_label_frame = cw.themedframe(self.column_title_frame)
 		self.big_software_version_label_frame.place(relx=0.64, rely=0, relheight=1, relwidth=0.18)
-		self.big_software_version_label = cw.columnlabel(self.big_software_version_label_frame, "VERSION")
+		self.big_software_version_label = cw.columnlabel(self.big_software_version_label_frame, "LATEST")
 		self.big_software_version_label.place(relx=0, x=+5, rely=0, relheight=1, relwidth=1, width = -5)
 
 		self.big_install_status_label_frame = cw.themedframe(self.column_title_frame)
@@ -108,35 +108,45 @@ class mainPage(tk.Frame,):
 		self.list_frame = cw.themedframe(self.listbox_frame,frame_highlightthickness=0)
 		self.list_frame.place(relx=0,rely=0,y=searchboxheight+columtitlesheight, relheight=1, height=-(searchboxheight+columtitlesheight),relwidth=1)
 
+
+		self.listbox_list = []
+
 		self.homebrew_listbox_frame = cw.themedframe(self.list_frame,)
 		self.homebrew_listbox_frame.place(relx=0.0,rely=0,relheight=1,relwidth=0.44)
 		self.homebrew_listbox = cw.customlistbox(self.homebrew_listbox_frame,)
 		self.homebrew_listbox.place(relheight=1,relwidth=1, x=+lbcolumnoffset, width=-lbcolumnoffset)
+		self.homebrew_listbox.bind('<Double-Button-1>', self.showdetailsevent) #Bind double-click to open details
+		self.homebrew_listbox.bind('<<ListboxSelect>>',self.CurSelet)
+		self.listbox_list.append(self.homebrew_listbox)
 
 		self.genre_listbox_frame = cw.themedframe(self.list_frame,)
 		self.genre_listbox_frame.place(relx=0.44,rely=0,relheight=1,relwidth=0.20)
 		self.genre_listbox = cw.customlistbox(self.genre_listbox_frame,)
 		self.genre_listbox.place(relheight=1,relwidth=1, x=+lbcolumnoffset, width=-lbcolumnoffset)
+		self.listbox_list.append(self.genre_listbox)
 
 		self.version_listbox_frame = cw.themedframe(self.list_frame,)
 		self.version_listbox_frame.place(relx=0.64, rely=0, relheight=1, relwidth=0.18)
 		self.version_listbox = cw.customlistbox(self.version_listbox_frame,)
 		self.version_listbox.place(relheight=1,relwidth=1, x=+lbcolumnoffset, width=-lbcolumnoffset)
+		self.listbox_list.append(self.version_listbox)
 
 		self.status_listbox_frame = cw.themedframe(self.list_frame,)
 		self.status_listbox_frame.place(relx=0.82, rely=0, relheight=1, relwidth=0.18)
 		self.status_listbox = cw.customlistbox(self.status_listbox_frame,)
 		self.status_listbox.place(relheight=1,relwidth=1, x=+lbcolumnoffset, width=-lbcolumnoffset)
+		self.listbox_list.append(self.status_listbox)
 		
-		#bind listboxes to move with mouse
-		self.homebrew_listbox.bind("<MouseWheel>", self.OnMouseWheel)
-		self.genre_listbox.bind("<MouseWheel>", self.OnMouseWheel)
-		self.version_listbox.bind("<MouseWheel>", self.OnMouseWheel)
-		self.status_listbox.bind("<MouseWheel>", self.OnMouseWheel)
+		#bind listboxes to move with mouse scroll
+		for listbox in self.listbox_list:
+			listbox.bind("<MouseWheel>", self.OnMouseWheel)
 
-		#Bind double-click to open details:
-		self.homebrew_listbox.bind('<Double-Button-1>', self.showdetailsevent)
+		# self.homebrew_listbox.bind("<MouseWheel>", self.OnMouseWheel)
+		# self.genre_listbox.bind("<MouseWheel>", self.OnMouseWheel)
+		# self.version_listbox.bind("<MouseWheel>", self.OnMouseWheel)
+		# self.status_listbox.bind("<MouseWheel>", self.OnMouseWheel)
 
+		
 
 
 		#Frame for details (raised when details button clicked)
@@ -265,10 +275,8 @@ class mainPage(tk.Frame,):
 
 		#-event.delta makes the boxes scroll in the right direction
 	def OnMouseWheel(self, event):
-		self.homebrew_listbox.yview("scroll", -event.delta,"units")
-		self.status_listbox.yview("scroll",-event.delta,"units")
-		self.version_listbox.yview("scroll",-event.delta,"units")
-		self.genre_listbox.yview("scroll",-event.delta,"units")
+		for listbox in self.listbox_list:
+			listbox.yview("scroll", -event.delta,"units")
 		# this prevents default bindings from firing, which
 		# would end up scrolling the widget twice
 		return "break"
@@ -277,7 +285,7 @@ class mainPage(tk.Frame,):
 	
 	#fill the listboxes with data
 	def popsoftwarelistbox(self,):
-		self.homebrew_listbox.bind('<<ListboxSelect>>',self.CurSelet)
+		
 
 		for softwarechunk in HBUpdater.hbdict:
 			softwarename = softwarechunk["software"]
@@ -300,15 +308,9 @@ class mainPage(tk.Frame,):
 		self.status_listbox.configure(state=DISABLED)
 
 	def updatelistbox(self,searchterm):
-		self.homebrew_listbox.configure(state=NORMAL)
-		self.genre_listbox.configure(state=NORMAL)
-		self.version_listbox.configure(state=NORMAL)
-		self.status_listbox.configure(state=NORMAL)
-
-		self.homebrew_listbox.delete(0,END)
-		self.genre_listbox.delete(0,END)
-		self.version_listbox.delete(0,END)
-		self.status_listbox.delete(0,END)
+		for listbox in self.listbox_list:
+			listbox.configure(state=NORMAL)
+			listbox.delete(0,END)
 
 
 		for softwarechunk in HBUpdater.hbdict:
@@ -366,11 +368,11 @@ class mainPage(tk.Frame,):
 	#INFOBOX UPDATE
 	#update title information
 	def updatetitle(self,title):
-		self.titlevar.set(title)
+		self.infobox.titlevar.set(title)
 
 	#update author information
 	def updateauthor(self,author):
-		self.authorvar.set("by {}".format(author))
+		self.infobox.authorvar.set("by {}".format(author))
 
 	#update project description
 	def updatedescription(self, desc):

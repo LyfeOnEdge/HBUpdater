@@ -580,6 +580,7 @@ Known Bugs: There appears to be some bug that causes the screen to flicker durin
 
 
 payloadlist = [
+
 	{
 	"software": "Hekete",
 	"githubapi": "https://api.github.com/repos/CTCaer/hekate/releases",
@@ -595,14 +596,14 @@ No more SD card removals""",
 
 	"install_subfolder": None,
 	"content_type" : None,
-	"zip_items": None,
+	"zip_items": "hekate_ctcaer",
 	},
 
 
 	{
 	"software": "fusee-primary",
-	"githubapi": "https://api.github.com/repos/Atmosphere-NX/Atmosphere/releases/latest",
-	"github_asset" : None, 
+	"githubapi": "https://api.github.com/repos/Atmosphere-NX/Atmosphere/releases",
+	"github_asset" : 1, 
 	"gihubjson" : None,
 
 	"author" : None, 
@@ -614,14 +615,11 @@ No more SD card removals""",
 	"content_type" : None,
 	"zip_items": None,
 	},
-	
-
-	
 
 	{
 	"software" : "Argon-NX payload",
 	"githubapi" : "https://api.github.com/repos/Guillem96/argon-nx/releases",
-	"github_asset" : 1, 
+	"github_asset" : 0, 
 	"gihubjson" : None,
 
 	"author" : None, 
@@ -664,7 +662,6 @@ Due to changes imposed by firmware 7.0.0, Lockpick homebrew can no longer derive
 	"content_type" : None,
 	"zip_items": None,
 	},
-
 
 ]
 	

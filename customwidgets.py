@@ -271,7 +271,7 @@ class navbutton(tk.Button):
 		tk.Button.__init__(self,frame,
 			background=dark_color,
 			borderwidth=0,
-			activebackground=light_color,
+			activebackground=dark_color,
 			#pady="0",
 			image=image_object,
 			command=command_name,

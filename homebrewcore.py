@@ -34,6 +34,10 @@ imagecachefolder = joinpaths(cachefolder,"images")
 if not os.path.isdir(imagecachefolder):
 	os.mkdir(imagecachefolder)
 
+payloadsfolder = get_path("payloads")
+if not os.path.isdir(payloadsfolder):
+	os.mkdir(payloadsfolder)
+
 trackingfolder = "hbupdater"
 trackingfile = "hbupdater.json"
 

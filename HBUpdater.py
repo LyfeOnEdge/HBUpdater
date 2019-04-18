@@ -25,8 +25,14 @@ trackingfile = ""
 hbdict = {}
 softwarechunknumber = 0 #variable to track where we are in the list of homebrew
 dictlen = 0 
+
 tagversionnumber = 0 #variable to track currently selected tag number
 taglen=0 #variable to track number of items in version listbox 
+
+ijdict = {}
+payloadchunknumber = 0
+ijdictlen = 0
+
 
 
 def setDict(dicty):
@@ -35,6 +41,11 @@ def setDict(dicty):
 	hbdict = dicty
 	dictlen = len(hbdict)
 
+def setIJDict(dicty):
+	global ijdict
+	global ijdictlen
+	ijdict = dicty
+	ijdictlen = len(ijdict)
 
 #update global "chosensdpath"
 def setSDpath(sdpath):
