@@ -33,6 +33,16 @@ ijdict = {}
 payloadchunknumber = 0
 ijdictlen = 0
 
+payloadinjector = {}
+
+
+guilog = "guilog_user.json"
+guilog_default = "guilog_default.json"
+if not homebrewcore.exists(guilog):
+	print("Gui json not found, initializing")
+	shutil.copy(guilog_default,guilog)
+
+
 
 
 def setDict(dicty):
@@ -46,6 +56,10 @@ def setIJDict(dicty):
 	global ijdictlen
 	ijdict = dicty
 	ijdictlen = len(ijdict)
+
+def setPayloadInjector(dicty):
+	global payloadinjector
+	payloadinjector = dicty
 
 #update global "chosensdpath"
 def setSDpath(sdpath):
@@ -203,73 +217,29 @@ def checkversion(software):
 		return "not installed"
 
 
-# not used yet
-# #checks if PyUSB is installed (required for the injector)
-# def checkifpyusbinstalled():
-# 	reqs = subprocess.check_output([sys.executable, '-m', 'pip', 'freeze'])
-# 	installed_packages = [r.decode().split('==')[0] for r in reqs.split()]
-# 	if "pyusb" in installed_packages:
-# 		return True
-# 	return False
+def updateguilog(newentry):
+	#open log
+	print("updating gui log with {}".format(newentry))
+	with open(guilog, 'r') as jfile:  
+		originaljfile = json.load(jfile)
 
-# #installs PyUSB on-demand for use with py
-# def installPyUSB():
-#     try:
-#     	print(subprocess.call([sys.executable, "-m", "pip", "install", "pyusb"]))
-#     except:
-#     	print("Error installing pyUSB, do you have pip installed?")
+	#update value
+	originaljfile.update(newentry)
 
+	#write updated log
+	with open(guilog, 'w+') as jfile:
+		json.dump(originaljfile, jfile, indent=4,)
 
-# def injectpayload():
-# 	#check if pyusb installed, if not ask if user wants to install it
-# 	if not checkifpyusbinstalled():
-# 		installpyusb = tkinter.messagebox.askyesno("Install PyUSB?", "PyUSB is required for fusee-launcher to work, install?")
-# 		if installpyusb == True:
-# 			spewToTextOutput("Got answer: yes")
-# 			spewToTextOutput("Installing PyUSB.")
-# 			installPyUSB()
-# 			pyusbinstalled = True
+def checkguitag(software, key):
+	try:
+		with open(guilog, 'r') as json_file:  
+			jfile = json.load(json_file)
 
-# 	#check again to see if installed
-# 	if checkifpyusbinstalled():
-# 		# payloadtoinject = payloadlistbox.curselection()
-# 		if payloadVar == None:
-# 			spewToTextOutput("No payload selected")
-# 			return
+		try:
+			info = jfile[software][key]
+		except:
+			info = None
+	except:
+		info = None
 
-# 		payloadtoinject = payloadVar.get()
-# 		print("injecting {}".format(payloadtoinject))
-# 		downloadfileas = ""
-# 		for softwarechunk in payloads:
-# 			if softwarechunk["software"] == payloadtoinject:
-# 				fileurl = softwarechunk["directlink"]
-# 				filename = fileurl.rsplit('/', 1)[-1]
-# 				downloadFile(filename, fileurl)	#regardless of zip format we need to start by downloading the file
-# 				if not softwarechunk["itemslist"] == None: #IF WE HAVE SPECIFIED AN ITEM TO EXTRACT, IT'S A ZIP
-# 					downloadedfilename = os.path.join(get_path(downloadsfolder), filename)
-# 					print("File exists: {}".format(exists(downloadedfilename)))
-# 					with ZipFile(downloadedfilename, 'r') as zipObj:
-# 						# try:
-# 							zipObj.extractall(get_path(downloadsfolder))
-# 							filename = os.path.join(get_path(downloadsfolder), softwarechunk["itemslist"]["payload"])
-# 						# except:
-# 						# 	spewToTextOutput("Failed to unzip or copy files")	
-# 						# 	return
-# 				else:
-# 					filename = get_path(os.path.join(downloadsfolder, filename))
-
-
-
-# 		print("Injecting payload {}".format(filename))
-
-# 		fusee_file = os.path.join(fusee_path, "fusee-launcher.py")
-# 		script_path = get_path(fusee_file)
-# 		payload_path = filename
-# 		print("injecting path {}".format(payload_path))
-# 		p = subprocess.Popen([sys.executable, '-u', script_path, payload_path],
-# 		          stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1)
-# 		with p.stdout:
-# 		    for line in iter(p.stdout.readline, b''):
-# 		        spewBytesToTextOutput(line)
-# 		p.wait()
-
+	return info

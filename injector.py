@@ -1,6 +1,9 @@
 import HBUpdater
 from format import * 
 import homebrewcore
+import locations
+import webhandler
+from zipfile import ZipFile
 
 import tkinter as tk
 from tkinter.constants import *
@@ -9,6 +12,7 @@ import customwidgets as cw
 import json
 
 import sys,subprocess
+
 
 
 def checkifpyusbinstalled():
@@ -28,18 +32,41 @@ def installPyUSB():
     	return(False)
 
 
-def injectpayload(payload):
+def injectpayload(payload,console):
+	if HBUpdater.checkguitag("fusee-launcher", "version") == "not installed" or HBUpdater.checkguitag("fusee-launcher", "version") == "none":
+		# console.print("fusee-launcher not installed, downloading")
+		with open(HBUpdater.payloadinjector[0]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
+			jfile = json.load(json_file)
+			downloadurl = jfile[0]["zipball_url"]
+			file = webhandler.download(downloadurl)
+			file = homebrewcore.joinpaths(homebrewcore.downloadsfolder, file)
+			version = jfile[0]["tag_name"]
+			with ZipFile(file, 'r') as zipObj:
+				zipObj.extractall(homebrewcore.payloadsfolder)
+				console.print("Sucessfully extracted {} to payloads folder".format(file))
+				files = zipObj.namelist()
+				injector = None
+				for possiblepayloadfile in files:
+					if possiblepayloadfile.startswith(files[0] + "fusee"):
+						injector = possiblepayloadfile
+				if injector == None:
+					console.print("Could not find injector in extracted files")
+					return 
+			newentry = {
+				"fusee-launcher" : {
+					"version": version,
+					"location": injector,
+				}
+			}
+			HBUpdater.updateguilog(newentry)
 
-		print("Injecting payload {}".format(payload))
-
-		fusee_file = homebrewcore.joinpaths(fusee_path, "fusee-launcher.py")
-		script_path = homebrewcore.get_path(fusee_file)
-		payload_file = payload
-		print("injecting payload {}".format(payload_file))
-		p = subprocess.Popen([sys.executable, '-u', script_path, payload_file],
-		          stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1)
-		with p.stdout:
-		    for line in iter(p.stdout.readline, b''):
-		        spewBytesToTextOutput(line)
-		p.wait()
+	script_path = HBUpdater.checkguitag("fusee-launcher", "location")
+	script_path = homebrewcore.joinpaths(homebrewcore.payloadsfolder, script_path)
+	payload_file = payload
+	p = subprocess.Popen([sys.executable, '-u', script_path, payload_file],
+	          stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1)
+	with p.stdout:
+	    for line in iter(p.stdout.readline, b''):
+	    	print(line)
+	p.wait()
 

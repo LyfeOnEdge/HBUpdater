@@ -1,7 +1,6 @@
 import HBUpdater
 from format import * 
 import homebrewcore
-import injector
 import webhandler
 from zipfile import ZipFile
 
@@ -11,6 +10,8 @@ from tkinter.constants import *
 import customwidgets as cw
 
 import json
+import sys,subprocess
+
 
 # #ijdict
 # fuseefolder = homebrewcore.getpath("fusee-launcher")
@@ -40,20 +41,57 @@ class injectorScreen(tk.Frame):
 
 		self.console = cw.consolebox(self)
 		self.console.place(relx=0,rely=.7,relwidth=1, width =-infoframewidth,relheight=.3)
+		self.printpayloadinjectoroutput("Connect Switch, select payload, and press inject.\nThe payload will be downloaded from github if it hasn't been already.\n")
 
-		self.payload_listbox_frame = cw.themedframe(self)
-		self.payload_listbox_frame.place(relx=0,rely=0,relheight=.7,relwidth=0.4)
+		self.listbox_frame = cw.themedframe(self,frame_borderwidth=0,frame_highlightthickness=0)
+		self.listbox_frame.place(relx=0,rely=0,relheight=.7,relwidth=0.4)
+
+
+		self.listbox_list = []
+
+		self.payload_listbox_frame = cw.titledlistboxframe(self.listbox_frame,"Payload")
+		self.payload_listbox_frame.place(relx=0,rely=0,relheight=1,relwidth=0.50)
+		self.listbox_separatorA0 = cw.separator(self.payload_listbox_frame)
+		self.listbox_separatorA0.place(relx=0,rely=0,y=columtitlesheight,height=injector_separator_width,relwidth=1,)
 		self.payload_listbox = cw.customlistbox(self.payload_listbox_frame,)
-		self.payload_listbox.place(relheight=1,relwidth=1, x=+lbcolumnoffset, width=-lbcolumnoffset)
+		self.payload_listbox.place(relheight=1,relwidth=1, x=+lbcolumnoffset, width=-lbcolumnoffset, y=columtitlesheight+injector_separator_width,height=-(columtitlesheight+injector_separator_width))
 		self.payload_listbox.bind('<<ListboxSelect>>',self.CurSelet)
+		self.listbox_list.append(self.payload_listbox)
+		
 
-		self.injectorguideframe = cw.themedframe(self,frame_borderwidth=2)
-		self.injectorguideframe.place(relx=.4,rely=0,relheight=.7,relwidth=.6,width=-infoframewidth)
+		self.listbox_separatorA = cw.separator(self.listbox_frame)
+		self.listbox_separatorA.place(relx=.50,rely=0,relheight=1,width=injector_separator_width,)
+		
+		self.payload_latest_version_listbox_frame = cw.titledlistboxframe(self.listbox_frame,"Latest")
+		self.payload_latest_version_listbox_frame.place(relx=0.50, x=+injector_separator_width,rely=0,relheight=1,relwidth=0.25,width=-injector_separator_width)
+		self.listbox_separatorA2 = cw.separator(self.payload_latest_version_listbox_frame)
+		self.listbox_separatorA2.place(relx=0,rely=0,y=columtitlesheight,height=injector_separator_width,relwidth=1,)
+		self.payload_latest_version_listbox = cw.customlistbox(self.payload_latest_version_listbox_frame)
+		self.payload_latest_version_listbox.place(relheight=1,relwidth=1, x=+lbcolumnoffset, width=-(lbcolumnoffset), y=columtitlesheight+injector_separator_width,height=-(columtitlesheight+injector_separator_width))
+		self.listbox_list.append(self.payload_latest_version_listbox)
+
+		self.listbox_separatorB = cw.separator(self.listbox_frame)
+		self.listbox_separatorB.place(relx=.75,rely=0,relheight=1,width=injector_separator_width,)
+
+		self.payload_version_listbox_frame = cw.titledlistboxframe(self.listbox_frame,"Current")
+		self.payload_version_listbox_frame.place(relx=0.75,x=+injector_separator_width,rely=0,relheight=1,relwidth=0.25,width=-injector_separator_width)
+		self.listbox_separatorB2 = cw.separator(self.payload_version_listbox_frame)
+		self.listbox_separatorB2.place(relx=0,rely=0,y=columtitlesheight,height=injector_separator_width,relwidth=1,)
+		self.payload_version_listbox = cw.customlistbox(self.payload_version_listbox_frame)
+		self.payload_version_listbox.place(relheight=1,relwidth=1, x=+lbcolumnoffset, width=-lbcolumnoffset, y=columtitlesheight+injector_separator_width, height=-(columtitlesheight+injector_separator_width))
+		self.listbox_list.append(self.payload_version_listbox)
+
+		self.listbox_guide_separator = cw.themedlabel(self,"")
+		self.listbox_guide_separator.place(relx=.40,rely=0,relheight=.7,width=4,)
+
+		self.injectorguideframe = cw.themedframe(self,frame_borderwidth=0,frame_highlightthickness=0)
+		self.injectorguideframe.place(relx=.40,x=+8,rely=0,relheight=.7,relwidth=.6,width=-(infoframewidth+8))
 		self.injectorguide = tk.Text(self.injectorguideframe,foreground=guidetextcolor,background=dark_color,font=guidetext,wrap="word",highlightthickness=0,borderwidth=0)
-		self.injectorguide.place(relheight=1,relwidth=1,x=+lbcolumnoffset, width=-lbcolumnoffset)
+		self.injectorguide.place(relheight=1,relwidth=1,)
 		self.injectorguide.configure(state=NORMAL)
 		self.injectorguide.insert(END, RCMGUIDETEXT)
 		self.injectorguide.configure(state=DISABLED)
+
 
 		self.popsoftwarelistbox()
 		self.updateinfo()
@@ -69,69 +107,97 @@ class injectorScreen(tk.Frame):
 
 		#fill the listboxes with data
 	def popsoftwarelistbox(self,):
+		for listbox in self.listbox_list:
+			listbox.configure(state=NORMAL)
+			listbox.delete(0,END)
+
 		for softwarechunk in HBUpdater.ijdict:
 			softwarename = softwarechunk["software"]
 			self.payload_listbox.insert(END, softwarename)
 
-			# self.homebrew_listbox.itemconfig(END, foreground=font_color)
-			# with open(softwarechunk["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
-			#   jfile = json.load(json_file)
-			# version = jfile[0]["tag_name"]
-			# self.version_listbox.insert(END, version)
+			with open(softwarechunk["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
+				jfile = json.load(json_file)
+				version = jfile[0]["tag_name"]
 
-			# self.status_listbox.insert(END, "not installed")
+			self.payload_latest_version_listbox.insert(END, version)
 
-	def injectpayload(self):
-		if not injector.checkifpyusbinstalled():
+			status = HBUpdater.checkguitag(softwarename, "version")
+
+			if status == version:
+				self.payload_version_listbox.insert(END, checkmark)
+			else:
+				self.payload_version_listbox.insert(END, status)
+
+		self.payload_version_listbox.configure(state=DISABLED)
+		self.payload_latest_version_listbox.configure(state=DISABLED)
+
+
+	def injectpayload(self,):
+		if not checkifpyusbinstalled():
 			resp =  tkinter.messagebox.askyesno("Install PyUSB?", "PyUSB is required for fusee-launcher to work, install?")
 			if resp:
 				try:
-					injector.installpyusb()
+					installpyusb()
 				except:
-					console.print("Unknown error installing PyUSB")
+					self.printpayloadinjectoroutput("Unknown error installing PyUSB")
 					return
 			else:
-				console.print("Got answer: no, not installing")
+				self.printpayloadinjectoroutput("Got answer: no, not installing")
 				return
-
 
 		with open(HBUpdater.ijdict[HBUpdater.payloadchunknumber]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
 			jfile = json.load(json_file)
+			softwarename = HBUpdater.ijdict[HBUpdater.payloadchunknumber]["software"]
+			version = jfile[0]["tag_name"]
+			if HBUpdater.checkguitag(softwarename,"version") == None or HBUpdater.checkguitag(softwarename,"version") =="not installed":
+				print("payload not yet downloaded, downloading...")
 
-			assetnumber = 0
+				assetnumber = 0
 
-			if not HBUpdater.ijdict[HBUpdater.payloadchunknumber]["github_asset"] == None:
-				assetnumber = HBUpdater.ijdict[HBUpdater.payloadchunknumber]["github_asset"]
+				if not HBUpdater.ijdict[HBUpdater.payloadchunknumber]["github_asset"] == None:
+					assetnumber = HBUpdater.ijdict[HBUpdater.payloadchunknumber]["github_asset"]
 
-			downloadurl = jfile[0]["assets"][assetnumber]["browser_download_url"]
-			file = webhandler.download(downloadurl)
-			file = homebrewcore.joinpaths(homebrewcore.downloadsfolder, file)
-			
-		if file.endswith(".bin"):
-			payload = file
+				downloadurl = jfile[0]["assets"][assetnumber]["browser_download_url"]
+				file = webhandler.download(downloadurl)
+				file = homebrewcore.joinpaths(homebrewcore.downloadsfolder, file)
+					
+				if file.endswith(".bin"):
+					payload = file
 
-		elif file.endswith(".zip"):
+				elif file.endswith(".zip"):
 
-			with ZipFile(file, 'r') as zipObj:
-				zipObj.extractall(homebrewcore.payloadsfolder)
-				print("Sucessfully extracted {} to payloads folder".format(file))
-				files = zipObj.namelist()
-				payload = None
-				for possiblepayloadfile in files:
-					if possiblepayloadfile.startswith(HBUpdater.ijdict[HBUpdater.payloadchunknumber]["zip_items"]):
-						payload = possiblepayloadfile
-				if payload == None:
-					console.print("Could not find payload in extracted files")
-					return 
+					with ZipFile(file, 'r') as zipObj:
+						zipObj.extractall(homebrewcore.payloadsfolder)
+						print("Sucessfully extracted {} to payloads folder".format(file))
+						files = zipObj.namelist()
+						payload = None
+						for possiblepayloadfile in files:
+							if possiblepayloadfile.startswith(HBUpdater.ijdict[HBUpdater.payloadchunknumber]["zip_items"]):
+								payload = possiblepayloadfile
+						if payload == None:
+							self.printpayloadinjectoroutput("Could not find payload in extracted files")
+							return 
 
-			payload = homebrewcore.joinpaths(homebrewcore.payloadsfolder,payload)
+					payload = homebrewcore.joinpaths(homebrewcore.payloadsfolder,payload)
 
-		else:
-			console.print("file handling method not found")
-			return
+				else:
+					self.printpayloadinjectoroutput("file handling method not found")
+					return
 
-		injector.injectpayload(payload)
+				newentry = {
+							softwarename: {
+								"version": version,
+								"location": payload,
+							}
+						}
+				HBUpdater.updateguilog(newentry)
+				self.popsoftwarelistbox()
+			else:
 
+				payload = HBUpdater.checkguitag(softwarename,"location")
+
+
+		injectpayload(self,payload)
 
 
 
@@ -158,7 +224,6 @@ class injectorScreen(tk.Frame):
 		self.payload_listbox.selection_clear(0,HBUpdater.ijdictlen-1)
 		self.payload_listbox.selection_set(HBUpdater.payloadchunknumber)
 		self.payload_listbox.see(HBUpdater.payloadchunknumber)
-
 
 		if not HBUpdater.ijdict == {}:
 
@@ -195,12 +260,16 @@ class injectorScreen(tk.Frame):
 			photoexists = False
 
 		if not photoexists:
-			try:
-				photopath = webhandler.cacheimage(authorimg,softwarename)
+			# try:
+				with open(HBUpdater.ijdict[HBUpdater.payloadchunknumber]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
+					jfile = json.load(json_file)
+					url = jfile[0]["author"]["avatar_url"]
+					print(softwarename)
+				photopath = webhandler.cacheimage(url,softwarename)
 				HBUpdater.hbdict[HBUpdater.payloadchunknumber]["photopath"] = photopath
-			except: 
-				print("could not download icon image (you can safely ignore this error)")
-				photopath = homebrewcore.joinpaths(homebrewcore.assetfolder,notfoundimage)
+			# except: 
+			# 	print("could not download icon image (you can safely ignore this error)")
+			# 	photopath = homebrewcore.joinpaths(homebrewcore.assetfolder,notfoundimage)
 		try:
 			project_image = tk.PhotoImage(file=photopath)
 
@@ -225,5 +294,62 @@ class injectorScreen(tk.Frame):
 			self.updateinfo()
 
 
-	# def downloadfusee(self):
-		
+
+	def printpayloadinjectoroutput(self,stringtoprint):
+		self.console.print(stringtoprint)
+		print(stringtoprint)
+
+def checkifpyusbinstalled():
+	reqs = subprocess.check_output([sys.executable, '-m', 'pip', 'freeze'])
+	installed_packages = [r.decode().split('==')[0] for r in reqs.split()]
+	if "pyusb" in installed_packages:
+		return True
+	return False
+
+#installs PyUSB on-demand for use with py
+def installPyUSB():
+    try:
+    	print(subprocess.call([sys.executable, "-m", "pip", "install", "pyusb"]))
+    	return(True)
+    except:
+    	print("Error installing pyUSB, do you have pip installed?")
+    	return(False)
+
+
+def injectpayload(self,payload):
+	if HBUpdater.checkguitag("fusee-launcher", "version") == "not installed" or HBUpdater.checkguitag("fusee-launcher", "version") == "none":
+		# self.printpayloadinjectoroutput("fusee-launcher not installed, downloading")
+		with open(HBUpdater.payloadinjector[0]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
+			jfile = json.load(json_file)
+			downloadurl = jfile[0]["zipball_url"]
+			file = webhandler.download(downloadurl)
+			file = homebrewcore.joinpaths(homebrewcore.downloadsfolder, file)
+			version = jfile[0]["tag_name"]
+			with ZipFile(file, 'r') as zipObj:
+				zipObj.extractall(homebrewcore.payloadsfolder)
+				self.printpayloadinjectoroutput(self,"Sucessfully extracted {} to payloads folder".format(file))
+				files = zipObj.namelist()
+				injector = None
+				for possiblepayloadfile in files:
+					if possiblepayloadfile.startswith(files[0] + "fusee"):
+						injector = possiblepayloadfile
+				if injector == None:
+					self.printpayloadinjectoroutput("Could not find injector in extracted files")
+					return 
+			newentry = {
+				"fusee-launcher" : {
+					"version": version,
+					"location": injector,
+				}
+			}
+			HBUpdater.updateguilog(newentry)
+
+	script_path = HBUpdater.checkguitag("fusee-launcher", "location")
+	script_path = homebrewcore.joinpaths(homebrewcore.payloadsfolder, script_path)
+	payload_file = payload
+	p = subprocess.Popen([sys.executable, '-u', script_path, payload_file],
+	          stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1)
+	with p.stdout:
+	    for line in iter(p.stdout.readline, b''):
+	    	self.printpayloadinjectoroutput(line)
+	p.wait()

@@ -61,13 +61,13 @@ class mainPage(tk.Frame,):
 		# self.repoicon = cw.iconbutton(self.searchbox_frame, self.addrepoimage,command_name=None)
 		# self.repoicon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -self.addrepoimage.height()/2,width = self.addrepoimage.width(), height=self.addrepoimage.height())
 
-		# self.iconspacer += icon_and_search_bar_spacing
+		self.iconspacer += icon_and_search_bar_spacing
 
-		# self.injectimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"injector.png"))
-		# self.injectimage = self.injectimage.subsample(2)
-		# self.iconspacer += searchboxheight-2*icon_and_search_bar_spacing
-		# self.injecticon = cw.iconbutton(self.searchbox_frame,self.injectimage,command_name=lambda: self.controller.show_frame("injectorScreen"))
-		# self.injecticon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -((searchboxheight)/2) + icon_and_search_bar_spacing,width = searchboxheight-2*icon_and_search_bar_spacing, height=searchboxheight-2*icon_and_search_bar_spacing)
+		self.injectimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"injector.png"))
+		self.injectimage = self.injectimage.subsample(2)
+		self.iconspacer += searchboxheight-2*icon_and_search_bar_spacing
+		self.injecticon = cw.iconbutton(self.searchbox_frame,self.injectimage,command_name=lambda: self.controller.show_frame("injectorScreen"))
+		self.injecticon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -((searchboxheight)/2) + icon_and_search_bar_spacing,width = searchboxheight-2*icon_and_search_bar_spacing, height=searchboxheight-2*icon_and_search_bar_spacing)
 
 		self.iconspacer += icon_and_search_bar_spacing*2
 
@@ -180,15 +180,9 @@ class mainPage(tk.Frame,):
 		self.infobox = cw.infobox(self.outer_frame)
 		self.infobox.place(relx=1, x=-infoframewidth, rely=0.0, relheight=1, width=infoframewidth)
 
-
 		#Shared images
-		#self.installimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"installbutton.png")).zoom(3).subsample(5)
 		self.infoimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"info.png")).zoom(3).subsample(5)
-		#self.previousimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"prev.png")).zoom(3).subsample(5)
-		#self.nextimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"next.png")).zoom(3).subsample(5)
-		#self.backbutton = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"back.png")).zoom(3).subsample(5)
 		self.returnimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"returnbutton.png")).zoom(3).subsample(5)
-
 
 		#Back to list button frame, placed first so the details button covers it
 		self.details_buttons_frame =cw.navbox(self.infobox,
@@ -281,12 +275,8 @@ class mainPage(tk.Frame,):
 		# would end up scrolling the widget twice
 		return "break"
 
-
-	
 	#fill the listboxes with data
 	def popsoftwarelistbox(self,):
-		
-
 		for softwarechunk in HBUpdater.hbdict:
 			softwarename = softwarechunk["software"]
 			self.homebrew_listbox.insert(END, softwarename)
@@ -434,7 +424,10 @@ class mainPage(tk.Frame,):
 
 		if not photoexists:
 			try:
-				photopath = webhandler.cacheimage(authorimg,softwarename)
+				with open(HBUpdater.hbdict[HBUpdater.softwarechunknumber]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
+					jfile = json.load(json_file)
+					url = jfile[0]["author"]["avatar_url"]
+				photopath = webhandler.cacheimage(url,softwarename)
 				HBUpdater.hbdict[HBUpdater.softwarechunknumber]["photopath"] = photopath
 			except: 
 				print("could not download icon image (you can safely ignore this error)")

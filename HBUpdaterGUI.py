@@ -76,10 +76,12 @@ class FrameManager(tk.Tk):
 def UseCachedJson():
 	HBUpdater.setDict(webhandler.getJsonSoftwareLinks(locations.softwarelist)) #Get software links from pre-downloaded jsons (TESTING FUNCTION, IF YOU GET AN ERROR FROM THIS LINE BECUASE I FORGOT TO COMMENT IT ON A COMMIT JUST COMMENT THIS LINE AND UNCOMMENT THE ONE BEFORE)
 	HBUpdater.setIJDict(webhandler.getJsonSoftwareLinks(locations.payloadlist))
+	HBUpdater.setPayloadInjector(webhandler.getJsonSoftwareLinks(locations.payloadinjector))
 
 def GetUpdatedJson():
 	HBUpdater.setDict(webhandler.getUpdatedSoftwareLinks(locations.softwarelist)) #Get fresh software links, falls back on old ones if they don't exist
 	HBUpdater.setIJDict(webhandler.getUpdatedSoftwareLinks(locations.payloadlist))
+	HBUpdater.setPayloadInjector(webhandler.getUpdatedSoftwareLinks(locations.payloadinjector))
 
 if __name__ == '__main__':  
 	#UseCachedJson()

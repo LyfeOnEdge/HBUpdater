@@ -707,10 +707,23 @@ Due to changes imposed by firmware 7.0.0, Lockpick homebrew can no longer derive
 # 2- Installing fake (unsigned, modified) tickets (es)
 # 3- nocmac, fs""",
 # 	"group": "Patches",
-	
-	
-	
-	
 # 	},
 
 
+payloadinjector = [
+	{
+	"software" : "fusee-launcher",
+	"githubapi" : "https://api.github.com/repos/Cease-and-DeSwitch/fusee-launcher/releases",
+	"github_asset" : "tarball_url", 
+	"gihubjson" : None,
+
+	"author" : "Qyriad", 
+	"projectpage": None,
+	"description" : "",
+	"group" : "SPECIAL",
+
+	"install_subfolder": None,
+	"content_type" : None,
+	"zip_items": None,
+	},
+]

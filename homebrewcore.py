@@ -25,7 +25,6 @@ assetfolder = get_path("assets")
 if not os.path.isdir(assetfolder):
 	print("error, asset folder not found")
 
-
 jsoncachefolder = joinpaths(cachefolder,"json")
 if not os.path.isdir(jsoncachefolder):
 	os.mkdir(jsoncachefolder)

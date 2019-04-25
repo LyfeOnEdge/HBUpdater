@@ -2,6 +2,7 @@ import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter.constants import *
 from format import *
+import platform
 
 class Placeholder_State(object):
      __slots__ = 'normal_color', 'normal_font', 'placeholder_text', 'placeholder_color', 'placeholder_font', 'contains_placeholder'
@@ -215,10 +216,10 @@ def _on_shiftmouse(event, widget):
 
 #Frame themed properly from format.py
 class themedframe(tk.Frame):
-	def __init__(self,parent,frame_borderwidth = 0,frame_highlightthickness = 1,background_color = dark_color):
+	def __init__(self,parent,frame_borderwidth = 0,frame_highlightthickness = 1,background_color = dark_color,frame_highlightcolor=dark_color):
 		tk.Frame.__init__(self,parent, 
 			background = background_color,
-			highlightcolor = background_color,
+			highlightcolor = frame_highlightcolor,
 			highlightthickness=frame_highlightthickness,
 			highlightbackground=light_color,
 			borderwidth = frame_borderwidth,
@@ -423,28 +424,39 @@ class infobox(themedframe):
 
 
 class consolebox(themedframe):
-	def __init__(self,frame,frame_borderwidth=0, frame_highlightthickness=0):
-		themedframe.__init__(self,frame,)
+	def __init__(self,frame,):
+		themedframe.__init__(self,frame,frame_borderwidth=0, frame_highlightthickness=0)
 
 		self.textoutput = tk.Text(self)
 		self.textoutput.place(x=0,y=0,relwidth=1,relheight=1)
 		self.textoutput.configure(background = b)
 		self.textoutput.configure(foreground = w)
-		self.textoutput.insert(END,"Connect Switch, select payload, and press inject.")
 		self.textoutput.configure(state=DISABLED)
 		self.textoutput.configure(font=consoletext)
 		self.textoutput.configure(borderwidth = 0)
 
-		def print(self,textToPrint):
-			self.textoutput.config(state=NORMAL)
-			self.textoutput.insert(END, textToPrint + "\n\n")
-			self.textoutput.config(state=DISABLED)
-			self.textoutput.see(END)
-			print(textToSpew)
+	def print(self,textToPrint):
+		self.textoutput.config(state=NORMAL)
+		self.textoutput.insert(END, textToPrint)
+		self.textoutput.config(state=DISABLED)
+		self.textoutput.see(END)
 
-		def printbytes(self,bytesToPrint):
-			self.textoutput.config(state=NORMAL)
-			self.textoutput.insert(END, (bytesToPrint.decode("utf-8") + "\n\n"))
-			self.textoutput.config(state=DISABLED)
-			self.textoutput.see(END)
-			print(textToSpew)
+	# def printbytes(self,bytesToPrint):
+	# 	self.textoutput.config(state=NORMAL)
+	# 	self.textoutput.insert(END, (bytesToPrint.decode("utf-8")))
+	# 	self.textoutput.config(state=DISABLED)
+	# 	self.textoutput.see(END)
+
+class titledlistboxframe(themedframe):
+	def __init__(self,frame,title):
+		themedframe.__init__(self,frame,frame_borderwidth=0, frame_highlightthickness=0)
+		self.label_frame = themedframe(self,frame_borderwidth=0, frame_highlightthickness=0)
+		self.label_frame.place(relx=0.0, rely=0.0, height=columtitlesheight, relwidth=1)
+		self.listbox_label = columnlabel(self.label_frame, title)
+		self.listbox_label.place(relx=0, x=+5, rely=0, relheight=1, relwidth=1, width = -5)
+
+class separator(themedlabel):
+	def __init__(self,frame):
+		themedlabel.__init__(self,frame,"")
+
+		

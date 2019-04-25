@@ -18,6 +18,9 @@ column_relwidth = .20
 #Image for when there is an author image incompatible with tkinter
 notfoundimage = "notfound.png"
 
+#file for tracking downloaded payloads and fusee version
+
+
 ##Text Styles
 #Normal Text
 smalltext = ("Trebuchet MS",10)
@@ -44,10 +47,6 @@ lgray = "#acadaf"
 
 listboxselectionbackground =  "#c4c4c4",
 listboxselectionforeground = b
-
-import platform
-
-
 
 
 #column label 
@@ -131,7 +130,8 @@ RCMGUIDETEXT = """INSTRUCTIONS:
 If you receive an error it likely means your Nintendo Switch is not in RCM.
 You can ensure you have turned your switch off by holding the power button for 13 seconds.
 """
-
+#Injector listbox separator width
+injector_separator_width = 2
 
 
 ##Injector Page
