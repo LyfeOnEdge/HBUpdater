@@ -68,21 +68,19 @@ def setSDpath(sdpath):
 	global trackingfile
 	global sdpathset
 	chosensdpath = sdpath
-	trackingfolder = homebrewcore.joinpaths(chosensdpath, homebrewcore.trackingfolder)
-	if not homebrewcore.direxist(trackingfolder):
-		os.mkdir(trackingfolder)
-
-	trackingfile = homebrewcore.joinpaths(trackingfolder, homebrewcore.trackingfile)
-	if not homebrewcore.exists(trackingfile):
-		with open(trackingfile, "w+") as jfile:
-			json.dump({}, jfile, indent=4,)
-
-
 	print("SD path set to: {}".format(str(chosensdpath)))
 
 	if not(str(chosensdpath) == ""):
 		print("sd path set")
 		sdpathset = True
+		trackingfolder = homebrewcore.joinpaths(chosensdpath, homebrewcore.trackingfolder)
+		if not homebrewcore.direxist(trackingfolder):
+			os.mkdir(trackingfolder)
+		trackingfile = homebrewcore.joinpaths(trackingfolder, homebrewcore.trackingfile)
+		if not homebrewcore.exists(trackingfile):
+			with open(trackingfile, "w+") as jfile:
+				json.dump({}, jfile, indent=4,)
+
 	else:
 		print("invalid path chosen")
 		sdpathset = False
