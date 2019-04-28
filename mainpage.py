@@ -10,6 +10,7 @@ import customwidgets as cw
 
 import json
 
+import webbrowser
 
 
 
@@ -43,8 +44,6 @@ class mainPage(tk.Frame,):
 		# self.settingsicon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -self.settingsimage.height()/2,width = self.settingsimage.width(), height=self.settingsimage.height())
 
 		# self.iconspacer += icon_and_search_bar_spacing
-
-
 		self.sdimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"sd.png"))
 		self.sdimage = self.sdimage.subsample(2)
 		self.iconspacer += searchboxheight-2*icon_and_search_bar_spacing
@@ -57,9 +56,9 @@ class mainPage(tk.Frame,):
 
 		# self.addrepoimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"plus.png"))
 		# self.addrepoimage = self.addrepoimage.subsample(2)
-		# self.iconspacer += self.addrepoimage.width()
-		# self.repoicon = cw.iconbutton(self.searchbox_frame, self.addrepoimage,command_name=None)
-		# self.repoicon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -self.addrepoimage.height()/2,width = self.addrepoimage.width(), height=self.addrepoimage.height())
+		# self.iconspacer += searchboxheight-2*icon_and_search_bar_spacing
+		# self.repoicon = cw.iconbutton(self.searchbox_frame, self.addrepoimage,command_name=lambda: self.controller.show_frame("addRepoScreen"))
+		# self.repoicon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -((searchboxheight)/2) + icon_and_search_bar_spacing,width = searchboxheight-2*icon_and_search_bar_spacing, height=searchboxheight-2*icon_and_search_bar_spacing)
 
 		self.iconspacer += icon_and_search_bar_spacing
 
@@ -150,32 +149,37 @@ class mainPage(tk.Frame,):
 
 
 		#Frame for details (raised when details button clicked)
-		
 		#past version tags listbox
 		self.details_frame = cw.themedframe(self.outer_frame)
 		self.details_frame.place(relx=0.0, rely=0.0, width=-infoframewidth, relheight=1, relwidth=1)
 		
 		self.tags_listbox = cw.customlistbox(self.details_frame)
-		self.tags_listbox.place(relx=0.0, rely=0, relheight=1, relwidth=0.2)
+		self.tags_listbox.place(relx=0.0, rely=0, relheight=0.9, relwidth=0.2)
 		self.tags_listbox.configure(font=tags_listbox_font)
 		self.tags_listbox.configure(font=version_number_font)
 		self.tags_listbox.bind('<<ListboxSelect>>',self.CurTagSelet)
 		
-
 		#patch notes 
-		self.scrolling_patch_notes = cw.ScrolledText(self.details_frame)
-		self.scrolling_patch_notes.place(relx=0.2, rely=0, relheight=1, relwidth=0.8)
-		self.scrolling_patch_notes.configure(background="white")
-		self.scrolling_patch_notes.configure(font=version_notes_font)
-		self.scrolling_patch_notes.configure(foreground="black")
-		self.scrolling_patch_notes.configure(highlightbackground="#d9d9d9")
-		self.scrolling_patch_notes.configure(highlightcolor="black")
-		self.scrolling_patch_notes.configure(selectbackground=version_notes_selection_background)
-		self.scrolling_patch_notes.configure(selectforeground=version_notes_selection_foreground)
-		self.scrolling_patch_notes.configure(wrap="none")
-		self.scrolling_patch_notes.configure(background=version_notes_column_background)
-		self.scrolling_patch_notes.configure(foreground=version_notes_color)
+		self.scrolling_patch_notes = cw.ScrolledText(self.details_frame,
+			highlightcolor="black",
+			highlightbackground="#d9d9d9",
+			font=version_notes_font,
+			selectbackground=version_notes_selection_background,
+			selectforeground=version_notes_selection_foreground,
+			background=version_notes_column_background,
+			foreground=version_notes_color,
+			wrap="none",
+			)
+		self.scrolling_patch_notes.place(relx=0.2, rely=0, relheight=0.9, relwidth=0.8)
 
+		self.details_box = cw.themedframe(self.details_frame,background_color=light_color)
+		self.details_box.place(relx=0, rely=0.9, relheight=0.1, relwidth=1)
+
+		self.uninstall_button = cw.navbutton(self.details_box,command_name=self.uninstall,image_object= None,text_string="Uninstall")
+		self.uninstall_button.place(relx=0, rely=0.1, height=navbuttonheight, x=+navbuttonspacing)
+
+		self.project_page_button = cw.navbutton(self.details_box,command_name=self.openprojectpage,image_object= None,text_string="Project Page")
+		self.project_page_button.place(relx=0.5, rely=0.1, height=navbuttonheight, x=+navbuttonspacing)
 
 		self.infobox = cw.infobox(self.outer_frame)
 		self.infobox.place(relx=1, x=-infoframewidth, rely=0.0, relheight=1, width=infoframewidth)
@@ -232,8 +236,6 @@ class mainPage(tk.Frame,):
 				print("SD Path Not set, not installing")
 
 	def specificinstall(self):
-		
-		
 		if HBUpdater.sdpathset:
 			HBUpdater.installitem(HBUpdater.hbdict, HBUpdater.softwarechunknumber, HBUpdater.tagversionnumber)
 			self.updatelistbox(None)
@@ -245,6 +247,20 @@ class mainPage(tk.Frame,):
 				self.updatelistbox(None)
 			else:
 				print("SD Path Not set, not installing")
+
+	def uninstall(self):
+		if HBUpdater.sdpathset:
+			HBUpdater.uninstallsoftware(HBUpdater.hbdict[HBUpdater.softwarechunknumber]["software"])
+			self.updatelistbox(None)
+		else:
+			self.setSDpath()
+
+			if HBUpdater.sdpathset:
+				HBUpdater.uninstallsoftware(HBUpdater.hbdict[HBUpdater.softwarechunknumber]["software"])
+				self.updatelistbox(None)
+			else:
+				print("SD Path Not set, not installing")
+
 
 	#raises the details frame
 	def showdetails(self):
@@ -471,8 +487,6 @@ class mainPage(tk.Frame,):
 			self.updatetagsbox()
 			self.updatetagnotes()
 
-
-
 	def updatetagsbox(self):
 		self.tags_listbox.selection_clear(0,END)
 		self.tags_listbox.selection_set(HBUpdater.tagversionnumber)
@@ -529,3 +543,7 @@ class mainPage(tk.Frame,):
 			self.updatetagnotes()
 		except:
 			pass
+
+	def openprojectpage(self):
+		url = HBUpdater.hbdict[HBUpdater.softwarechunknumber]["projectpage"]
+		webbrowser.open_new_tab(url)

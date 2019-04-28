@@ -80,31 +80,7 @@ def getJsonSoftwareLinks(dicttopopulate):
 
 		jsonfile = homebrewcore.joinpaths(homebrewcore.jsoncachefolder, softwarename + ".json")
 		softwarechunk["githubjson"] = jsonfile
-		print("using downloaded json file {}".format(jsonfile))
-
-
-
-	dicttopopulate = sorted(dicttopopulate, key = lambda i: i["software"])
-	return dicttopopulate
-
-def getMissingJson(dicttopopulate):
-	for softwarechunk in dicttopopulate:
-		githubjsonlink = softwarechunk["githubapi"]
-		softwarename = softwarechunk["software"]
-
-		jsonfile = homebrewcore.joinpaths(homebrewcore.jsoncachefolder, softwarename + ".json")
-
-		if not homebrewcore.exists(jsonfile):
-			try:
-				urllib.request.urlretrieve(githubjsonlink,jsonfile)
-				print("Successfully downloaded {} to {}".format(githubjsonlink, jsonfile))
-				softwarechunk["githubjson"] = jsonfile
-
-			except:
-				print("failed to download json for missing file {}".format(jsonfile))
-		else:
-			print("using pre-downloaded json")
-
+		print("using previously downloaded json file {}".format(jsonfile))
 
 	dicttopopulate = sorted(dicttopopulate, key = lambda i: i["software"])
 	return dicttopopulate
@@ -114,6 +90,25 @@ def getMissingJson(dicttopopulate):
 
 
 
+def parse_standard_github_to_api(url):
+	remove = [
+	"/pulls",
+	"/releases",
+	"/latest",
+	"/issues",
+	"/projects",
+	"/wiki",
+	"/pulse",
+	]
+	try:
+		for item in remove:
+			url = url.replace(item,"")
+		base = "https://api.github.com/repos/"
+		url = base + url.rsplit("https://github.com/",1)[1]
+		url = url + "/releases"
+		return(url)
+	except:
+		return None
 
 
-
+# def get_new_repo(repo):

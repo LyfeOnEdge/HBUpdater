@@ -168,7 +168,7 @@ Due to key generation changes introduced in 7.0.0, Lockpick is not able to dump 
 	"gihubjson" : None,
 
 	"author" : "FlagBrew", 
-	"projectpage": None,
+	"projectpage": "https://gbatemp.net/threads/release-2048-port-for-switch-homebrew.501678/",
 	"description" : "2048 port for Switch Homebrew",
 	"group" : GAME,
 
@@ -214,7 +214,7 @@ Due to key generation changes introduced in 7.0.0, Lockpick is not able to dump 
 	"gihubjson" : None,
 
 	"author" : "J-D-K", 
-	"projectpage": None,
+	"projectpage": "https://gbatemp.net/threads/release-jks-savemanager-homebrew-cia-save-manager.413143/",
 	"description": """WIP Save manager for the Switch, JKSV on Switch started as a small project/port to test some things and get familiar with libnx. A list of what it currently can do:
 
 Dump and restore save data.
@@ -243,12 +243,12 @@ Misc Extras:
 	"gihubjson" : None,
 
 	"author" : "joel16",
-	"projectpage": None,
+	"projectpage": "https://gbatemp.net/threads/nx-shell-multipurpose-file-manager-for-nintendo-switch.505332/",
 	"description": "Work in progress port of 3DShell (Multi purpose file manager) to the Nintendo Switch.",
  	"group": TOOL,
 
 	"install_subfolder": "NX-Shell",
-	"content_type"
+	"content_type": None,
 	"zip_items": None,
 	},
 	{
@@ -258,7 +258,7 @@ Misc Extras:
 	"gihubjson" : None,
 
 	"author" : "exelix11", 
-	"projectpage": None,
+	"projectpage": "https://gbatemp.net/download/nxthemes-installer.35408/",
 	"description": """The Switch theme injector project is composed of three parts:
 
 Switch theme injector (Windows app): An app to create and edit custom themes
@@ -280,7 +280,7 @@ Unfortunately SZS files from the switch os contain copyrighted data so to make t
 	"gihubjson" : None,
 
 	"author" : None, 
-	"projectpage": None,
+	"projectpage": "https://gbatemp.net/threads/pplay-switch-video-player.526187/",
 	"description" : "pPlay is a video player for the Nintendo Switch. pPlay support most popular video formats, have subtitles (embedded ass) and http streaming support.",
 	"group" : TOOL,
 
@@ -295,7 +295,7 @@ Unfortunately SZS files from the switch os contain copyrighted data so to make t
 	"gihubjson" : None,
 
 	"author" : None, 
-	"projectpage": None,
+	"projectpage": "https://gbatemp.net/threads/switchident.504134/",
 	"description": "This is yet another identity tool that is continuing the series of <device name here>ident. This tool allows users to get various bits of information from your Nintendo Switch device, hence the name 'ident' as in identifying your Nintendo Switch.",
 	"group": TOOL,
 
@@ -310,7 +310,7 @@ Unfortunately SZS files from the switch os contain copyrighted data so to make t
 	"gihubjson" : None,
 
 	"author" : None, 
-	"projectpage": None,
+	"projectpage": "https://gbatemp.net/threads/switchident.504134/",
 	"description": "This is yet another identity tool that is continuing the series of <device name here>ident. This tool allows users to get various bits of information from your Nintendo Switch device, hence the name 'ident' as in identifying your Nintendo Switch.",
 	"group": TOOL,
 
@@ -325,7 +325,7 @@ Unfortunately SZS files from the switch os contain copyrighted data so to make t
 	"gihubjson" : None,
 
 	"author" : None, 
-	"projectpage": None,
+	"projectpage": "https://gbatemp.net/threads/checkpoint-save-manager-released-for-nintendo-switch.503370/",
 	"description": "A fast and simple homebrew save manager for 3DS and Switch written in C++.",
 	"group": TOOL,
 
@@ -340,7 +340,7 @@ Unfortunately SZS files from the switch os contain copyrighted data so to make t
 	"gihubjson" : None,
 
 	"author" : None, 
-	"projectpage": None,
+	"projectpage": "https://gbatemp.net/threads/vba-next-for-switch-works-4-1.504947/",
 	"description" :  """A VBA-M port for Nintendo Switch. It's based of the libretro port(the actual emulator) and 3DSGBA(the GUI, although heavily refactored).
 
 After porting 3DSGBA(which often crashed probably because of a huge amount of memory leaks), I tried porting mGBA which ran not so well. That's why I decided to experiment with a lighter less accurate emulator, which lead to this port.""",
@@ -357,7 +357,7 @@ After porting 3DSGBA(which often crashed probably because of a huge amount of me
 	"gihubjson" : None,
 
 	"author" : None, 
-	"projectpage": None,
+	"projectpage": "https://gbatemp.net/threads/duke-nukem-3d.502386/",
 	"description" : "EDuke32 is an awesome, free homebrew game engine and source port of the classic PC first person shooter Duke Nukem 3D",
 	"group" : GAME,
 
@@ -387,7 +387,7 @@ After porting 3DSGBA(which often crashed probably because of a huge amount of me
 	"gihubjson" : None,
 
 	"author" : None, 
-	"projectpage": None,
+	"projectpage": "https://gbatemp.net/threads/homebrew-space-game-nx.493643/",
 	"description" : """This is a port of a space invaders type game I wrote for the Xbox 360 homebrew scene. Initially, I was going to remove the Xbox 360 specific artwork, but then figured it sort of made sense to have the xbox boss be an "Invader" on the Nintendo Switch.
 
 The project has always been a learning project so I hope others can get use out of the source code and are able to improve upon or learn from it.
@@ -406,7 +406,7 @@ Known Bugs: There appears to be some bug that causes the screen to flicker durin
 	"gihubjson" : None,
 
 	"author" : None, 
-	"projectpage": None,
+	"projectpage": "https://gbatemp.net/threads/kens-labyrinth-enhanced-port-for-nintendo-switch.529434/",
 	"description" : "Classic MS-DOS shooter with enhanced features such as HD textures and 60fps support",
 	"group" : GAME,
 
@@ -421,7 +421,7 @@ Known Bugs: There appears to be some bug that causes the screen to flicker durin
 	"gihubjson" : None,
 
 	"author" : None, 
-	"projectpage": None,
+	"projectpage": "https://gbatemp.net/threads/release-meritous-for-switch.498356/",
 	"description" : "Top View Dungeon Game",
 	"group" : GAME,
 
@@ -438,7 +438,7 @@ Known Bugs: There appears to be some bug that causes the screen to flicker durin
 	"gihubjson" : None,
 
 	"author" : None, 
-	"projectpage": None,
+	"projectpage": "https://gbatemp.net/threads/incognito.531924/",
 	"description" : "Wipes personal information from your Nintendo Switch by removing it from prodinfo.",
 	"group" : "tool, REINX ONLY",
 
@@ -447,22 +447,38 @@ Known Bugs: There appears to be some bug that causes the screen to flicker durin
 	"zip_items": None,
 	},
 
+
+	{
+	"software" : "PyNX",
+	"githubapi" : "https://api.github.com/repos/nx-python/PyNX/releases",
+	"github_asset" : None, 
+	"gihubjson" : None,
+
+	"author" : None, 
+	"projectpage": "https://gbatemp.net/threads/nx-python-create-python-homebrew-for-the-switch.499150/",
+	"description" : """nx-python is an ecosystem for developing and running Python homebrew applications on the Nintendo Switch. PyNX serves as the entry point to running Python apps on your Switch. It is a homebrew app that contains a port of the CPython interpreter and allows you to run Python applications from the Homebrew Menu. Just name your application main.py and place it next to the PyNX.nro, and it will be executed as soon as you launch PyNX from the Homebrew Menu. Currently, Python 3.5 is supported.""",
+	"group" : TOOL,
+
+	"install_subfolder": "switch",
+	"content_type" : None,
+	"zip_items": None,
+	},
 ]
 
 	# {
-	# 	"software" : "",
-	# 	"githubapi" : "",
-	# 	"github_asset" : None, 
-	# 	"gihubjson" : None,
+	# "software" : "",
+	# "githubapi" : "",
+	# "github_asset" : None, 
+	# "gihubjson" : None,
 
-	#	"author" : None, 
-	#	"projectpage": None,
-	# 	"description" : "",
-	# 	"group" : ,
+	# "author" : None, 
+	# "projectpage": None,
+	# "description" : "",
+	# "group" : ,
 
-	# 	"install_subfolder": None,
-	# 	"content_type" : None,
-	# 	"zip_items": None,
+	# "install_subfolder": None,
+	# "content_type" : None,
+	# "zip_items": None,
 	# },
 
 

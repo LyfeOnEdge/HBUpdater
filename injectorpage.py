@@ -41,7 +41,7 @@ class injectorScreen(tk.Frame):
 
 		self.console = cw.consolebox(self)
 		self.console.place(relx=0,rely=.7,relwidth=1, width =-infoframewidth,relheight=.3)
-		self.printpayloadinjectoroutput("Connect Switch, select payload, and press inject.\nThe payload will be downloaded from github if it hasn't been already.\n")
+		self.printtoconsolebox("Double-click payloads above to install other versions.\nConnect Switch, select payload, and press inject.\nThe payload and injector will be downloaded from github if they haven't been already.\n")
 
 		self.listbox_frame = cw.themedframe(self,frame_borderwidth=0,frame_highlightthickness=0)
 		self.listbox_frame.place(relx=0,rely=0,relheight=.7,relwidth=0.4)
@@ -139,10 +139,10 @@ class injectorScreen(tk.Frame):
 				try:
 					installpyusb()
 				except:
-					self.printpayloadinjectoroutput("Unknown error installing PyUSB")
+					self.printtoboth("Unknown error installing PyUSB")
 					return
 			else:
-				self.printpayloadinjectoroutput("Got answer: no, not installing")
+				self.printtoboth("Got answer: no, not installing")
 				return
 
 		with open(HBUpdater.ijdict[HBUpdater.payloadchunknumber]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
@@ -150,40 +150,48 @@ class injectorScreen(tk.Frame):
 			softwarename = HBUpdater.ijdict[HBUpdater.payloadchunknumber]["software"]
 			version = jfile[0]["tag_name"]
 			if HBUpdater.checkguitag(softwarename,"version") == None or HBUpdater.checkguitag(softwarename,"version") =="not installed":
-				print("payload not yet downloaded, downloading...")
+				self.printtoboth("payload not yet downloaded, downloading...")
 
+				#default asset number
 				assetnumber = 0
 
 				if not HBUpdater.ijdict[HBUpdater.payloadchunknumber]["github_asset"] == None:
+					#if the asset we are going for is not the default (eg it is set in locations.py under github_asset) update the assetnumber
 					assetnumber = HBUpdater.ijdict[HBUpdater.payloadchunknumber]["github_asset"]
 
+				#get the download url for the payload we are going for
 				downloadurl = jfile[0]["assets"][assetnumber]["browser_download_url"]
+				self.printtoboth("downloading payload from {}".format(downloadurl))
+
+				#file yielded by the download
 				file = webhandler.download(downloadurl)
-				file = homebrewcore.joinpaths(homebrewcore.downloadsfolder, file)
+				file = homebrewcore.joinpaths(homebrewcore.downloadsfolder, file) #get absolute path to it
 					
+				#if downloaded file is already .bin, set the payload path to it.
 				if file.endswith(".bin"):
 					payload = file
-
+					
 				elif file.endswith(".zip"):
-
+					#if file is zip, unzip it and find the payload based on the pattern set in its entry in #locations
 					with ZipFile(file, 'r') as zipObj:
 						zipObj.extractall(homebrewcore.payloadsfolder)
-						print("Sucessfully extracted {} to payloads folder".format(file))
+						self.printtoboth("Sucessfully extracted {} to payloads folder\n".format(file))
 						files = zipObj.namelist()
 						payload = None
 						for possiblepayloadfile in files:
 							if possiblepayloadfile.startswith(HBUpdater.ijdict[HBUpdater.payloadchunknumber]["zip_items"]):
 								payload = possiblepayloadfile
 						if payload == None:
-							self.printpayloadinjectoroutput("Could not find payload in extracted files")
+							self.printtoboth("Could not find payload in extracted files")
 							return 
 
 					payload = homebrewcore.joinpaths(homebrewcore.payloadsfolder,payload)
 
 				else:
-					self.printpayloadinjectoroutput("file handling method not found")
+					self.printtoboth("file handling method not found")
 					return
 
+				#prep new entry to the gui log
 				newentry = {
 							softwarename: {
 								"version": version,
@@ -192,8 +200,9 @@ class injectorScreen(tk.Frame):
 						}
 				HBUpdater.updateguilog(newentry)
 				self.popsoftwarelistbox()
-			else:
 
+			#If payload is already downloaded and up-to-date
+			else:
 				payload = HBUpdater.checkguitag(softwarename,"location")
 
 
@@ -295,9 +304,14 @@ class injectorScreen(tk.Frame):
 
 
 
-	def printpayloadinjectoroutput(self,stringtoprint):
+	def printtoboth(self,stringtoprint):
 		self.console.print(stringtoprint)
 		print(stringtoprint)
+
+	def printtoconsolebox(self,stringtoprint):
+		self.console.print(stringtoprint)
+
+
 
 def checkifpyusbinstalled():
 	reqs = subprocess.check_output([sys.executable, '-m', 'pip', 'freeze'])
@@ -318,7 +332,7 @@ def installPyUSB():
 
 def injectpayload(self,payload):
 	if HBUpdater.checkguitag("fusee-launcher", "version") == "not installed" or HBUpdater.checkguitag("fusee-launcher", "version") == "none":
-		# self.printpayloadinjectoroutput("fusee-launcher not installed, downloading")
+		# self.printtoboth("fusee-launcher not installed, downloading")
 		with open(HBUpdater.payloadinjector[0]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
 			jfile = json.load(json_file)
 			downloadurl = jfile[0]["zipball_url"]
@@ -327,14 +341,14 @@ def injectpayload(self,payload):
 			version = jfile[0]["tag_name"]
 			with ZipFile(file, 'r') as zipObj:
 				zipObj.extractall(homebrewcore.payloadsfolder)
-				self.printpayloadinjectoroutput(self,"Sucessfully extracted {} to payloads folder".format(file))
+				self.printtoboth("Sucessfully extracted {} to payloads folder".format(file))
 				files = zipObj.namelist()
 				injector = None
 				for possiblepayloadfile in files:
 					if possiblepayloadfile.startswith(files[0] + "fusee"):
 						injector = possiblepayloadfile
 				if injector == None:
-					self.printpayloadinjectoroutput("Could not find injector in extracted files")
+					self.printtoboth("Could not find injector in extracted files")
 					return 
 			newentry = {
 				"fusee-launcher" : {
@@ -351,5 +365,5 @@ def injectpayload(self,payload):
 	          stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1)
 	with p.stdout:
 	    for line in iter(p.stdout.readline, b''):
-	    	self.printpayloadinjectoroutput(line)
+	    	self.printtoboth(line)
 	p.wait()

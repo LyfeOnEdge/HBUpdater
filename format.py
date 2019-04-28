@@ -18,7 +18,7 @@ column_relwidth = .20
 #Image for when there is an author image incompatible with tkinter
 notfoundimage = "notfound.png"
 
-#file for tracking downloaded payloads and fusee version
+
 
 
 ##Text Styles
@@ -136,3 +136,7 @@ injector_separator_width = 2
 
 ##Injector Page
 consoletext = smalltext
+
+#width ov validity column in add repo page
+validcolumnwidth = 75
+reposeparatorwidth = 4

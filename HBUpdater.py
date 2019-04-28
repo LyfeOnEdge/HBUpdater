@@ -7,7 +7,7 @@ import json
 if __name__ == '__main__':
 	sys.exit("This file was not meant to run without a frontend. Exiting...")
 
-version = "0.2 (BETA)"
+version = "0.4 (BETA)"
 print("HBUpdater version {}".format(version))
 
 #My modules
@@ -49,12 +49,14 @@ def setDict(dicty):
 	global hbdict
 	global dictlen
 	hbdict = dicty
+	# print(json.dumps(hbdict, indent=8))
 	dictlen = len(hbdict)
 
 def setIJDict(dicty):
 	global ijdict
 	global ijdictlen
 	ijdict = dicty
+	# print(json.dumps(ijdict, indent=8))
 	ijdictlen = len(ijdict)
 
 def setPayloadInjector(dicty):
@@ -67,23 +69,26 @@ def setSDpath(sdpath):
 	global trackingfolder
 	global trackingfile
 	global sdpathset
-	chosensdpath = sdpath
-	print("SD path set to: {}".format(str(chosensdpath)))
-
-	if not(str(chosensdpath) == ""):
-		print("sd path set")
+	if not(str(sdpath) == ""):
+		chosensdpath = sdpath
+		print("SD path set to: {}".format(str(chosensdpath)))
 		sdpathset = True
+
 		trackingfolder = homebrewcore.joinpaths(chosensdpath, homebrewcore.trackingfolder)
 		if not homebrewcore.direxist(trackingfolder):
 			os.mkdir(trackingfolder)
 		trackingfile = homebrewcore.joinpaths(trackingfolder, homebrewcore.trackingfile)
 		if not homebrewcore.exists(trackingfile):
 			with open(trackingfile, "w+") as jfile:
-				json.dump({}, jfile, indent=4,)
+				initdata = {}
+				initdata["created_with"] = version
+				json.dump(initdata, jfile, indent=4,)
 
 	else:
 		print("invalid path chosen")
 		sdpathset = False
+
+	print("sdpathset = {}".format(sdpathset))
 
 def installitem(dicty, option, suboption):
 	print("\n")
@@ -158,12 +163,49 @@ def installfiletosd(filename,subfolder):
 				sdlocation = zipObj.namelist()
 				namelist = []
 				for location in sdlocation:
-					namelist.append(homebrewcore.joinpaths(chosensdpath,location))
+					namelist.append(homebrewcore.joinpaths(subdir,location))
 				print("files copied: \n {}".format(namelist))
+				print(subdir)
 				return namelist
 	else:
 		print("file handling method not found")
 		return None
+
+
+def uninstallsoftware(softwarename):
+	if not sdpathset:
+		print("SD path not set, can't uninstall")
+		return
+	if checkversion(softwarename) == "not installed":
+		print("Not installed.")
+		return
+
+
+	filestoremove = getlogitem(softwarename,"location")
+	print("removing {}".format(filestoremove))
+	if 'str' in str(type(filestoremove)):
+		os.remove(filestoremove)
+		print("removed {}".format(filestoremove))
+	else:
+		for path in filestoremove: 
+			if os.path.isfile(path):  
+			    os.remove(path)
+			    print("removed {}".format(path))
+		for file in filestoremove:
+			if os.path.isdir(file):
+				shutil.rmtree(file)
+				print("removed folder {}".format(file))
+
+	newentry = {
+				softwarename : {
+					"version": "not installed",
+					"location": None,
+				}
+			}
+	updatelog(newentry)
+	print("uninstalled {}".format(softwarename))
+
+
 
 def updatelog(newentry):
 	if not homebrewcore.direxist(trackingfolder):
@@ -241,3 +283,28 @@ def checkguitag(software, key):
 		info = None
 
 	return info
+
+def addrepo(url):
+	apiurl = webhandler.parse_standard_github_to_api(url)
+	if apiurl == None:
+		print("error parsing link")
+		return
+	print(apiurl)
+	repo = apiurl.rsplit("/",2)[1]
+	print(repo)
+	author = apiurl.rsplit("/",3)[1]
+	print(author)
+
+	# newentry = {
+	# 				"repos" : {
+	# 					"software" : {
+	# 						"githuburl" : repourl,
+	# 						"githubapi" : apiurl,
+	# 						"description" : repodescription,
+	# 						"group" : repogroup,
+	# 						"install_subfolder" : reposubfolder,
+	# 					}
+	# 				}
+	# 			}
+
+
