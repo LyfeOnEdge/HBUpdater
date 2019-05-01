@@ -7,7 +7,7 @@ import json
 if __name__ == '__main__':
 	sys.exit("This file was not meant to run without a frontend. Exiting...")
 
-version = "0.4 (BETA)"
+version = "0.3b (BETA)"
 print("HBUpdater version {}".format(version))
 
 #My modules
@@ -36,12 +36,8 @@ ijdictlen = 0
 payloadinjector = {}
 
 
-guilog = "guilog_user.json"
-guilog_default = "guilog_default.json"
-if not homebrewcore.exists(guilog):
-	print("Gui json not found, initializing")
-	shutil.copy(guilog_default,guilog)
 
+	
 
 
 
@@ -256,55 +252,5 @@ def checkversion(software):
 	except:
 		return "not installed"
 
-
-def updateguilog(newentry):
-	#open log
-	print("updating gui log with {}".format(newentry))
-	with open(guilog, 'r') as jfile:  
-		originaljfile = json.load(jfile)
-
-	#update value
-	originaljfile.update(newentry)
-
-	#write updated log
-	with open(guilog, 'w+') as jfile:
-		json.dump(originaljfile, jfile, indent=4,)
-
-def checkguitag(software, key):
-	try:
-		with open(guilog, 'r') as json_file:  
-			jfile = json.load(json_file)
-
-		try:
-			info = jfile[software][key]
-		except:
-			info = None
-	except:
-		info = None
-
-	return info
-
-def addrepo(url):
-	apiurl = webhandler.parse_standard_github_to_api(url)
-	if apiurl == None:
-		print("error parsing link")
-		return
-	print(apiurl)
-	repo = apiurl.rsplit("/",2)[1]
-	print(repo)
-	author = apiurl.rsplit("/",3)[1]
-	print(author)
-
-	# newentry = {
-	# 				"repos" : {
-	# 					"software" : {
-	# 						"githuburl" : repourl,
-	# 						"githubapi" : apiurl,
-	# 						"description" : repodescription,
-	# 						"group" : repogroup,
-	# 						"install_subfolder" : reposubfolder,
-	# 					}
-	# 				}
-	# 			}
 
 

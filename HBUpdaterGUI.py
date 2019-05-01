@@ -31,6 +31,9 @@ import mainpage as mp
 import settingspage as sp
 import addrepopage as ar
 
+
+
+
 #Main frame handler, raises and pages in z layer
 class FrameManager(tk.Tk):
 	def __init__(self, *args, **kwargs):
@@ -82,9 +85,13 @@ def GetUpdatedJson():
 	HBUpdater.setIJDict(webhandler.getUpdatedSoftwareLinks(locations.payloadlist))
 	HBUpdater.setPayloadInjector(webhandler.getUpdatedSoftwareLinks(locations.payloadinjector))
 
+# def HandleUserAddedRepos():
+
+
+
 if __name__ == '__main__':  
-	#UseCachedJson() #use this to use only pre-downloaded json files
-	GetUpdatedJson() #use this to download new json (required to get updates)
+	UseCachedJson() #use this to use only pre-downloaded json files
+	#GetUpdatedJson() #use this to download new json (required to get updates)
 	
 	for softwarechunk in HBUpdater.hbdict:
 		softwarechunk["photopath"] = None
@@ -95,8 +102,6 @@ if __name__ == '__main__':
 
 
 
-# #launch with a passed software list
-# def startGui(dicty):
-#     setDict(HBUpdater.software)
-#     gui = appManagerGui()
-#     gui.mainloop()
+
+
+

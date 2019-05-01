@@ -46,7 +46,6 @@ def add_placeholder_to(entry, placeholder, color="grey", font=None):
 
     return state
 
-#Searchbox, mit license.
 class SearchBox(tk.Frame):
     def __init__(self, master, entry_width=30, entry_font=search_font, entry_background=dark_color, entry_foreground=search_font_color, button_text="Search", button_ipadx=10, button_background=dark_color, button_foreground="white", button_font=None, placeholder=place_holder_text, placeholder_font=place_holder_font, placeholder_color=place_holder_color, spacing=3, command=None):
         tk.Frame.__init__(self, master, borderwidth=0, highlightthickness=0,background=entry_background)
@@ -93,6 +92,51 @@ class SearchBox(tk.Frame):
         text = self.get_text()
         self._command(text)
 
+class entrybox(tk.Frame):
+    def __init__(self, master, entry_width=30, entry_font=search_font, entry_background=dark_color, entry_foreground=search_font_color, button_text="Search", button_ipadx=10, button_background=dark_color, button_foreground="white", button_font=None, placeholder=place_holder_text, placeholder_font=repo_placeholder_font, placeholder_color=place_holder_color, spacing=3, command=None):
+        tk.Frame.__init__(self, master, borderwidth=0, highlightthickness=0,background=entry_background)
+        
+        self._command = command
+
+        self.entry = tk.Entry(self, width=entry_width, background=entry_background, highlightcolor=button_background, highlightthickness=0, foreground = entry_foreground,borderwidth=0)
+        self.entry.place(x=0,y=0,relwidth=1,relheight=1)
+        
+        if entry_font:
+            self.entry.configure(font=entry_font)
+
+        if placeholder:
+            add_placeholder_to(self.entry, placeholder, color=placeholder_color, font=repo_placeholder_font)
+
+        self.entry.bind("<Escape>", lambda event: self.entry.nametowidget(".").focus())
+        self.entry.bind("<Return>", self._on_execute_command)
+
+    def get_text(self):
+        entry = self.entry
+        if hasattr(entry, "placeholder_state"):
+            if entry.placeholder_state.contains_placeholder:
+                return ""
+            else:
+                return entry.get()
+        else:
+            return entry.get()
+        
+    def set_text(self, text):
+        entry = self.entry
+        if hasattr(entry, "placeholder_state"):
+            entry.placeholder_state.contains_placeholder = False
+
+        entry.delete(0, END)
+        entry.insert(0, text)
+        
+    def clear(self):
+        self.entry_var.set("")
+        
+    def focus(self):
+        self.entry.focus()
+
+    def _on_execute_command(self, event):
+        text = self.get_text()
+        self._command(text)
 
 
 
@@ -459,4 +503,4 @@ class separator(themedlabel):
 	def __init__(self,frame):
 		themedlabel.__init__(self,frame,"")
 
-		
+	

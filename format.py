@@ -139,4 +139,6 @@ consoletext = smalltext
 
 #width ov validity column in add repo page
 validcolumnwidth = 75
+entryheight = 29
 reposeparatorwidth = 4
+repo_placeholder_font = smalltext

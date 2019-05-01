@@ -51,14 +51,14 @@ class mainPage(tk.Frame,):
 		self.sdicon.place(relx= 1, x=-self.iconspacer, rely=.5, y = -((searchboxheight)/2) + icon_and_search_bar_spacing,width =searchboxheight-2*icon_and_search_bar_spacing, height=searchboxheight-2*icon_and_search_bar_spacing)
 
 
-		# self.iconspacer += icon_and_search_bar_spacing
+		self.iconspacer += icon_and_search_bar_spacing
 
 
-		# self.addrepoimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"plus.png"))
-		# self.addrepoimage = self.addrepoimage.subsample(2)
-		# self.iconspacer += searchboxheight-2*icon_and_search_bar_spacing
-		# self.repoicon = cw.iconbutton(self.searchbox_frame, self.addrepoimage,command_name=lambda: self.controller.show_frame("addRepoScreen"))
-		# self.repoicon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -((searchboxheight)/2) + icon_and_search_bar_spacing,width = searchboxheight-2*icon_and_search_bar_spacing, height=searchboxheight-2*icon_and_search_bar_spacing)
+		self.addrepoimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"plus.png"))
+		self.addrepoimage = self.addrepoimage.subsample(2)
+		self.iconspacer += searchboxheight-2*icon_and_search_bar_spacing
+		self.repoicon = cw.iconbutton(self.searchbox_frame, self.addrepoimage,command_name=lambda: self.controller.show_frame("addRepoScreen"))
+		self.repoicon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -((searchboxheight)/2) + icon_and_search_bar_spacing,width = searchboxheight-2*icon_and_search_bar_spacing, height=searchboxheight-2*icon_and_search_bar_spacing)
 
 		self.iconspacer += icon_and_search_bar_spacing
 
