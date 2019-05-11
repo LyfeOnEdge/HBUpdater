@@ -1,6 +1,6 @@
 import homebrewcore 
 import webhandler
-import json
+import json, shutil
 version = 0.2
 
 #variable to hold repo list
