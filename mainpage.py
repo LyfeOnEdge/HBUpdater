@@ -1,6 +1,7 @@
 import HBUpdater
 from format import * 
 import homebrewcore
+import guicore
 import webhandler
 
 import tkinter as tk
@@ -12,13 +13,19 @@ import json
 
 import webbrowser
 
-
+details_guide_text = """This menu will allow you to install older versions of apps, uninstall software, and go to the software's project page. Project pages are not currently supported for user-added content. 
+""" 
 
 class mainPage(tk.Frame,):
 	def __init__(self, parent, controller,back_command):
 		tk.Frame.__init__(self,parent)
-
+		self.bind("<<ShowFrame>>", self.on_show_frame)
 		self.controller = controller
+
+
+		#Shared images
+		self.infoimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"info.png")).zoom(3).subsample(5)
+		self.returnimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"returnbutton.png")).zoom(3).subsample(5)
 
 
 		#Full window frame, holds everything
@@ -39,38 +46,34 @@ class mainPage(tk.Frame,):
 		
 		# self.settingsimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"settings.png"))
 		# self.settingsimage = self.settingsimage.subsample(2)
-		# self.iconspacer = self.settingsimage.width()
+		# self.iconspacer += searchboxheight-2*icon_and_search_bar_spacing
 		# self.settingsicon = cw.iconbutton(self.searchbox_frame,self.settingsimage,command_name=lambda: self.controller.show_frame("settingsPage"))
-		# self.settingsicon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -self.settingsimage.height()/2,width = self.settingsimage.width(), height=self.settingsimage.height())
+		# self.settingsicon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -((searchboxheight)/2) + icon_and_search_bar_spacing,width = searchboxheight-2*icon_and_search_bar_spacing, height=searchboxheight-2*icon_and_search_bar_spacing)
 
 		# self.iconspacer += icon_and_search_bar_spacing
+		
+		self.injectimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"injector.png"))
+		self.injectimage = self.injectimage.subsample(2)
+		self.iconspacer += searchboxheight-2*icon_and_search_bar_spacing
+		self.injecticon = cw.iconbutton(self.searchbox_frame,self.injectimage,command_name=lambda: self.controller.show_frame("injectorScreen"))
+		self.injecticon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -((searchboxheight)/2) + icon_and_search_bar_spacing,width = searchboxheight-2*icon_and_search_bar_spacing, height=searchboxheight-2*icon_and_search_bar_spacing)
+		
+		self.iconspacer += icon_and_search_bar_spacing
 		self.sdimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"sd.png"))
 		self.sdimage = self.sdimage.subsample(2)
 		self.iconspacer += searchboxheight-2*icon_and_search_bar_spacing
 		self.sdicon = cw.iconbutton(self.searchbox_frame,self.sdimage,command_name=self.setSDpath)
 		self.sdicon.place(relx= 1, x=-self.iconspacer, rely=.5, y = -((searchboxheight)/2) + icon_and_search_bar_spacing,width =searchboxheight-2*icon_and_search_bar_spacing, height=searchboxheight-2*icon_and_search_bar_spacing)
 
-
 		self.iconspacer += icon_and_search_bar_spacing
-
-
 		self.addrepoimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"plus.png"))
 		self.addrepoimage = self.addrepoimage.subsample(2)
 		self.iconspacer += searchboxheight-2*icon_and_search_bar_spacing
 		self.repoicon = cw.iconbutton(self.searchbox_frame, self.addrepoimage,command_name=lambda: self.controller.show_frame("addRepoScreen"))
 		self.repoicon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -((searchboxheight)/2) + icon_and_search_bar_spacing,width = searchboxheight-2*icon_and_search_bar_spacing, height=searchboxheight-2*icon_and_search_bar_spacing)
 
-		self.iconspacer += icon_and_search_bar_spacing
-
-		self.injectimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"injector.png"))
-		self.injectimage = self.injectimage.subsample(2)
-		self.iconspacer += searchboxheight-2*icon_and_search_bar_spacing
-		self.injecticon = cw.iconbutton(self.searchbox_frame,self.injectimage,command_name=lambda: self.controller.show_frame("injectorScreen"))
-		self.injecticon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -((searchboxheight)/2) + icon_and_search_bar_spacing,width = searchboxheight-2*icon_and_search_bar_spacing, height=searchboxheight-2*icon_and_search_bar_spacing)
-
-		self.iconspacer += icon_and_search_bar_spacing*2
-
 		#search box, custom class
+		self.iconspacer += icon_and_search_bar_spacing*2
 		self.sb = cw.SearchBox(self.searchbox_frame, command=self.search, placeholder="Type and press enter to search")
 		self.sb.place(relx=0,rely=.5, x=+icon_and_search_bar_spacing, relwidth=1, width=-(self.iconspacer), height=searchboxheight-2*icon_and_search_bar_spacing, y=-((searchboxheight)/2) + icon_and_search_bar_spacing ) 
 
@@ -154,10 +157,13 @@ class mainPage(tk.Frame,):
 		self.details_frame.place(relx=0.0, rely=0.0, width=-infoframewidth, relheight=1, relwidth=1)
 		
 		self.tags_listbox = cw.customlistbox(self.details_frame)
-		self.tags_listbox.place(relx=0.0, rely=0, relheight=0.9, relwidth=0.2)
+		self.tags_listbox.place(relx=0.0, rely=0, relheight=1, relwidth=0.2)
 		self.tags_listbox.configure(font=tags_listbox_font)
 		self.tags_listbox.configure(font=version_number_font)
 		self.tags_listbox.bind('<<ListboxSelect>>',self.CurTagSelet)
+
+		self.patch_notes_separator = cw.separator(self.details_frame)
+		self.patch_notes_separator.place(relx=0.2,width=separatorwidth, rely=0, relheight=1,)
 		
 		#patch notes 
 		self.scrolling_patch_notes = cw.ScrolledText(self.details_frame,
@@ -169,37 +175,54 @@ class mainPage(tk.Frame,):
 			background=version_notes_column_background,
 			foreground=version_notes_color,
 			wrap="none",
+			borderwidth=0,
+			highlightthickness=0,
 			)
-		self.scrolling_patch_notes.place(relx=0.2, rely=0, relheight=0.9, relwidth=0.8)
+		self.scrolling_patch_notes.place(relx=0.2,x=+separatorwidth, rely=0, relheight=1, relwidth=0.8,width=-separatorwidth)
 
-		self.details_box = cw.themedframe(self.details_frame,background_color=light_color)
-		self.details_box.place(relx=0, rely=0.9, relheight=0.1, relwidth=1)
 
-		self.uninstall_button = cw.navbutton(self.details_box,command_name=self.uninstall,image_object= None,text_string="Uninstall")
-		self.uninstall_button.place(relx=0, rely=0.1, height=navbuttonheight, x=+navbuttonspacing)
+		#frame to hold subframes in far right column
+		self.rightcolumn = cw.themedframe(self, frame_borderwidth=0,frame_highlightthickness=0)
+		self.rightcolumn.place(relx=1, x=-infoframewidth, rely=0.0, relheight=1, width=infoframewidth)
 
-		self.project_page_button = cw.navbutton(self.details_box,command_name=self.openprojectpage,image_object= None,text_string="Project Page")
-		self.project_page_button.place(relx=0.5, rely=0.1, height=navbuttonheight, x=+navbuttonspacing)
 
-		self.infobox = cw.infobox(self.outer_frame)
-		self.infobox.place(relx=1, x=-infoframewidth, rely=0.0, relheight=1, width=infoframewidth)
 
-		#Shared images
-		self.infoimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"info.png")).zoom(3).subsample(5)
-		self.returnimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"returnbutton.png")).zoom(3).subsample(5)
+		self.details_right_column = cw.themedframe(self.rightcolumn, frame_borderwidth=0,frame_highlightthickness=0,background_color=light_color)
+		self.details_right_column.place(relwidth = 1, relheight=1)
+
+		self.details_guide = cw.ScrolledText(self.details_right_column,borderwidth=0,highlightthickness=0,background=light_color,foreground=guidetextcolor,wrap=WORD,font=details_guide_font)
+		self.details_guide.place(relwidth=1,relheight=1,height=-(4*(navbuttonheight+separatorwidth)+separatorwidth))
+		self.details_guide.insert(END,details_guide_text)
+
+		self.project_page_button = cw.navbutton(self.details_right_column,command_name=self.openprojectpage,image_object= None,text_string="PROJECT PAGE")
+		self.project_page_button.place(relx=0, rely=1, y=-4*(navbuttonheight+separatorwidth), height=navbuttonheight, x=+separatorwidth,relwidth=1, width=-(2*separatorwidth))
+
+		self.uninstall_button = cw.navbutton(self.details_right_column,command_name=self.uninstall,image_object= None,text_string="UNINSTALL")
+		self.uninstall_button.place(relx=0, rely=1, y=-3*(navbuttonheight+separatorwidth), height=navbuttonheight, x=+separatorwidth,relwidth=1, width=-(2*separatorwidth))
 
 		#Back to list button frame, placed first so the details button covers it
-		self.details_buttons_frame =cw.navbox(self.infobox,
+		self.details_buttons =cw.navbox(self.details_right_column,
 			primary_button_command = self.specificinstall,
 			etc_button_image = self.returnimage,
 			etc_button_command = self.showlist,
 			left_context_command = self.versioncusordown,
 			right_context_command = self.versioncursorup,
 			)
-		self.details_buttons_frame.place(relx=.5, rely=1, x=-100, y=-87.5, height= 87.5, width=200)
+		self.details_buttons.place(relx=.5, rely=1, x=-100, y=-87.5, height= 87.5, width=200)
 
 
-		self.list_buttons_frame = cw.navbox(self.infobox,
+
+
+
+
+
+		self.main_right_column = cw.themedframe(self.rightcolumn, frame_borderwidth=0,frame_highlightthickness=0,background_color=light_color)
+		self.main_right_column.place(relwidth = 1, relheight=1)
+
+		self.infobox = cw.infobox(self.main_right_column)
+		self.infobox.place(relwidth=1,relheight=1,)
+
+		self.list_buttons_frame = cw.navbox(self.main_right_column,
 			primary_button_command = self.install,
 			etc_button_image = self.infoimage,
 			etc_button_command = self.showdetails,
@@ -213,7 +236,7 @@ class mainPage(tk.Frame,):
 		self.updateinfo()
 		self.refreshdetailwindow()
 		self.popsoftwarelistbox()
-		self.list_buttons_frame.tkraise()
+		self.main_right_column.tkraise()
 
 	def setSDpath(self):
 		chosensdpath = filedialog.askdirectory(initialdir="/",  title='Please select your SD card')
@@ -224,39 +247,39 @@ class mainPage(tk.Frame,):
 	def install(self):
 		
 		if HBUpdater.sdpathset:
-			HBUpdater.installitem(HBUpdater.hbdict, HBUpdater.softwarechunknumber,0)
+			HBUpdater.installitem(guicore.hbdict, guicore.softwarechunknumber,0)
 			self.updatelistbox(None)
 		else:
 			self.setSDpath()
 
 			if HBUpdater.sdpathset:
-				HBUpdater.installitem(HBUpdater.hbdict, HBUpdater.softwarechunknumber,0)
+				HBUpdater.installitem(guicore.hbdict, guicore.softwarechunknumber,0)
 				self.updatelistbox(None)
 			else:
 				print("SD Path Not set, not installing")
 
 	def specificinstall(self):
 		if HBUpdater.sdpathset:
-			HBUpdater.installitem(HBUpdater.hbdict, HBUpdater.softwarechunknumber, HBUpdater.tagversionnumber)
+			HBUpdater.installitem(guicore.hbdict, guicore.softwarechunknumber, guicore.tagversionnumber)
 			self.updatelistbox(None)
 		else:
 			self.setSDpath()
 
 			if HBUpdater.sdpathset:
-				HBUpdater.installitem(HBUpdater.hbdict, HBUpdater.softwarechunknumber, HBUpdater.tagversionnumber)
+				HBUpdater.installitem(guicore.hbdict, guicore.softwarechunknumber, guicore.tagversionnumber)
 				self.updatelistbox(None)
 			else:
 				print("SD Path Not set, not installing")
 
 	def uninstall(self):
 		if HBUpdater.sdpathset:
-			HBUpdater.uninstallsoftware(HBUpdater.hbdict[HBUpdater.softwarechunknumber]["software"])
+			HBUpdater.uninstallsoftware(guicore.hbdict[guicore.softwarechunknumber]["software"])
 			self.updatelistbox(None)
 		else:
 			self.setSDpath()
 
 			if HBUpdater.sdpathset:
-				HBUpdater.uninstallsoftware(HBUpdater.hbdict[HBUpdater.softwarechunknumber]["software"])
+				HBUpdater.uninstallsoftware(guicore.hbdict[guicore.softwarechunknumber]["software"])
 				self.updatelistbox(None)
 			else:
 				print("SD Path Not set, not installing")
@@ -265,14 +288,14 @@ class mainPage(tk.Frame,):
 	#raises the details frame
 	def showdetails(self):
 		self.details_frame.tkraise()
-		self.details_buttons_frame.tkraise()
+		self.details_right_column.tkraise()
 	def showdetailsevent(self,event):
 		self.showdetails()
 
     #raises the list frame
 	def showlist(self):
 		self.listbox_frame.tkraise()
-		self.list_buttons_frame.tkraise()
+		self.main_right_column.tkraise()
 	def showlistevent(self,event):
 		self.showlist()
 
@@ -293,10 +316,9 @@ class mainPage(tk.Frame,):
 
 	#fill the listboxes with data
 	def popsoftwarelistbox(self,):
-		for softwarechunk in HBUpdater.hbdict:
+		for softwarechunk in guicore.hbdict:
 			softwarename = softwarechunk["software"]
 			self.homebrew_listbox.insert(END, softwarename)
-
 			# self.homebrew_listbox.itemconfig(END, foreground=font_color)
 			with open(softwarechunk["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
 			  jfile = json.load(json_file)
@@ -319,7 +341,7 @@ class mainPage(tk.Frame,):
 			listbox.delete(0,END)
 
 
-		for softwarechunk in HBUpdater.hbdict:
+		for softwarechunk in guicore.hbdict:
 			softwarename = softwarechunk["software"]
 			self.homebrew_listbox.insert(END, softwarename)
 			
@@ -362,11 +384,10 @@ class mainPage(tk.Frame,):
 
 	#get current selection from list box
 	def CurSelet(self, event):
-		
 		widget = event.widget
 		selection=widget.curselection()
 		picked = widget.get(selection[0])
-		HBUpdater.softwarechunknumber = widget.get(0, "end").index(picked)
+		guicore.softwarechunknumber = widget.get(0, "end").index(picked)
 		self.updateinfo()
 		self.refreshdetailwindow()
 
@@ -389,25 +410,25 @@ class mainPage(tk.Frame,):
 
 	#update all info in the info box
 	def updateinfo(self):
-		self.homebrew_listbox.selection_clear(0,HBUpdater.dictlen-1)
-		self.homebrew_listbox.selection_set(HBUpdater.softwarechunknumber)
-		self.homebrew_listbox.see(HBUpdater.softwarechunknumber)
-		self.version_listbox.selection_clear(0,HBUpdater.dictlen-1)
-		self.version_listbox.selection_set(HBUpdater.softwarechunknumber)
-		self.version_listbox.see(HBUpdater.softwarechunknumber)
-		self.status_listbox.selection_clear(0,HBUpdater.dictlen-1)
-		self.status_listbox.selection_set(HBUpdater.softwarechunknumber)
-		self.status_listbox.see(HBUpdater.softwarechunknumber)
-		self.genre_listbox.selection_clear(0,HBUpdater.dictlen-1)
-		self.genre_listbox.selection_set(HBUpdater.softwarechunknumber)
-		self.genre_listbox.see(HBUpdater.softwarechunknumber)
+		self.homebrew_listbox.selection_clear(0,guicore.dictlen-1)
+		self.homebrew_listbox.selection_set(guicore.softwarechunknumber)
+		self.homebrew_listbox.see(guicore.softwarechunknumber)
+		self.version_listbox.selection_clear(0,guicore.dictlen-1)
+		self.version_listbox.selection_set(guicore.softwarechunknumber)
+		self.version_listbox.see(guicore.softwarechunknumber)
+		self.status_listbox.selection_clear(0,guicore.dictlen-1)
+		self.status_listbox.selection_set(guicore.softwarechunknumber)
+		self.status_listbox.see(guicore.softwarechunknumber)
+		self.genre_listbox.selection_clear(0,guicore.dictlen-1)
+		self.genre_listbox.selection_set(guicore.softwarechunknumber)
+		self.genre_listbox.see(guicore.softwarechunknumber)
 
-		if not HBUpdater.hbdict == {}:
+		if not guicore.hbdict == {}:
 
-			softwarename = HBUpdater.hbdict[HBUpdater.softwarechunknumber]["software"]
+			softwarename = guicore.hbdict[guicore.softwarechunknumber]["software"]
 			self.infobox.updatetitle(softwarename)
 
-			with open(HBUpdater.hbdict[HBUpdater.softwarechunknumber]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
+			with open(guicore.hbdict[guicore.softwarechunknumber]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
 				jfile = json.load(json_file)
 
 			#update author
@@ -416,7 +437,7 @@ class mainPage(tk.Frame,):
 
 			self.updateAuthorImage()
 
-			self.infobox.updatedescription(HBUpdater.hbdict[HBUpdater.softwarechunknumber]["description"])
+			self.infobox.updatedescription(guicore.hbdict[guicore.softwarechunknumber]["description"])
 
 
 
@@ -426,11 +447,11 @@ class mainPage(tk.Frame,):
 
 
 	def updateAuthorImage(self):
-		softwarename = HBUpdater.hbdict[HBUpdater.softwarechunknumber]["software"]
+		softwarename = guicore.hbdict[guicore.softwarechunknumber]["software"]
 		photopath = homebrewcore.checkphoto(homebrewcore.imagecachefolder, softwarename)
 
-		if HBUpdater.hbdict[HBUpdater.softwarechunknumber]["photopath"] == None:
-			HBUpdater.hbdict[HBUpdater.softwarechunknumber]["photopath"] = photopath
+		if guicore.hbdict[guicore.softwarechunknumber]["photopath"] == None:
+			guicore.hbdict[guicore.softwarechunknumber]["photopath"] = photopath
 
 		if not photopath == None:
 			photopath = homebrewcore.joinpaths(homebrewcore.imagecachefolder, photopath)
@@ -440,11 +461,11 @@ class mainPage(tk.Frame,):
 
 		if not photoexists:
 			try:
-				with open(HBUpdater.hbdict[HBUpdater.softwarechunknumber]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
+				with open(guicore.hbdict[guicore.softwarechunknumber]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
 					jfile = json.load(json_file)
 					url = jfile[0]["author"]["avatar_url"]
 				photopath = webhandler.cacheimage(url,softwarename)
-				HBUpdater.hbdict[HBUpdater.softwarechunknumber]["photopath"] = photopath
+				guicore.hbdict[guicore.softwarechunknumber]["photopath"] = photopath
 			except: 
 				print("could not download icon image (you can safely ignore this error)")
 				photopath = homebrewcore.joinpaths(homebrewcore.assetfolder,notfoundimage)
@@ -462,50 +483,47 @@ class mainPage(tk.Frame,):
 
 	#movement buttons, moves through homebrewlist or brew version
 	def pageup(self):
-		if HBUpdater.softwarechunknumber < HBUpdater.dictlen-1:
-			HBUpdater.softwarechunknumber += 1
+		if guicore.softwarechunknumber < guicore.dictlen-1:
+			guicore.softwarechunknumber += 1
 			self.updateinfo()
 			self.refreshdetailwindow()
 
 	def pagedown(self):
-		if HBUpdater.softwarechunknumber > 0:
-			HBUpdater.softwarechunknumber -= 1
+		if guicore.softwarechunknumber > 0:
+			guicore.softwarechunknumber -= 1
 			self.updateinfo()
 			self.refreshdetailwindow()
 
 
 	#movement buttons, moves through homebrewlist or brew version
 	def versioncursorup(self):
-		if HBUpdater.tagversionnumber < HBUpdater.taglen-1:
-			HBUpdater.tagversionnumber += 1
+		if guicore.tagversionnumber < guicore.taglen-1:
+			guicore.tagversionnumber += 1
 			self.updatetagsbox()
 			self.updatetagnotes()
 
 	def versioncusordown(self):
-		if HBUpdater.tagversionnumber > 0:
-			HBUpdater.tagversionnumber -= 1
+		if guicore.tagversionnumber > 0:
+			guicore.tagversionnumber -= 1
 			self.updatetagsbox()
 			self.updatetagnotes()
 
 	def updatetagsbox(self):
 		self.tags_listbox.selection_clear(0,END)
-		self.tags_listbox.selection_set(HBUpdater.tagversionnumber)
-		self.tags_listbox.see(HBUpdater.tagversionnumber)
+		self.tags_listbox.selection_set(guicore.tagversionnumber)
+		self.tags_listbox.see(guicore.tagversionnumber)
 
 	def updatetagnotes(self):
-		
-	    
-		with open(HBUpdater.hbdict[HBUpdater.softwarechunknumber]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
+		with open(guicore.hbdict[guicore.softwarechunknumber]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
 			jfile = json.load(json_file)
-		tagnotes = jfile[HBUpdater.tagversionnumber]["body"]
+		tagnotes = jfile[guicore.tagversionnumber]["body"]
 		self.scrolling_patch_notes.configure(state=NORMAL)
 		self.scrolling_patch_notes.delete('1.0', END)
 		self.scrolling_patch_notes.insert(END, tagnotes)
 		self.scrolling_patch_notes.configure(state=DISABLED)
 
 	def gettagdescription(self,index_string):
-		
-		with open(HBUpdater.hbdict[HBUpdater.softwarechunknumber]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
+		with open(guicore.hbdict[guicore.softwarechunknumber]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
 			jfile = json.load(json_file)
 
 		for version in jfile:
@@ -516,17 +534,15 @@ class mainPage(tk.Frame,):
 
 
 	def refreshdetailwindow(self,):
-		
-		
-		HBUpdater.taglen = 0
-		HBUpdater.tagversionnumber = 0
+		guicore.taglen = 0
+		guicore.tagversionnumber = 0
 		self.tags_listbox.delete(0,END)
-		if not HBUpdater.hbdict == {}:
-			with open(HBUpdater.hbdict[HBUpdater.softwarechunknumber]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
+		if not guicore.hbdict == {}:
+			with open(guicore.hbdict[guicore.softwarechunknumber]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
 				jfile = json.load(json_file)
 
 			for version in jfile:
-				HBUpdater.taglen+=1
+				guicore.taglen+=1
 				tag = version["tag_name"]
 				self.tags_listbox.insert(END, tag)
 
@@ -534,16 +550,21 @@ class mainPage(tk.Frame,):
 			self.updatetagnotes()
 
 	def CurTagSelet(self, event):
-		
-		
 		try:
 			widget = event.widget
-			HBUpdater.tagversionnumber=widget.curselection()[0]
+			guicore.tagversionnumber=widget.curselection()[0]
 			self.updatetagsbox()
 			self.updatetagnotes()
 		except:
 			pass
 
 	def openprojectpage(self):
-		url = HBUpdater.hbdict[HBUpdater.softwarechunknumber]["projectpage"]
-		webbrowser.open_new_tab(url)
+		try:
+			url = guicore.hbdict[guicore.softwarechunknumber]["projectpage"]
+			webbrowser.open_new_tab(url)
+		except:
+			print("invalid or non-existant project page url")
+
+	#whenever we return to the main page reload it
+	def on_show_frame(self,event):
+		self.updatelistbox(None)

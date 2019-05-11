@@ -5,9 +5,9 @@ import json
 
 #stop script if running without a frontend
 if __name__ == '__main__':
-	sys.exit("This file was not meant to run without a frontend. Exiting...")
+	sys.exit("This script was not meant to run without a frontend. Exiting...")
 
-version = "0.3b (BETA)"
+version = "0.4 (BETA)"
 print("HBUpdater version {}".format(version))
 
 #My modules
@@ -22,42 +22,10 @@ sdpathset = False
 trackingfolder = ""
 trackingfile = ""
 
-hbdict = {}
-softwarechunknumber = 0 #variable to track where we are in the list of homebrew
-dictlen = 0 
-
-tagversionnumber = 0 #variable to track currently selected tag number
-taglen=0 #variable to track number of items in version listbox 
-
-ijdict = {}
-payloadchunknumber = 0
-ijdictlen = 0
-
-payloadinjector = {}
 
 
 
-	
 
-
-
-def setDict(dicty):
-	global hbdict
-	global dictlen
-	hbdict = dicty
-	# print(json.dumps(hbdict, indent=8))
-	dictlen = len(hbdict)
-
-def setIJDict(dicty):
-	global ijdict
-	global ijdictlen
-	ijdict = dicty
-	# print(json.dumps(ijdict, indent=8))
-	ijdictlen = len(ijdict)
-
-def setPayloadInjector(dicty):
-	global payloadinjector
-	payloadinjector = dicty
 
 #update global "chosensdpath"
 def setSDpath(sdpath):
@@ -187,10 +155,10 @@ def uninstallsoftware(softwarename):
 			if os.path.isfile(path):  
 			    os.remove(path)
 			    print("removed {}".format(path))
-		for file in filestoremove:
-			if os.path.isdir(file):
-				shutil.rmtree(file)
-				print("removed folder {}".format(file))
+		# for file in filestoremove:
+		# 	if os.path.isdir(file):
+		# 		shutil.rmtree(file)
+		# 		print("removed folder {}".format(file))
 
 	newentry = {
 				softwarename : {

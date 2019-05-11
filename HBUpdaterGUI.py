@@ -3,17 +3,18 @@
 #A lower frame can be accessed by calling frame.tkraise()
 #It also populates the arrays used by many of the pages
 import os, sys, platform
-
+import json
 print("Using Python {}.{}".format(sys.version_info[0],sys.version_info[1]))
 if sys.version_info[0] < 3 or sys.version_info[1] < 6:
     sys.exit("Python 3.6 or greater is required to run this program.")
 
-version = "0.3b (BETA)"
+version = "0.4 (BETA)"
 print("HBUpdaterGUI version {}".format(version))
 
 #My modules
 import webhandler 
 import homebrewcore
+import guicore
 import locations 
 from format import * #We import format in this manner for simplicity's sake
 import customwidgets as cw #Custom tkinter widgets
@@ -30,9 +31,6 @@ import injectorpage as ip
 import mainpage as mp
 import settingspage as sp
 import addrepopage as ar
-
-
-
 
 #Main frame handler, raises and pages in z layer
 class FrameManager(tk.Tk):
@@ -71,29 +69,31 @@ class FrameManager(tk.Tk):
 	def show_frame(self, page_name):
 		#Show a frame for the given page name
 		frame = self.frames[page_name]
+		frame.event_generate("<<ShowFrame>>")
 		frame.tkraise()
 
-
-
 def UseCachedJson():
-	HBUpdater.setDict(webhandler.getJsonSoftwareLinks(locations.softwarelist)) #Get software links from pre-downloaded jsons (TESTING FUNCTION, IF YOU GET AN ERROR FROM THIS LINE BECUASE I FORGOT TO COMMENT IT ON A COMMIT JUST COMMENT THIS LINE AND UNCOMMENT THE ONE BEFORE)
-	HBUpdater.setIJDict(webhandler.getJsonSoftwareLinks(locations.payloadlist))
-	HBUpdater.setPayloadInjector(webhandler.getJsonSoftwareLinks(locations.payloadinjector))
+	hbdict = webhandler.getJsonSoftwareLinks(locations.softwarelist)
+	repodict = webhandler.getJsonSoftwareLinks(guicore.makerepodict())
+	hbdict.extend(repodict)
+	guicore.setDict(hbdict)
+	guicore.setIJDict(webhandler.getJsonSoftwareLinks(locations.payloadlist))
+	guicore.setPayloadInjector(webhandler.getJsonSoftwareLinks(locations.payloadinjector))
 
 def GetUpdatedJson():
-	HBUpdater.setDict(webhandler.getUpdatedSoftwareLinks(locations.softwarelist)) #Get fresh software links, falls back on old ones if they don't exist
-	HBUpdater.setIJDict(webhandler.getUpdatedSoftwareLinks(locations.payloadlist))
-	HBUpdater.setPayloadInjector(webhandler.getUpdatedSoftwareLinks(locations.payloadinjector))
+	hbdict = webhandler.getUpdatedSoftwareLinks(locations.softwarelist)
+	repodict = webhandler.getUpdatedSoftwareLinks(guicore.makerepodict())
+	hbdict.extend(repodict)
+	guicore.setDict(hbdict)
+	guicore.setIJDict(webhandler.getUpdatedSoftwareLinks(locations.payloadlist))
+	guicore.setPayloadInjector(webhandler.getUpdatedSoftwareLinks(locations.payloadinjector))
 
 # def HandleUserAddedRepos():
-
-
-
 if __name__ == '__main__':  
-	UseCachedJson() #use this to use only pre-downloaded json files
-	#GetUpdatedJson() #use this to download new json (required to get updates)
+	#UseCachedJson() #use this to use only pre-downloaded json files
+	GetUpdatedJson() #use this to download new json (required to get updates)
 	
-	for softwarechunk in HBUpdater.hbdict:
+	for softwarechunk in guicore.hbdict:
 		softwarechunk["photopath"] = None
 
 	gui = FrameManager()

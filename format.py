@@ -6,8 +6,11 @@ lbcolumnoffset = 10
 #width infoframe takes up
 infoframewidth = 200
 
-#Height of searhbox
+#Height of searchbox
 searchboxheight=45
+
+#consistant separator width
+separatorwidth = 4
 
 #Height of the frames holding the column titles
 columtitlesheight= 25 
@@ -19,14 +22,14 @@ column_relwidth = .20
 notfoundimage = "notfound.png"
 
 
-
-
 ##Text Styles
 #Normal Text
+smallertext = ("Trebuchet MS",8)
 smalltext = ("Trebuchet MS",10)
 mediumtext = ("Trebuchet MS",12)
 largetext = ("Trebuchet MS",14,)
 #Bold
+smallerboldtext = ("Trebuchet MS",8,"bold")
 smallboldtext = ("Trebuchet MS",10,"bold")
 mediumboldtext = ("Trebuchet MS",12,"bold")
 largeboldtext = ("Trebuchet MS",14,"bold")
@@ -117,8 +120,12 @@ etcbuttonwidth = navbuttonheight
 #Spacing for buttons in line with search bar
 icon_and_search_bar_spacing = navbuttonspacing
 
-guidetext = smalltext
+#Common to multiple guide texts
 guidetextcolor = lgray
+
+
+rcmguidefont = smallerboldtext
+
 RCMGUIDETEXT = """INSTRUCTIONS:
 
 - Enter RCM on your Nintendo Switch.
@@ -138,7 +145,15 @@ injector_separator_width = 2
 consoletext = smalltext
 
 #width ov validity column in add repo page
-validcolumnwidth = 75
+repocolumnwidth = 130
 entryheight = 29
-reposeparatorwidth = 4
+
+repolistboxseparatorwidth = 2
 repo_placeholder_font = smalltext
+entrybox_font = smalltext
+repoguidefont = smallerboldtext
+
+
+
+
+details_guide_font = smallerboldtext

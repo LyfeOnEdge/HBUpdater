@@ -85,6 +85,19 @@ def getJsonSoftwareLinks(dicttopopulate):
 	dicttopopulate = sorted(dicttopopulate, key = lambda i: i["software"])
 	return dicttopopulate
 
+def getJson(softwarename, apiurl):
+	try:
+		jsonfile = homebrewcore.joinpaths(homebrewcore.jsoncachefolder, softwarename + ".json")
+		urllib.request.urlretrieve(apiurl,jsonfile)
+		print("Downloaded new json file for {}".format(softwarename))
+		return jsonfile
+	except:
+		print("failed to download json file for {}".format(softwarename))
+		return None
+
+
+
+
 
 
 

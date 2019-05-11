@@ -5,138 +5,162 @@ from format import *
 import platform
 
 class Placeholder_State(object):
-     __slots__ = 'normal_color', 'normal_font', 'placeholder_text', 'placeholder_color', 'placeholder_font', 'contains_placeholder'
+	 __slots__ = 'normal_color', 'normal_font', 'placeholder_text', 'placeholder_color', 'placeholder_font', 'contains_placeholder'
 
 def add_placeholder_to(entry, placeholder, color="grey", font=None):
-    normal_color = entry.cget("fg")
-    normal_font = entry.cget("font")
-    
-    if font is None:
-        font = normal_font
+	normal_color = entry.cget("fg")
+	normal_font = entry.cget("font")
 
-    state = Placeholder_State()
-    state.normal_color=normal_color
-    state.normal_font=normal_font
-    state.placeholder_color=color
-    state.placeholder_font=font
-    state.placeholder_text = placeholder
-    state.contains_placeholder=True
+	if font is None:
+		font = normal_font
 
-    def on_focusin(event, entry=entry, state=state):
-        if state.contains_placeholder:
-            entry.delete(0, "end")
-            entry.config(fg = state.normal_color, font=state.normal_font)
-        
-            state.contains_placeholder = False
+	state = Placeholder_State()
+	state.normal_color=normal_color
+	state.normal_font=normal_font
+	state.placeholder_color=color
+	state.placeholder_font=font
+	state.placeholder_text = placeholder
+	state.contains_placeholder=True
 
-    def on_focusout(event, entry=entry, state=state):
-        if entry.get() == '':
-            entry.insert(0, state.placeholder_text)
-            entry.config(fg = state.placeholder_color, font=state.placeholder_font)
-            
-            state.contains_placeholder = True
+	def on_focusin(event, entry=entry, state=state):
+		if state.contains_placeholder:
+			entry.delete(0, "end")
+			entry.config(fg = state.normal_color, font=state.normal_font)
+		
+			state.contains_placeholder = False
 
-    entry.insert(0, placeholder)
-    entry.config(fg = color, font=font)
+	def on_focusout(event, entry=entry, state=state):
+		if entry.get() == '':
+			entry.insert(0, state.placeholder_text)
+			entry.config(fg = state.placeholder_color, font=state.placeholder_font)
+			
+			state.contains_placeholder = True
 
-    entry.bind('<FocusIn>', on_focusin, add="+")
-    entry.bind('<FocusOut>', on_focusout, add="+")
-    
-    entry.placeholder_state = state
+	entry.insert(0, placeholder)
+	entry.config(fg = color, font=font)
 
-    return state
+	entry.bind('<FocusIn>', on_focusin, add="+")
+	entry.bind('<FocusOut>', on_focusout, add="+")
+	
+	entry.placeholder_state = state
+
+	return state
 
 class SearchBox(tk.Frame):
-    def __init__(self, master, entry_width=30, entry_font=search_font, entry_background=dark_color, entry_foreground=search_font_color, button_text="Search", button_ipadx=10, button_background=dark_color, button_foreground="white", button_font=None, placeholder=place_holder_text, placeholder_font=place_holder_font, placeholder_color=place_holder_color, spacing=3, command=None):
-        tk.Frame.__init__(self, master, borderwidth=0, highlightthickness=0,background=entry_background)
-        
-        self._command = command
+	def __init__(self, master, entry_width=30, entry_font=search_font, entry_background=dark_color, entry_foreground=search_font_color, button_text="Search", button_ipadx=10, button_background=dark_color, button_foreground="white", button_font=None, placeholder=place_holder_text, placeholder_font=place_holder_font, placeholder_color=place_holder_color, spacing=3, command=None):
+		tk.Frame.__init__(self, master, borderwidth=0, highlightthickness=0,background=entry_background)
+		
+		self._command = command
 
-        self.entry = tk.Entry(self, width=entry_width, background=entry_background, highlightcolor=button_background, highlightthickness=0, foreground = entry_foreground,borderwidth=0)
-        self.entry.place(x=0,y=0,relwidth=1,relheight=1)
-        
-        if entry_font:
-            self.entry.configure(font=entry_font)
+		self.entry = tk.Entry(self, width=entry_width, background=entry_background, highlightcolor=button_background, highlightthickness=0, foreground = entry_foreground,borderwidth=0)
+		self.entry.place(x=0,y=0,relwidth=1,relheight=1)
+		
+		if entry_font:
+			self.entry.configure(font=entry_font)
 
-        if placeholder:
-            add_placeholder_to(self.entry, placeholder, color=placeholder_color, font=placeholder_font)
+		if placeholder:
+			add_placeholder_to(self.entry, placeholder, color=placeholder_color, font=placeholder_font)
 
-        self.entry.bind("<Escape>", lambda event: self.entry.nametowidget(".").focus())
-        self.entry.bind("<Return>", self._on_execute_command)
+		self.entry.bind("<Escape>", lambda event: self.entry.nametowidget(".").focus())
+		self.entry.bind("<Return>", self._on_execute_command)
 
-    def get_text(self):
-        entry = self.entry
-        if hasattr(entry, "placeholder_state"):
-            if entry.placeholder_state.contains_placeholder:
-                return ""
-            else:
-                return entry.get()
-        else:
-            return entry.get()
-        
-    def set_text(self, text):
-        entry = self.entry
-        if hasattr(entry, "placeholder_state"):
-            entry.placeholder_state.contains_placeholder = False
+	def get_text(self):
+		entry = self.entry
+		if hasattr(entry, "placeholder_state"):
+			if entry.placeholder_state.contains_placeholder:
+				return ""
+			else:
+				return entry.get()
+		else:
+			return entry.get()
+		
+	def set_text(self, text):
+		entry = self.entry
+		if hasattr(entry, "placeholder_state"):
+			entry.placeholder_state.contains_placeholder = False
 
-        entry.delete(0, END)
-        entry.insert(0, text)
-        
-    def clear(self):
-        self.entry_var.set("")
-        
-    def focus(self):
-        self.entry.focus()
+		entry.delete(0, END)
+		entry.insert(0, text)
+		
+	def clear(self):
+		self.entry_var.set("")
+		
+	def focus(self):
+		self.entry.focus()
 
-    def _on_execute_command(self, event):
-        text = self.get_text()
-        self._command(text)
+	def _on_execute_command(self, event):
+		text = self.get_text()
+		self._command(text)
 
 class entrybox(tk.Frame):
-    def __init__(self, master, entry_width=30, entry_font=search_font, entry_background=dark_color, entry_foreground=search_font_color, button_text="Search", button_ipadx=10, button_background=dark_color, button_foreground="white", button_font=None, placeholder=place_holder_text, placeholder_font=repo_placeholder_font, placeholder_color=place_holder_color, spacing=3, command=None):
-        tk.Frame.__init__(self, master, borderwidth=0, highlightthickness=0,background=entry_background)
-        
-        self._command = command
+	def __init__(self, master, entry_width=30, entry_font=entrybox_font, entry_background=dark_color, entry_foreground=search_font_color, button_text="Search", button_ipadx=10, button_background=dark_color, button_foreground="white", button_font=None, placeholder=place_holder_text, placeholder_font=repo_placeholder_font, placeholder_color=place_holder_color, spacing=3, command=None, justification="left"):
+		tk.Frame.__init__(self, master, borderwidth=0, highlightthickness=0,background=entry_background,)
+		
+		self._command = command
 
-        self.entry = tk.Entry(self, width=entry_width, background=entry_background, highlightcolor=button_background, highlightthickness=0, foreground = entry_foreground,borderwidth=0)
-        self.entry.place(x=0,y=0,relwidth=1,relheight=1)
-        
-        if entry_font:
-            self.entry.configure(font=entry_font)
+		self.entry = tk.Entry(self, 
+			width=entry_width, 
+			background=entry_background, 
+			disabledbackground=entry_background,
+			foreground = entry_foreground,
+			disabledforeground=w,
+			highlightcolor=button_background, 
+			highlightthickness=0, 
+			borderwidth=0,
+			justify=justification
+			)
+		self.entry.place(x=0,y=0,relwidth=1,relheight=1)
+		
+		if entrybox_font:
+			self.entry.configure(font=entrybox_font)
 
-        if placeholder:
-            add_placeholder_to(self.entry, placeholder, color=placeholder_color, font=repo_placeholder_font)
+		if placeholder:
+			add_placeholder_to(self.entry, placeholder, color=placeholder_color, font=repo_placeholder_font)
 
-        self.entry.bind("<Escape>", lambda event: self.entry.nametowidget(".").focus())
-        self.entry.bind("<Return>", self._on_execute_command)
+		#This entry never gets placed, 
+		#it's just used to jump to whenever 
+		#text is set so that the placeholder 
+		#gets filled when there is no text inserted
+		self.dummyentry = tk.Entry(self)
+		self.dummyentry.configure(state=DISABLED)
+		self.focus()
 
-    def get_text(self):
-        entry = self.entry
-        if hasattr(entry, "placeholder_state"):
-            if entry.placeholder_state.contains_placeholder:
-                return ""
-            else:
-                return entry.get()
-        else:
-            return entry.get()
-        
-    def set_text(self, text):
-        entry = self.entry
-        if hasattr(entry, "placeholder_state"):
-            entry.placeholder_state.contains_placeholder = False
+	def get_text(self):
+		entry = self.entry
+		if hasattr(entry, "placeholder_state"):
+			if entry.placeholder_state.contains_placeholder:
+				return ""
+			else:
+				return entry.get()
+		else:
+			return entry.get()
+		
+	def set_text(self, text):
+		entry = self.entry
+		if hasattr(entry, "placeholder_state"):
+			entry.placeholder_state.contains_placeholder = False
 
-        entry.delete(0, END)
-        entry.insert(0, text)
-        
-    def clear(self):
-        self.entry_var.set("")
-        
-    def focus(self):
-        self.entry.focus()
+		if not text == None and not text == "":
+			entry.delete(0, END)
+			entry.insert(0, text)
+		else:
+			self.focus()
 
-    def _on_execute_command(self, event):
-        text = self.get_text()
-        self._command(text)
+	def clear(self):
+		self.entry.delete(0, END)
+		self.focus()
+		
+	def focus(self):
+		self.entry.focus()
+		self.dummyentry.configure(state=NORMAL)
+		self.dummyentry.focus()
+		self.dummyentry.configure(state=DISABLED)
+
+	def disable(self):
+		self.entry.configure(state=DISABLED)
+
+	def enable(self):
+		self.entry.configure(state=NORMAL)
 
 
 
@@ -169,8 +193,8 @@ class AutoScroll(object):
 		methods = tk.Pack.__dict__.keys() | tk.Grid.__dict__.keys() \
 			| tk.Place.__dict__.keys()
 		# else:
-		# 	methods = tk.Pack.__dict__.keys() + tk.Grid.__dict__.keys() \
-		# 		+ tk.Place.__dict__.keys()
+		#   methods = tk.Pack.__dict__.keys() + tk.Grid.__dict__.keys() \
+		#       + tk.Place.__dict__.keys()
 
 		for meth in methods:
 			if meth[0] != '_' and meth not in ('config', 'configure'):
@@ -333,6 +357,7 @@ class navbox(themedframe):
 		left_context_command,
 		right_context_command,
 		etc_button_image,
+		etc_button_text = "",
 		primary_button_text = "INSTALL",
 		left_context_text = "PREV",
 		right_context_text = "NEXT",
@@ -344,7 +369,7 @@ class navbox(themedframe):
 		self.primary_button.place(relx=0.0, rely=0, x=+navbuttonspacing, height=navbuttonheight, width=(navboxwidth - navbuttonheight) - 3.5 * navbuttonspacing)
 
 		#etc button
-		self.etc_button = navbutton(self, image_object=etc_button_image, command_name=etc_button_command)
+		self.etc_button = navbutton(self, text_string = etc_button_text, image_object=etc_button_image, command_name=etc_button_command)
 		self.etc_button.place(relx=0, rely=0, x=navboxwidth - (navbuttonheight + 1.5 * navbuttonspacing), height=navbuttonheight, width=navbuttonheight)
 
 		#previous in context
@@ -371,7 +396,20 @@ class themedlabel(tk.Label):
 			textvariable = text_variable,
 			)
 
-
+#themed author/ etc label
+class themedguidelabel(tk.Label):
+	def __init__(self,frame,label_text,label_font=smalltext,label_color=w,text_variable=None,anchor="w",background=light_color):
+		tk.Label.__init__(self,frame,
+			background = background,
+			highlightthickness=0,
+			anchor=anchor,
+			text = label_text,
+			font=label_font,
+			foreground= label_color,
+			textvariable = text_variable,
+			) 
+	def set(self,text):
+		self.configure(text=text)
 
 
 
@@ -486,10 +524,10 @@ class consolebox(themedframe):
 		self.textoutput.see(END)
 
 	# def printbytes(self,bytesToPrint):
-	# 	self.textoutput.config(state=NORMAL)
-	# 	self.textoutput.insert(END, (bytesToPrint.decode("utf-8")))
-	# 	self.textoutput.config(state=DISABLED)
-	# 	self.textoutput.see(END)
+	#   self.textoutput.config(state=NORMAL)
+	#   self.textoutput.insert(END, (bytesToPrint.decode("utf-8")))
+	#   self.textoutput.config(state=DISABLED)
+	#   self.textoutput.see(END)
 
 class titledlistboxframe(themedframe):
 	def __init__(self,frame,title):

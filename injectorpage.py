@@ -86,7 +86,7 @@ class injectorScreen(tk.Frame):
 
 		self.injectorguideframe = cw.themedframe(self,frame_borderwidth=0,frame_highlightthickness=0)
 		self.injectorguideframe.place(relx=.40,x=+8,rely=0,relheight=.7,relwidth=.6,width=-(infoframewidth+8))
-		self.injectorguide = tk.Text(self.injectorguideframe,foreground=guidetextcolor,background=dark_color,font=guidetext,wrap="word",highlightthickness=0,borderwidth=0)
+		self.injectorguide = tk.Text(self.injectorguideframe,foreground=guidetextcolor,background=dark_color,font=rcmguidefont,wrap="word",highlightthickness=0,borderwidth=0)
 		self.injectorguide.place(relheight=1,relwidth=1,)
 		self.injectorguide.configure(state=NORMAL)
 		self.injectorguide.insert(END, RCMGUIDETEXT)
@@ -101,7 +101,7 @@ class injectorScreen(tk.Frame):
 		widget = event.widget
 		selection=widget.curselection()
 		picked = widget.get(selection[0])
-		HBUpdater.payloadchunknumber = widget.get(0, "end").index(picked)
+		guicore.payloadchunknumber = widget.get(0, "end").index(picked)
 		self.updateinfo()
 
 
@@ -111,7 +111,7 @@ class injectorScreen(tk.Frame):
 			listbox.configure(state=NORMAL)
 			listbox.delete(0,END)
 
-		for softwarechunk in HBUpdater.ijdict:
+		for softwarechunk in guicore.ijdict:
 			softwarename = softwarechunk["software"]
 			self.payload_listbox.insert(END, softwarename)
 
@@ -145,9 +145,9 @@ class injectorScreen(tk.Frame):
 				self.printtoboth("Got answer: no, not installing")
 				return
 
-		with open(HBUpdater.ijdict[HBUpdater.payloadchunknumber]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
+		with open(guicore.ijdict[guicore.payloadchunknumber]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
 			jfile = json.load(json_file)
-			softwarename = HBUpdater.ijdict[HBUpdater.payloadchunknumber]["software"]
+			softwarename = guicore.ijdict[guicore.payloadchunknumber]["software"]
 			version = jfile[0]["tag_name"]
 			if guicore.checkguitag(softwarename,"version") == None or guicore.checkguitag(softwarename,"version") =="not installed":
 				self.printtoboth("payload not yet downloaded, downloading...")
@@ -155,9 +155,9 @@ class injectorScreen(tk.Frame):
 				#default asset number
 				assetnumber = 0
 
-				if not HBUpdater.ijdict[HBUpdater.payloadchunknumber]["github_asset"] == None:
+				if not guicore.ijdict[guicore.payloadchunknumber]["github_asset"] == None:
 					#if the asset we are going for is not the default (eg it is set in locations.py under github_asset) update the assetnumber
-					assetnumber = HBUpdater.ijdict[HBUpdater.payloadchunknumber]["github_asset"]
+					assetnumber = guicore.ijdict[guicore.payloadchunknumber]["github_asset"]
 
 				#get the download url for the payload we are going for
 				downloadurl = jfile[0]["assets"][assetnumber]["browser_download_url"]
@@ -179,7 +179,7 @@ class injectorScreen(tk.Frame):
 						files = zipObj.namelist()
 						payload = None
 						for possiblepayloadfile in files:
-							if possiblepayloadfile.startswith(HBUpdater.ijdict[HBUpdater.payloadchunknumber]["zip_items"]):
+							if possiblepayloadfile.startswith(guicore.ijdict[guicore.payloadchunknumber]["zip_items"]):
 								payload = possiblepayloadfile
 						if payload == None:
 							self.printtoboth("Could not find payload in extracted files")
@@ -230,16 +230,16 @@ class injectorScreen(tk.Frame):
 
 	#update all info in the info box
 	def updateinfo(self):
-		self.payload_listbox.selection_clear(0,HBUpdater.ijdictlen-1)
-		self.payload_listbox.selection_set(HBUpdater.payloadchunknumber)
-		self.payload_listbox.see(HBUpdater.payloadchunknumber)
+		self.payload_listbox.selection_clear(0,guicore.ijdictlen-1)
+		self.payload_listbox.selection_set(guicore.payloadchunknumber)
+		self.payload_listbox.see(guicore.payloadchunknumber)
 
-		if not HBUpdater.ijdict == {}:
+		if not guicore.ijdict == {}:
 
-			softwarename = HBUpdater.ijdict[HBUpdater.payloadchunknumber]["software"]
+			softwarename = guicore.ijdict[guicore.payloadchunknumber]["software"]
 			self.infobox.updatetitle(softwarename)
 
-			with open(HBUpdater.ijdict[HBUpdater.payloadchunknumber]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
+			with open(guicore.ijdict[guicore.payloadchunknumber]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
 				jfile = json.load(json_file)
 
 			#update author
@@ -248,7 +248,7 @@ class injectorScreen(tk.Frame):
 
 			self.updateAuthorImage()
 
-			self.infobox.updatedescription(HBUpdater.ijdict[HBUpdater.payloadchunknumber]["description"])
+			self.infobox.updatedescription(guicore.ijdict[guicore.payloadchunknumber]["description"])
 
 
 	def updateAuthorImageEvent(self,event):
@@ -256,11 +256,11 @@ class injectorScreen(tk.Frame):
 
 
 	def updateAuthorImage(self):
-		softwarename = HBUpdater.hbdict[HBUpdater.payloadchunknumber]["software"]
+		softwarename = guicore.hbdict[guicore.payloadchunknumber]["software"]
 		photopath = homebrewcore.checkphoto(homebrewcore.imagecachefolder, softwarename)
 
-		if HBUpdater.hbdict[HBUpdater.payloadchunknumber]["photopath"] == None:
-			HBUpdater.hbdict[HBUpdater.payloadchunknumber]["photopath"] = photopath
+		if guicore.hbdict[guicore.payloadchunknumber]["photopath"] == None:
+			guicore.hbdict[guicore.payloadchunknumber]["photopath"] = photopath
 
 		if not photopath == None:
 			photopath = homebrewcore.joinpaths(homebrewcore.imagecachefolder, photopath)
@@ -270,12 +270,12 @@ class injectorScreen(tk.Frame):
 
 		if not photoexists:
 			# try:
-				with open(HBUpdater.ijdict[HBUpdater.payloadchunknumber]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
+				with open(guicore.ijdict[guicore.payloadchunknumber]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
 					jfile = json.load(json_file)
 					url = jfile[0]["author"]["avatar_url"]
 					print(softwarename)
 				photopath = webhandler.cacheimage(url,softwarename)
-				HBUpdater.hbdict[HBUpdater.payloadchunknumber]["photopath"] = photopath
+				guicore.hbdict[guicore.payloadchunknumber]["photopath"] = photopath
 			# except: 
 			# 	print("could not download icon image (you can safely ignore this error)")
 			# 	photopath = homebrewcore.joinpaths(homebrewcore.assetfolder,notfoundimage)
@@ -293,13 +293,13 @@ class injectorScreen(tk.Frame):
 
 	#movement buttons, moves through homebrewlist or brew version
 	def pageup(self):
-		if HBUpdater.payloadchunknumber < HBUpdater.ijdictlen-1:
-			HBUpdater.payloadchunknumber += 1
+		if guicore.payloadchunknumber < guicore.ijdictlen-1:
+			guicore.payloadchunknumber += 1
 			self.updateinfo()
 
 	def pagedown(self):
-		if HBUpdater.payloadchunknumber > 0:
-			HBUpdater.payloadchunknumber -= 1
+		if guicore.payloadchunknumber > 0:
+			guicore.payloadchunknumber -= 1
 			self.updateinfo()
 
 
@@ -333,7 +333,7 @@ def installPyUSB():
 def injectpayload(self,payload):
 	if guicore.checkguitag("fusee-launcher", "version") == "not installed" or guicore.checkguitag("fusee-launcher", "version") == "none":
 		# self.printtoboth("fusee-launcher not installed, downloading")
-		with open(HBUpdater.payloadinjector[0]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
+		with open(guicore.payloadinjector[0]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
 			jfile = json.load(json_file)
 			downloadurl = jfile[0]["zipball_url"]
 			file = webhandler.download(downloadurl)
