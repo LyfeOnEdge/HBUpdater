@@ -17,7 +17,7 @@ if not homebrewcore.exists(guilog):
 
 repolog = "user_repos.json"
 if not homebrewcore.exists(repolog):
-	print("Gui json not found, initializing")
+	print("Repo json not found, initializing")
 
 	newentry = 	{ "created_with" : version }
 
