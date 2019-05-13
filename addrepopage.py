@@ -12,7 +12,6 @@ import json
 import sys,subprocess
 
 
-
 sd_subfolder_placeholder = "SD subfolder (blank for root)"
 genre_placeholder = "Genre"
 repo_description_placeholder = "(Optional) Repo Description"

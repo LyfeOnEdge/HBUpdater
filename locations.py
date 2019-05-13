@@ -380,20 +380,6 @@ Known Bugs: There appears to be some bug that causes the screen to flicker durin
 	# },
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #FUTURE CONTENT (Maybe)
 
 
@@ -616,14 +602,33 @@ payloadinjector = [
 	"software" : "fusee-launcher",
 	"githubapi" : "https://api.github.com/repos/Cease-and-DeSwitch/fusee-launcher/releases",
 	"github_asset" : "tarball_url", 
-	
 	"author" : "Qyriad", 
 	"projectpage": None,
 	"description" : "",
 	"group" : "SPECIAL",
-
 	"install_subfolder": None,
-	
 	"zip_items": None,
 	},
 ]
+
+
+nutserverdict = {
+	"software" : "Nut Server",
+	"githubapi" : "https://api.github.com/repos/blawar/nut/releases",
+	"author" : "blawar", 
+	"projectpage": "https://gbatemp.net/threads/nut.515530/",
+	"description" : "Nut server for installing title backups",
+	"group" : "SPECIAL",
+	"dependencies" : [
+		"colorama", 
+		"pyopenssl", 
+		"requests", 
+		"tqdm", 
+		"unidecode", 
+		"image", 
+		"bs4", 
+		"urllib3", 
+		"flask", 
+		"pyqt5"
+		]
+	}

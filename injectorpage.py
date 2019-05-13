@@ -134,7 +134,7 @@ class injectorScreen(tk.Frame):
 
 	def injectpayload(self,):
 		if not checkifpyusbinstalled():
-			resp =  tkinter.messagebox.askyesno("Install PyUSB?", "PyUSB is required for fusee-launcher to work, install?")
+			resp =  tk.messagebox.askyesno("Install PyUSB?", "PyUSB is required for fusee-launcher to work, install?")
 			if resp:
 				try:
 					installpyusb()
@@ -356,7 +356,7 @@ def injectpayload(self,payload):
 					"location": injector,
 				}
 			}
-			HBUpdater.updateguilog(newentry)
+			guicore.updateguilog(newentry)
 
 	script_path = guicore.checkguitag("fusee-launcher", "location")
 	script_path = homebrewcore.joinpaths(homebrewcore.payloadsfolder, script_path)

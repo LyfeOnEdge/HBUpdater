@@ -12,31 +12,24 @@ def joinpaths(prefix,suffix):
 def direxist(foldername):
     return os.path.isdir(foldername)
 
-#if downloads folder hasn't been made create it
+#folders thet need to be initialized on app start
 downloadsfolder = get_path("downloads")
-if not os.path.isdir(downloadsfolder):
-	os.mkdir(downloadsfolder)
-
 cachefolder = get_path("cache")
-if not os.path.isdir(cachefolder):
-	os.mkdir(cachefolder)
+payloadsfolder = get_path("payloads")
+jsoncachefolder = joinpaths(cachefolder,"json")
+imagecachefolder = joinpaths(cachefolder,"images")
+folderstoinitialize = [downloadsfolder, cachefolder, payloadsfolder, jsoncachefolder, imagecachefolder]
+#initailize folders if they don't exist
+for folder in folderstoinitialize:
+	if not os.path.isdir(folder):
+		print("initializing folder {}".format(folder))
+		os.mkdir(folder)
 
 assetfolder = get_path("assets")
 if not os.path.isdir(assetfolder):
 	print("error, asset folder not found")
 
-jsoncachefolder = joinpaths(cachefolder,"json")
-if not os.path.isdir(jsoncachefolder):
-	os.mkdir(jsoncachefolder)
-
-imagecachefolder = joinpaths(cachefolder,"images")
-if not os.path.isdir(imagecachefolder):
-	os.mkdir(imagecachefolder)
-
-payloadsfolder = get_path("payloads")
-if not os.path.isdir(payloadsfolder):
-	os.mkdir(payloadsfolder)
-
+#folders and files for tracking installed apps on the sd
 trackingfolder = "hbupdater"
 trackingfile = "hbupdater.json"
 
@@ -46,16 +39,3 @@ def checkphoto(dir, photo):
 			return s
 
 	return "Not found"
-
-
-
-# #not used yet, will be useful for grabbing a few things
-# def extractTar(tarfilename, target):
-# 	if (tarfilename.endswith("tar.gz")):
-# 	    tar = tarfilename.open(fname, "r:gz")
-# 	    tar.extractall(path = target)
-# 	    tar.close()
-# 	elif (fname.endswith("tar")):
-# 	    tar = tarfilename.open(fname, "r:")
-# 	    tar.extractall(path = target)
-# 	    tar.close()

@@ -323,14 +323,14 @@ class iconbutton(tk.Listbox):
 
 #themed colum label
 class columnlabel(tk.Label):
-	def __init__(self,frame,label_text):
+	def __init__(self,frame,label_text,anchor="w"):
 		tk.Label.__init__(self,frame,
 			background = dark_color, 
 			foreground = columnlabelcolor,
 			borderwidth = 0,
 			highlightthickness = 0,
 			font = columnlabelfont,
-			anchor = "w",
+			anchor = anchor,
 			text = label_text,
 			)
 
@@ -542,3 +542,11 @@ class separator(themedlabel):
 		themedlabel.__init__(self,frame,"")
 
 	
+class thankyoubox(themedframe):
+	def __init__(self,frame,author="",thanks=""):
+		themedframe.__init__(self,frame)
+		self.author_name = columnlabel(self, author)
+		self.author_name.place(x=0,y=0,height=navbuttonheight,relwidth=1)
+		self.thanks_text = tk.Text(self,background=dark_color,foreground=lgray,borderwidth=0,highlightthickness=0,font=smallerboldtext)
+		self.thanks_text.place(relx=0,y=+(navbuttonheight + separatorwidth), relwidth=1,relheight=1)
+		self.thanks_text.insert(END,thanks)

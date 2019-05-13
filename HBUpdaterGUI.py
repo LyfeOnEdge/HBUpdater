@@ -90,8 +90,8 @@ def GetUpdatedJson():
 
 # def HandleUserAddedRepos():
 if __name__ == '__main__':  
-	#UseCachedJson() #use this to use only pre-downloaded json files
-	GetUpdatedJson() #use this to download new json (required to get updates)
+	UseCachedJson() #use this to use only pre-downloaded json files
+	#GetUpdatedJson() #use this to download new json (required to get updates)
 	
 	for softwarechunk in guicore.hbdict:
 		softwarechunk["photopath"] = None

@@ -3,6 +3,7 @@ from format import *
 import homebrewcore
 import guicore
 import webhandler
+import nuthandler
 
 import tkinter as tk
 from tkinter.constants import *
@@ -26,11 +27,33 @@ class mainPage(tk.Frame,):
 		#Shared images
 		self.infoimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"info.png")).zoom(3).subsample(5)
 		self.returnimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"returnbutton.png")).zoom(3).subsample(5)
-
+		self.settingsimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"settings.png"))
+		self.nutimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"nut.png"))
 
 		#Full window frame, holds everything
 		self.outer_frame = cw.themedframe(self,frame_borderwidth=0,frame_highlightthickness= 0)
 		self.outer_frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
+
+
+		#page for warning users that nut isn't installed and asking if they want to install it
+		self.nutinstallframe = cw.themedframe(self.outer_frame,frame_borderwidth=0,frame_highlightthickness=0)
+		self.nutinstallframe.place(relwidth=1,relheight=1)
+		self.nutreturnbutton = cw.navbutton(self.nutinstallframe, image_object=self.returnimage, command_name=self.showlist)
+		self.nutreturnbutton.place(relx=1, rely=1, x=-(separatorwidth+navbuttonheight), y=-(separatorwidth+navbuttonheight), height=navbuttonheight, width=navbuttonheight)
+
+		self.nuttimewarningframe= cw.themedframe(self.nutinstallframe,frame_highlightthickness=0,frame_borderwidth=0)
+		self.nuttimewarningframe.place(relheight=1,relwidth=1)
+		self.nuttimewarning = cw.themedguidelabel(self.nuttimewarningframe,"DOWNLOADING NUT SERVER AND INSTALLING DEPENDENCIES.\nTHIS CAN TAKE A WHILE, ESPECIALLY WITH SLOWER SYSTEMS.\nPLEASE BE PATIENT")
+		self.nuttimewarning.place(relx=0.5,rely=0.5,x=-200, width=400,height=3*navbuttonheight)
+
+		self.nutnotdownloadedwarningframe= cw.themedframe(self.nutinstallframe,frame_highlightthickness=0,frame_borderwidth=0)
+		self.nutnotdownloadedwarningframe.place(relheight=1,relwidth=1)
+		self.nutnotdownloadedwarning = cw.themedguidelabel(self.nutnotdownloadedwarningframe,"IT LOOKS LIKE YOU DON'T HAVE NUT DOWNLOADED YET,\n WOULD YOU LIKE TO DOWNLOAD IT AND INSTALL ITS DEPENDENCIES?")
+		self.nutnotdownloadedwarning.place(relx=0.5,rely=0.5,x=-200, width=400,height=3*navbuttonheight)
+		self.installnutbutton = cw.navbutton(self.nutnotdownloadedwarningframe, command_name=self.getnut,text_string="YES")
+		self.installnutbutton.place(relx=0.5,rely=0.5,y=+(3*navbuttonheight + separatorwidth),width=100,x=-50)
+
+
 
 		#Frame for main list, contains listboxes and scroll bar, and list titles
 		self.listbox_frame = cw.themedframe(self.outer_frame,frame_borderwidth=0,frame_highlightthickness= 0)
@@ -44,12 +67,14 @@ class mainPage(tk.Frame,):
 		#Variable to track place searchbox icons in correct location
 		self.iconspacer = icon_and_search_bar_spacing
 		
-		# self.settingsimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"settings.png"))
-		# self.settingsimage = self.settingsimage.subsample(2)
+		self.iconspacer += searchboxheight-2*icon_and_search_bar_spacing
+		self.nuticon = cw.iconbutton(self.searchbox_frame,self.nutimage,command_name=self.checknutandstart)
+		self.nuticon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -((searchboxheight)/2) + icon_and_search_bar_spacing,width = searchboxheight-2*icon_and_search_bar_spacing, height=searchboxheight-2*icon_and_search_bar_spacing)
+		self.iconspacer += icon_and_search_bar_spacing
+		
 		# self.iconspacer += searchboxheight-2*icon_and_search_bar_spacing
 		# self.settingsicon = cw.iconbutton(self.searchbox_frame,self.settingsimage,command_name=lambda: self.controller.show_frame("settingsPage"))
 		# self.settingsicon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -((searchboxheight)/2) + icon_and_search_bar_spacing,width = searchboxheight-2*icon_and_search_bar_spacing, height=searchboxheight-2*icon_and_search_bar_spacing)
-
 		# self.iconspacer += icon_and_search_bar_spacing
 		
 		self.injectimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"injector.png"))
@@ -211,11 +236,6 @@ class mainPage(tk.Frame,):
 		self.details_buttons.place(relx=.5, rely=1, x=-100, y=-87.5, height= 87.5, width=200)
 
 
-
-
-
-
-
 		self.main_right_column = cw.themedframe(self.rightcolumn, frame_borderwidth=0,frame_highlightthickness=0,background_color=light_color)
 		self.main_right_column.place(relwidth = 1, relheight=1)
 
@@ -283,6 +303,23 @@ class mainPage(tk.Frame,):
 				self.updatelistbox(None)
 			else:
 				print("SD Path Not set, not installing")
+
+	def checknutandstart(self):
+		if not nuthandler.checkifnutdownloaded():
+			self.nutnotdownloadedwarningframe.tkraise()
+			self.nutinstallframe.tkraise()
+			return
+		self.startnut()
+
+	def startnut(self):
+		nuthandler.startnut()
+
+	def getnut(self):
+		self.nuttimewarningframe.tkraise()
+		nuthandler.downloadnutandinstalldependencies()
+		self.nutnotdownloadedwarningframe.tkraise()
+		self.showlist()
+
 
 
 	#raises the details frame
