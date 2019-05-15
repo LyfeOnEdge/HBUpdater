@@ -46,7 +46,6 @@ class nutPage(tk.Frame,):
         startnut()
 
 
-
 def installpipmodule(module):
     try:
         print("installing {} via pip".format(module))

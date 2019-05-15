@@ -7,13 +7,6 @@ settings.txt
 /payloads/*
 guilog_user.json
 user_repos.json
-nut/blawar-nut-60bf4e3/bin/hactool.exe
-nut/blawar-nut-60bf4e3/bin/hactool_linux
-nut/blawar-nut-60bf4e3/bin/hactool_mac
-nut/blawar-nut-60bf4e3/cdn/__init__.py
-nut/blawar-nut-60bf4e3/cdn/Atum.py
-nut/blawar-nut-60bf4e3/cdn/Shogun.py
-nut/blawar-nut-60bf4e3/cdn/Superfly.py
 titledb/ZA.en.json
 titledb/US.es.json
 titledb/US.en.json

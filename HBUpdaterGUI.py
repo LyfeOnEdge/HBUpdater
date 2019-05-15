@@ -8,7 +8,7 @@ print("Using Python {}.{}".format(sys.version_info[0],sys.version_info[1]))
 if sys.version_info[0] < 3 or sys.version_info[1] < 6:
     sys.exit("Python 3.6 or greater is required to run this program.")
 
-version = "0.4 (BETA)"
+version = "0.5 (BETA)"
 print("HBUpdaterGUI version {}".format(version))
 
 #My modules
@@ -94,8 +94,8 @@ def GetUpdatedJson():
 
 # def HandleUserAddedRepos():
 if __name__ == '__main__':  
-	UseCachedJson() #use this to use only pre-downloaded json files
-	#GetUpdatedJson() #use this to download new json (required to get updates)
+	#UseCachedJson() #use this to use only pre-downloaded json files
+	GetUpdatedJson() #use this to download new json (required to get updates)
 	
 	for softwarechunk in guicore.hbdict:
 		softwarechunk["photopath"] = None
