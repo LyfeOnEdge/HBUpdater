@@ -1,39 +1,18 @@
-#locations.py
+developers = {
+	"LyfeOnEdge" : {
+		"gravatar_url" : "http://de.gravatar.com/lyfeonedge.json",
+		"project_page_url" : "https://discord.gg/cXtmY9M",
+		"dev_flavor_text" : "In Soviet Russia, switch hack you.\nColorblind.\n←Join my discord for dragons"
+	},
 
-	# {
-	#	"software" : "",
-	# 	"githubapi" : "",
-	# 	"github_asset" : None, #(none defaults to 0)
-	# 	
+	"pprmint" : {
+		"gravatar_url" : "http://de.gravatar.com/npprmint.json",
+		"project_page_url" : "npprmint.github.io",
+		"dev_flavor_text" : "UI concept and asset designer.\n\n←Click here to visit his website"
+	}
 
-	#	"author" : None, 		#(None will populate from github)
-	#	"projectpage": None,
-	# 	"description" : "",
-	# 	"group" : ,
+}
 
-	# 	"install_subfolder": None,
-	# 	"content_type"
-	# 	"zip_items": None,
-	# }
-
-	#Template
-	# {
-	# "software" : "",
-	# "githubapi" : "",
-	# "github_asset" : None, 
-	# 
-
-	# "author" : None, 
-	# "projectpage": None,
-	# "description" : "",
-	# "group" : ,
-
-	# "install_subfolder": None,
-	# 
-	# "zip_items": None,
-	# },
-#.zip application/x-zip-compressed
-#.bin application/octet-stream
 GAME = "game"
 TOOL = "tool"
 RECCOMENDED = "recomended"
@@ -632,3 +611,5 @@ nutserverdict = {
 		"pyqt5"
 		]
 	}
+
+

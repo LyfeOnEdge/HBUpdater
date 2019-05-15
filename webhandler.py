@@ -22,18 +22,19 @@ def downloadFile(fileURL, filename): #Download
 		return False
 
 def download(fileURL):
-	try: 
+	try:
 		downloadedfile, headers = urllib.request.urlretrieve(fileURL)
+		print(headers)
 		filename = headers["Content-Disposition"].split("filename=",1)[1]
 		downloadlocation = homebrewcore.joinpaths(homebrewcore.downloadsfolder,filename)
 		shutil.move(downloadedfile, downloadlocation)
 		print("downloaded {} from url {}".format(filename, fileURL))
 		return filename
-	except: 
+	except Exception as e: 
+		print(e)
 		return None
 
 
-#Will properly download files now
 def cacheimage(url,softwarename):
 	try:
 		with urllib.request.urlopen(url) as response:
@@ -122,5 +123,17 @@ def parse_standard_github_to_api(url):
 	except:
 		return None
 
+def grabgravatar(url):
+	downloadedfile = urllib.request.urlretrieve(url)[0]
+	dljsonfile = url.rsplit("/",1)[1]
+	downloadlocation = homebrewcore.joinpaths(homebrewcore.downloadsfolder,dljsonfile)
+	shutil.move(downloadedfile, downloadlocation)
+	with open(downloadlocation) as jsonfile:
+		jfile = json.load(jsonfile)
+		avatarurl = jfile["entry"][0]["thumbnailUrl"]
+	return cacheimage(avatarurl,dljsonfile)
 
-# def get_new_repo(repo):
+
+
+
+

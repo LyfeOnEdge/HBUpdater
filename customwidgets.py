@@ -396,7 +396,7 @@ class themedlabel(tk.Label):
 			textvariable = text_variable,
 			)
 
-#themed author/ etc label
+
 class themedguidelabel(tk.Label):
 	def __init__(self,frame,label_text,label_font=smalltext,label_color=w,text_variable=None,anchor="w",background=light_color):
 		tk.Label.__init__(self,frame,
@@ -542,11 +542,62 @@ class separator(themedlabel):
 		themedlabel.__init__(self,frame,"")
 
 	
-class thankyoubox(themedframe):
-	def __init__(self,frame,author="",thanks=""):
-		themedframe.__init__(self,frame)
-		self.author_name = columnlabel(self, author)
-		self.author_name.place(x=0,y=0,height=navbuttonheight,relwidth=1)
-		self.thanks_text = tk.Text(self,background=dark_color,foreground=lgray,borderwidth=0,highlightthickness=0,font=smallerboldtext)
-		self.thanks_text.place(relx=0,y=+(navbuttonheight + separatorwidth), relwidth=1,relheight=1)
-		self.thanks_text.insert(END,thanks)
+# class thankyoubox(themedframe):
+# 	def __init__(self,frame,author="",thanks=""):
+# 		themedframe.__init__(self,frame)
+# 		self.author_name = columnlabel(self, author)
+# 		self.author_name.place(x=0,y=0,height=navbuttonheight,relwidth=1)
+# 		self.thanks_text = tk.Text(self,background=dark_color,foreground=lgray,borderwidth=0,highlightthickness=0,font=smallerboldtext)
+# 		self.thanks_text.place(relx=0,y=+(navbuttonheight + separatorwidth), relwidth=1,relheight=1)
+# 		self.thanks_text.insert(END,thanks)
+
+# class cwlabel(tk.Label):
+# 	def __init__(self,frame,label_text,anchor="w"):
+# 		tk.Label.__init__(self,frame,
+# 			background = dark_color, 
+# 			foreground = lgray,
+# 			borderwidth = 0,
+# 			highlightthickness = 0,
+# 			font = mediumboldtext,
+# 			anchor = anchor,
+# 			text = label_text,
+# 			)
+
+class cwdevlabel(tk.Label):
+	def __init__(self,frame,label_text,anchor="w"):
+		tk.Label.__init__(self,frame,
+			background = dark_color, 
+			foreground = lgray,
+			borderwidth = 0,
+			highlightthickness = 0,
+			font = mediumboldtext,
+			anchor = anchor,
+			text = label_text,
+			)
+
+
+class cwdevtext(tk.Text):
+	def __init__(self,frame):
+		tk.Text.__init__(self,frame,
+			background=dark_color,
+			foreground=lgray,
+			borderwidth = 0,
+			highlightthickness = 0,
+			font = smalltext,
+			)
+
+class devbox(themedframe):
+	def __init__(self,frame,devname,devtext,devimage,command_name=None):
+		themedframe.__init__(self,frame,frame_borderwidth=0,frame_highlightthickness=0)
+
+		self.devimage = navbutton(self,image_object=devimage,command_name=command_name)
+		self.devimage.place(x=0,y=0,width=2*navbuttonheight,height=2*navbuttonheight)
+
+		self.devname = cwdevlabel(self,devname)
+		self.devname.place(x=2*navbuttonheight+separatorwidth,y=0,relwidth=1)
+
+		self.devtext = cwdevtext(self)
+		self.devtext.place(x=2*navbuttonheight+separatorwidth,y=0.5*navbuttonheight+separatorwidth,relwidth=1,width=-(2*navbuttonheight+separatorwidth))
+		self.devtext.insert(END,devtext)
+
+

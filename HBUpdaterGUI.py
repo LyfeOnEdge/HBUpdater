@@ -31,7 +31,7 @@ import injectorpage as ip
 import mainpage as mp
 import settingspage as sp
 import addrepopage as ar
-
+import nutpage as np
 #Main frame handler, raises and pages in z layer
 class FrameManager(tk.Tk):
 	def __init__(self, *args, **kwargs):
@@ -40,6 +40,10 @@ class FrameManager(tk.Tk):
 		if platform.system() == 'Windows':
 			print("Windows detected, setting icon")
 			self.iconbitmap(homebrewcore.joinpaths(homebrewcore.assetfolder, 'HBUpdater.ico'))
+		elif platform.system() == "Linux":
+			print("Linux detected, setting icon")
+			self.iconbitmap(homebrewcore.joinpaths(homebrewcore.assetfolder, 'HBUpdater.xbm'))
+
 
 		# self.resizable(False,False)
 		self.geometry("790x510")   #startup size 720p
@@ -57,7 +61,7 @@ class FrameManager(tk.Tk):
 
 		self.frames = {}
 		#Add frames to dict, with keyword being the name of the frame
-		for F in (mp.mainPage,ip.injectorScreen,sp.settingsPage,ar.addRepoScreen):
+		for F in (mp.mainPage,ip.injectorScreen,sp.settingsPage,ar.addRepoScreen,np.nutPage):
 			page_name = F.__name__
 			frame = F(parent=container, controller=self,back_command = lambda: self.controller.show_frame("mainPage")) 
 			self.frames[page_name] = frame
