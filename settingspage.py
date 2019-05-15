@@ -12,7 +12,7 @@ import customwidgets as cw
 
 thankyoutext = """Ktempkin and Qyraid, for writing and maintaining fusee-launcher.py, and making it available via the github api upon my request.
 
-Blarwar (Vertigo) for for writing and maintaining nut, you can find more of his software at https://github.com/blawar.
+Blawar (Vertigo) for for writing and maintaining nut, you can find more of his software at https://github.com/blawar.
 
 HBG Discord, /r/SwitchPirates, and the members of GBAtemp for their ideas, critiques, and testing.
 """
