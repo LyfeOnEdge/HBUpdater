@@ -1,17 +1,14 @@
 # HBUpdater
 
+## Install all the Homebrew!
 ![Install all the Homebrew](https://i.imgur.com/0wta2kd.png)
 
-## Install all the Homebrew!
-
-![View update notes and install old/legacy versions](https://i.imgur.com/pXgkElL.png)
 
 ## View update notes and install old/legacy versions
-
-
-HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Homebrew!
+![View update notes and install old/legacy versions](https://i.imgur.com/pXgkElL.png)
 
 # About
+HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Homebrew!
   - Includes a lot of popular homebrew
   - Tracks which homebrew version you have installed
   - Downloads directly from github
