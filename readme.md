@@ -1,9 +1,11 @@
 # HBUpdater
 
 ![Install all the Homebrew](https://i.imgur.com/0wta2kd.png)
-Install all the Homebrew
+
+Install all the Homebrew!
 
 ![View update notes and install old/legacy versions](https://i.imgur.com/pXgkElL.png)
+
 View update notes and install old/legacy versions
 
 
