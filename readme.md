@@ -1,8 +1,10 @@
 # HBUpdater
 
 ![Install all the Homebrew](https://i.imgur.com/0wta2kd.png)
+Install all the Homebrew
 
 ![View update notes and install old/legacy versions](https://i.imgur.com/pXgkElL.png)
+View update notes and install old/legacy versions
 
 
 HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Homebrew!
@@ -12,14 +14,13 @@ HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Home
   - Downloads directly from github
   - Add your own github repos 
   - No longer visit 17.53 different places to make sure you have the latest version of everything
+  - Blawar NUT server integration
+  - Easily install past versions of homebrew
 
 # Planned Features:
-
-  
-  - RCM Injector
   - Firmware Manager (I want to be really careful with this one)
-  - Settings menu
   - Default SD Location
+  - Version 1.0 will hopefully be compatible with vgamoose's Homebrew Store
 
 # Requirements:
     Works on: Mac, Window, Linux
@@ -40,7 +41,8 @@ HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Home
 ##### Linux:
 - Extract HBUpdater.zip
 - Navigate to the directory in a terminal
-- type "python HBUpdaterGUI.py"
+- Type "python HBUpdaterGUI.py"
+- Sometimes python won't ship with tkinter, if you get an error regarding TCL/TK when launching do sudo apt-get install python3-tk
 - If you don't know how to do this you should probably be using Windows.
 
 ##### Want to contribute? Have ideas? Questions? Great!
