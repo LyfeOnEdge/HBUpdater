@@ -24,19 +24,6 @@ EMULATOR = "emulator"
 
 softwarelist = [
 	{
- 	"software" : "Tinfoil (satelliteseeker fork)",
-	"githubapi" : "https://api.github.com/repos/satelliteseeker/Tinfoil/releases",
-	"github_asset" : None, 
-	"author" : None, 
-	"projectpage": "https://github.com/satelliteseeker/Tinfoil/releases",
-	"description" : "Tinfoil with some tweaks to make USB installation work better",
-	"group" : TITLEINSTALLER,
-	"install_subfolder": None,
-	"zip_items": None,
-	},
-
-
-	{
 	"software" : "Homebrew Store",
 	"githubapi" : "https://api.github.com/repos/vgmoose/hb-appstore/releases",
 	"github_asset" : None, 
