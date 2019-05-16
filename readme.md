@@ -11,6 +11,7 @@
 
 HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Homebrew!
 
+# About
   - Includes a lot of popular homebrew
   - Tracks which homebrew version you have installed
   - Downloads directly from github
