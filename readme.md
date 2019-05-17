@@ -44,7 +44,6 @@ HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Home
 - Type "python HBUpdaterGUI.py"
   - If you are missing dependencies do the following:
   - sudo apt-get install python3 python3-pip python3-tk
-- Sometimes python won't ship with tkinter, if you get an error regarding TCL/TK when launching do sudo apt-get install python3-tk
 - If you don't know how to do this you should probably be using Windows.
 
 ##### Want to contribute? Have ideas? Questions? Great!
