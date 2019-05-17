@@ -38,11 +38,17 @@ class FrameManager(tk.Tk):
 		tk.Tk.__init__(self, *args, **kwargs)
 
 		if platform.system() == 'Windows':
-			print("Windows detected, setting icon")
-			self.iconbitmap(homebrewcore.joinpaths(homebrewcore.assetfolder, 'HBUpdater.ico'))
+			try:
+				print("Windows detected, setting icon")
+				self.iconbitmap(homebrewcore.joinpaths(homebrewcore.assetfolder, 'HBUpdater.ico'))
+			except:
+				print("Failed to set icon")
 		elif platform.system() == "Linux":
-			print("Linux detected, setting icon")
-			self.iconbitmap(homebrewcore.joinpaths(homebrewcore.assetfolder, 'HBUpdater.xbm'))
+			try:
+				print("Linux detected, setting icon")
+				self.iconbitmap(homebrewcore.joinpaths(homebrewcore.assetfolder, 'HBUpdater.xbm'))
+			except:
+				print("Failed to set icon")
 
 
 		# self.resizable(False,False)
