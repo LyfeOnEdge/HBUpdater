@@ -599,4 +599,20 @@ nutserverdict = {
 		]
 	}
 
+fluffydict = {
+	"software" : "Fluffy",
+	"githubapi" : "https://api.github.com/repos/fourminute/Fluffy/releases",
+	"author" : "Fluffy", 
+	"projectpage": "https://gbatemp.net/threads/fluffy-a-tinfoil-and-goldleaf-gui.528930/",
+	"description" : "Fluffy server for installing title backups",
+	"group" : "SPECIAL",
+	"dependencies" : [
+		"pyusb",
+		"pyqt5",
+		"libusb",
+		"libusb1",
+		"qdarkstyle",
+		"configparser"
+		]
+	}
 

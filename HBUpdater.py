@@ -7,7 +7,7 @@ import json
 if __name__ == '__main__':
 	sys.exit("This script was not meant to run without a frontend. Exiting...")
 
-version = "0.4 (BETA)"
+version = "0.5_cleanup (BETA)"
 print("HBUpdater version {}".format(version))
 
 #My modules
@@ -21,10 +21,6 @@ chosensdpath = None
 sdpathset = False
 trackingfolder = ""
 trackingfile = ""
-
-
-
-
 
 
 #update global "chosensdpath"
@@ -59,7 +55,6 @@ def installitem(dicty, option, suboption):
 	softwarename = dicty[option]["software"]
 
 	location = getlogitem(softwarename, "location")
-	
 
 	with open(dicty[option]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
 		jfile = json.load(json_file)	

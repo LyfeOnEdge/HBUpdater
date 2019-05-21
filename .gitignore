@@ -52,3 +52,7 @@ titledb/AR.en.json
 nut/*
 conf/nut.conf
 conf/users.conf
+fluffy.conf
+fluffy.log
+fluffy/fluffy.pyw
+fluffy/LICENSE.txt

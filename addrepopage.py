@@ -22,7 +22,6 @@ new_subfolder_placeholder = "SD subfolder (blank for root)"
 new_genre_placeholder = "Genre"
 new_description_placeholder = "(Optional) Repo Description"
 
-
 REPOGUIDETEXT = """Usage Guide:
 
 Click new, fill out the various fields, and hit save to add a new repo. 
@@ -37,21 +36,16 @@ To edit a repo: select the repo you wish to edit, change desired values, and cli
 
 #DESCRIPTION: Not required, but nice."""
 
-
-
-
-
-
 #Main screen for adding repositories to the gui
 class addRepoScreen(cw.themedframe):
 	def __init__(self, parent, controller,back_command):
-		cw.themedframe.__init__(self,parent,frame_borderwidth=0,frame_highlightthickness= 0,background_color= light_color)
+		cw.themedframe.__init__(self,parent,background_color= light_color)
 
 		#Screen for viewing current repos
-		self.mainreposcreen = cw.themedframe(self,frame_borderwidth=0,frame_highlightthickness= 0,background_color=light_color)
+		self.mainreposcreen = cw.themedframe(self,background_color=light_color)
 		self.mainreposcreen.place(x=0,y=0,relwidth=1,relheight=1)
 
-		self.listboxframe = cw.themedframe(self.mainreposcreen,frame_borderwidth=0,frame_highlightthickness= 0)
+		self.listboxframe = cw.themedframe(self.mainreposcreen)
 		self.listboxframe.place(x=+repolistboxseparatorwidth,y=+repolistboxseparatorwidth,relwidth=1, width=-(infoframewidth+repolistboxseparatorwidth), relheight=1,height=-(4*entryheight+repolistboxseparatorwidth))
 
 		self.listboxlist = []
@@ -98,12 +92,12 @@ class addRepoScreen(cw.themedframe):
 		self.horizontalseparator = cw.separator(self.listboxframe)
 		self.horizontalseparator.place(relx=0,rely=0,y=columtitlesheight,height=repolistboxseparatorwidth,relwidth=1,)
 
-		self.repoframe = cw.themedframe(self.mainreposcreen,frame_borderwidth=0,frame_highlightthickness= 0,background_color= light_color)
+		self.repoframe = cw.themedframe(self.mainreposcreen,background_color= light_color)
 		self.repoframe.place(relx=0, rely=1, y=-((4*entryheight)+separatorwidth),relwidth=1, width=-(infoframewidth), height=((4*entryheight)+separatorwidth))
 		
 		self.entryboxlist=[]
 		self.iconspacer = 0
-		self.urlbox_frame = cw.themedframe(self.repoframe,frame_borderwidth=0,frame_highlightthickness= 0,background_color=light_color,)
+		self.urlbox_frame = cw.themedframe(self.repoframe,background_color=light_color,)
 		self.urlbox_frame.place(relx=0.0, rely=1, height=entryheight, relwidth=1,y=-(4*entryheight)-separatorwidth)
 		self.urlbox = cw.entrybox(self.urlbox_frame, 
 			command=lambda: self.saveedits(), 
@@ -114,7 +108,7 @@ class addRepoScreen(cw.themedframe):
 		self.entryboxlist.append(self.urlbox)
 
 		self.iconspacer = 0
-		self.subfolderbox_frame = cw.themedframe(self.repoframe,frame_borderwidth=0,frame_highlightthickness= 0,background_color=light_color,)
+		self.subfolderbox_frame = cw.themedframe(self.repoframe,background_color=light_color,)
 		self.subfolderbox_frame.place(relx=0.0, rely=1, height=entryheight, relwidth=1,y=-(3*entryheight)-separatorwidth)
 		self.subfolderbox = cw.entrybox(self.subfolderbox_frame, 
 			command=lambda: self.saveedits(), 
@@ -124,7 +118,7 @@ class addRepoScreen(cw.themedframe):
 
 		self.entryboxlist.append(self.subfolderbox)
 
-		self.genrebox_frame = cw.themedframe(self.repoframe,frame_borderwidth=0,frame_highlightthickness= 0,background_color=light_color,)
+		self.genrebox_frame = cw.themedframe(self.repoframe,background_color=light_color,)
 		self.genrebox_frame.place(relx=0.0, rely=1, height=entryheight, relwidth=1,y=-(2*entryheight)-separatorwidth)
 		self.genrebox = cw.entrybox(self.genrebox_frame, 
 			command=lambda: self.saveedits(), 
@@ -135,7 +129,7 @@ class addRepoScreen(cw.themedframe):
 		self.entryboxlist.append(self.genrebox)
 
 		self.iconspacer = 0
-		self.descriptionbox_frame = cw.themedframe(self.repoframe,frame_borderwidth=0,frame_highlightthickness= 0,background_color=light_color,)
+		self.descriptionbox_frame = cw.themedframe(self.repoframe,background_color=light_color,)
 		self.descriptionbox_frame.place(relx=0.0, rely=1, height=entryheight, relwidth=1,y=-entryheight-separatorwidth, )
 		self.descriptionbox = cw.entrybox(self.descriptionbox_frame, 
 			command=lambda: self.saveedits(), 
@@ -191,17 +185,16 @@ class addRepoScreen(cw.themedframe):
 
 		self.reloadreopscreen()
 
-
 		#frame for adding new repo
-		self.addreposcreen = cw.themedframe(self,frame_borderwidth=0,frame_highlightthickness= 0,background_color=light_color)
+		self.addreposcreen = cw.themedframe(self,background_color=light_color)
 		self.addreposcreen.place(x=0,y=0,relwidth=1,relheight=1)
 
-		self.addrepoframe = cw.themedframe(self.addreposcreen,frame_borderwidth=0,frame_highlightthickness= 0,background_color= light_color)
-		self.addrepoframe.place(relx=0, rely=0,relwidth=1, height=((4*entryheight)+separatorwidth))
+		self.addrepoframe = cw.themedframe(self.addreposcreen,background_color= light_color)
+		self.addrepoframe.place(relx=0, rely=0,relwidth=1, height=4*entryheight+separatorwidth)
 		
 		self.newentryboxlist=[]
 		self.iconspacer = separatorwidth
-		self.new_urlbox_frame = cw.themedframe(self.addrepoframe,frame_borderwidth=0,frame_highlightthickness= 0,background_color=light_color,)
+		self.new_urlbox_frame = cw.themedframe(self.addrepoframe,background_color=light_color,)
 		self.new_urlbox_frame.place(relx=0.0, rely=1, height=entryheight, relwidth=1,y=-(4*entryheight)-separatorwidth)
 		self.new_urlbox = cw.entrybox(self.new_urlbox_frame,  
 			placeholder=new_url_placeholder,
@@ -209,7 +202,7 @@ class addRepoScreen(cw.themedframe):
 		self.new_urlbox.place(relx=0,rely=.5, x=+icon_and_search_bar_spacing, relwidth=1, width=-self.iconspacer, height=entryheight-icon_and_search_bar_spacing, y=-((entryheight)/2) + icon_and_search_bar_spacing )
 		self.newentryboxlist.append(self.new_urlbox)
 
-		self.new_subfolderbox_frame = cw.themedframe(self.addrepoframe,frame_borderwidth=0,frame_highlightthickness= 0,background_color=light_color,)
+		self.new_subfolderbox_frame = cw.themedframe(self.addrepoframe,background_color=light_color,)
 		self.new_subfolderbox_frame.place(relx=0.0, rely=1, height=entryheight, relwidth=1,y=-(3*entryheight)-separatorwidth)
 		self.new_subfolderbox = cw.entrybox(self.new_subfolderbox_frame, 
 			placeholder=new_subfolder_placeholder,
@@ -217,7 +210,7 @@ class addRepoScreen(cw.themedframe):
 		self.new_subfolderbox.place(relx=0,rely=.5, x=+icon_and_search_bar_spacing, relwidth=1, width=-(self.iconspacer), height=entryheight-icon_and_search_bar_spacing, y=-((entryheight)/2) + icon_and_search_bar_spacing )
 		self.newentryboxlist.append(self.new_subfolderbox)
 
-		self.new_genrebox_frame = cw.themedframe(self.addrepoframe,frame_borderwidth=0,frame_highlightthickness= 0,background_color=light_color,)
+		self.new_genrebox_frame = cw.themedframe(self.addrepoframe,background_color=light_color,)
 		self.new_genrebox_frame.place(relx=0.0, rely=1, height=entryheight, relwidth=1,y=-(2*entryheight)-separatorwidth)
 		self.new_genrebox = cw.entrybox(self.new_genrebox_frame, 
 			placeholder=new_genre_placeholder,
@@ -225,7 +218,7 @@ class addRepoScreen(cw.themedframe):
 		self.new_genrebox.place(relx=0,rely=.5, x=+icon_and_search_bar_spacing, relwidth=1, width=-(self.iconspacer), height=entryheight-icon_and_search_bar_spacing, y=-((entryheight)/2) + icon_and_search_bar_spacing )
 		self.newentryboxlist.append(self.new_genrebox)
 
-		self.new_descriptionbox_frame = cw.themedframe(self.addrepoframe,frame_borderwidth=0,frame_highlightthickness= 0,background_color=light_color,)
+		self.new_descriptionbox_frame = cw.themedframe(self.addrepoframe,background_color=light_color,)
 		self.new_descriptionbox_frame.place(relx=0.0, rely=1, height=entryheight, relwidth=1,y=-entryheight-separatorwidth, )
 		self.new_descriptionbox = cw.entrybox(self.new_descriptionbox_frame, 
 			placeholder=new_description_placeholder,
@@ -240,7 +233,7 @@ class addRepoScreen(cw.themedframe):
 		self.get_repo_data_button_guide.place(relx=0,rely=0,y=+((4*entryheight)+separatorwidth),relwidth=1, width=-3*navbuttonheight, x=+3*navbuttonheight,height=navbuttonheight)
 
 
-		self.assetsframe = cw.themedframe(self.addreposcreen,frame_borderwidth=0,frame_highlightthickness=0,background_color=light_color)
+		self.assetsframe = cw.themedframe(self.addreposcreen,background_color=light_color)
 		self.assetsframe.place(relx=0,rely=0,y=((4*entryheight)+2*separatorwidth+navbuttonheight),relwidth=1,  relheight=1,height=-((4*entryheight)+2*separatorwidth+navbuttonheight))
 		self.assetslistbox = cw.ScrolledListBox(self.assetsframe,borderwidth=0,highlightthickness=0,background=dark_color,foreground=w)
 		self.assetslistbox.place(x=+separatorwidth,y=0,relwidth=1,relheight=1, width=-2*separatorwidth, height=-(2*separatorwidth+2*navbuttonheight))
@@ -249,15 +242,7 @@ class addRepoScreen(cw.themedframe):
 		self.finaladdrepobutton = cw.navbutton(self.assetsframe, text_string="ADD REPO", command_name=lambda: self.addrepo())
 		self.finaladdrepobutton.place(rely=1,relx=0,x=+separatorwidth,y=-(navbuttonheight+separatorwidth),height=navbuttonheight,width=3*navbuttonheight)
 
-		
-		self.errorframe = cw.themedframe(self.addreposcreen,frame_borderwidth=0,frame_highlightthickness=0,background_color=light_color)
-		self.errorframe.place(relx=0,rely=0,y=((4*entryheight)+2*separatorwidth+navbuttonheight),relwidth=1,  relheight=1,height=-((4*entryheight)+2*separatorwidth+navbuttonheight))
-		self.errormessage = cw.themedguidelabel(self.errorframe,"nerd",anchor="nw",background=dark_color)
-		self.errormessage.place(x=+separatorwidth,y=0,relwidth=1,relheight=1, width=-2*separatorwidth, height=-(2*separatorwidth+2*navbuttonheight))
-		self.errormessage.set("hello this is an error")
-
-
-		self.dummyframe = cw.themedframe(self.addreposcreen,frame_borderwidth=0,frame_highlightthickness=0,background_color=light_color)
+		self.dummyframe = cw.themedframe(self.addreposcreen,background_color=light_color)
 		self.dummyframe.place(relx=0,rely=0,y=((4*entryheight)+2*separatorwidth+navbuttonheight),relwidth=1,  relheight=1,height=-((4*entryheight)+2*separatorwidth+navbuttonheight))
 
 		self.returnbuttonframe = cw.themedframe(self.addreposcreen)
@@ -338,8 +323,6 @@ class addRepoScreen(cw.themedframe):
 		print("repo successfully added")
 		self.reloadreopscreen()
 
-
-
 	def saveedits(self):
 		url = self.urlbox.get_text()
 
@@ -370,7 +353,6 @@ release it in order to use it with HBUpdater.""")
 		if len(jfile[0]["assets"]) == 0:
 			print("No assets")
 			return
-
 
 		newentry = {
 						repochunk["software"] : repochunk
@@ -428,7 +410,6 @@ release it in order to use it with HBUpdater.""")
 		for entry in self.entryboxlist:
 			entry.clear()
 	
-
 	def populaterepobox(self):
 		self.authorlistbox.config(state=NORMAL)
 		self.grouplistbox.config(state=NORMAL)
@@ -467,7 +448,6 @@ release it in order to use it with HBUpdater.""")
 			self.subfolderbox.set_text(subfolder)
 			self.genrebox.set_text(genre)
 
-
 	def nextbuttonpress(self):
 		if guicore.currepo < len(guicore.repolist)-1:
 			guicore.currepo += 1
@@ -483,12 +463,8 @@ release it in order to use it with HBUpdater.""")
 		frame.tkraise()
 		self.returnbuttonframe.tkraise()
 
-
 	def shownewreposcreen(self):
 		self.addreposcreen.tkraise()
 
 	def showmainreposcreen(self):
 		self.mainreposcreen.tkraise()
-
-	def raiseerrorframe(self):
-		self.errorframe.tkraise()

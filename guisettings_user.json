@@ -1,0 +1,14 @@
+{
+    "fusee-launcher": {
+        "version": "not installed",
+        "location": "none"
+    },
+    "nut": {
+        "version": "1.2",
+        "location": "C:\\Users\\Andrew\\Documents\\GitHub\\HBUpdater\\nut\\blawar-nut-60bf4e3/server.py"
+    },
+    "fluffy": {
+        "version": "v2.8",
+        "location": "C:\\Users\\Andrew\\Documents\\GitHub\\HBUpdater\\fluffy\\fluffy.pyw"
+    }
+}

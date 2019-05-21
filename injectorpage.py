@@ -198,7 +198,7 @@ class injectorScreen(tk.Frame):
 								"location": payload,
 							}
 						}
-				guicore.updateguilog(newentry)
+				guicore.setguisetting(newentry)
 				self.popsoftwarelistbox()
 
 			#If payload is already downloaded and up-to-date
@@ -331,7 +331,8 @@ def installPyUSB():
 
 
 def injectpayload(self,payload):
-	if guicore.checkguitag("fusee-launcher", "version") == "not installed" or guicore.checkguitag("fusee-launcher", "version") == "none":
+	fuseestatus = guicore.checkguitag("fusee-launcher", "version")
+	if fuseestatus == "not installed" or fuseestatus == "none" or fuseestatus == None:
 		# self.printtoboth("fusee-launcher not installed, downloading")
 		with open(guicore.payloadinjector[0]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
 			jfile = json.load(json_file)
@@ -356,7 +357,7 @@ def injectpayload(self,payload):
 					"location": injector,
 				}
 			}
-			guicore.updateguilog(newentry)
+			guicore.setguisetting(newentry)
 
 	script_path = guicore.checkguitag("fusee-launcher", "location")
 	script_path = homebrewcore.joinpaths(homebrewcore.payloadsfolder, script_path)

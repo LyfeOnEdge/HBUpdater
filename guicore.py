@@ -9,11 +9,11 @@ repolist = []
 currepo = 0
 repolistlen = None
 
-guilog = "guilog_user.json"
-guilog_default = "guilog_default.json"
-if not homebrewcore.exists(guilog):
+guisettings = "guisettings_user.json"
+guisettings_default = "guisettings_default.json"
+if not homebrewcore.exists(guisettings):
 	print("Gui json not found, initializing")
-	shutil.copy(guilog_default,guilog)
+	shutil.copy(guisettings_default,guisettings)
 
 repolog = "user_repos.json"
 if not homebrewcore.exists(repolog):
@@ -40,7 +40,6 @@ ijdictlen = 0
 payloadinjector = []
 
 
-
 def setDict(dicty):
 	global hbdict
 	global dictlen
@@ -59,26 +58,22 @@ def setPayloadInjector(dicty):
 	global payloadinjector
 	payloadinjector = dicty
 
-
-
-
-
-def updateguilog(newentry):
+def setguisetting(newentry):
 	#open log
 	print("updating gui log with {}".format(newentry))
-	with open(guilog, 'r') as jfile:  
+	with open(guisettings, 'r') as jfile:  
 		originaljfile = json.load(jfile)
 
 	#update value
 	originaljfile.update(newentry)
 
 	#write updated log
-	with open(guilog, 'w') as jfile:
+	with open(guisettings, 'w') as jfile:
 		json.dump(originaljfile, jfile, indent=4,)
 
 def checkguitag(software, key):
 	try:
-		with open(guilog, 'r') as json_file:  
+		with open(guisettings, 'r') as json_file:  
 			jfile = json.load(json_file)
 
 		try:
@@ -132,7 +127,6 @@ def updateguirepos(newentry):
 	#update value
 	originaljfile.update(newentry)
 
-
 	#write updated log
 	with open(repolog, 'w+') as jfile:
 		json.dump(originaljfile, jfile, indent=4,)
@@ -146,7 +140,6 @@ def removeitemfromrepo(software):
     #write updated log
     with open(repolog, 'w+') as jfile:
         json.dump(originaljfile, jfile, indent=4,)
-     
 
 def checkrepotag(software, key):
 	try:

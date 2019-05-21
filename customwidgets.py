@@ -284,7 +284,7 @@ def _on_shiftmouse(event, widget):
 
 #Frame themed properly from format.py
 class themedframe(tk.Frame):
-	def __init__(self,parent,frame_borderwidth = 0,frame_highlightthickness = 1,background_color = dark_color,frame_highlightcolor=dark_color):
+	def __init__(self,parent,frame_borderwidth = 0,frame_highlightthickness = 0,background_color = dark_color,frame_highlightcolor=dark_color):
 		tk.Frame.__init__(self,parent, 
 			background = background_color,
 			highlightcolor = frame_highlightcolor,

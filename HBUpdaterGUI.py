@@ -18,10 +18,9 @@ import guicore
 import locations 
 from format import * #We import format in this manner for simplicity's sake
 import customwidgets as cw #Custom tkinter widgets
+import HBUpdater #import backend, will not run standalone
 
-#import backend, will not run standalone
-import HBUpdater
-
+import threading
 import tkinter as tk
 from tkinter.constants import *
 print("using tkinter version {}".format(tk.Tcl().eval('info patchlevel')))
@@ -31,7 +30,7 @@ import injectorpage as ip
 import mainpage as mp
 import settingspage as sp
 import addrepopage as ar
-import nutpage as np
+import installerhelperpage as hp
 #Main frame handler, raises and pages in z layer
 class FrameManager(tk.Tk):
 	def __init__(self, *args, **kwargs):
@@ -67,7 +66,7 @@ class FrameManager(tk.Tk):
 
 		self.frames = {}
 		#Add frames to dict, with keyword being the name of the frame
-		for F in (mp.mainPage,ip.injectorScreen,sp.settingsPage,ar.addRepoScreen,np.nutPage):
+		for F in (mp.mainPage,ip.injectorScreen,sp.settingsPage,ar.addRepoScreen,hp.installerHelperPage):
 			page_name = F.__name__
 			frame = F(parent=container, controller=self,back_command = lambda: self.controller.show_frame("mainPage")) 
 			self.frames[page_name] = frame
@@ -100,8 +99,8 @@ def GetUpdatedJson():
 
 # def HandleUserAddedRepos():
 if __name__ == '__main__':  
-	#UseCachedJson() #use this to use only pre-downloaded json files
-	GetUpdatedJson() #use this to download new json (required to get updates)
+	UseCachedJson() #use this to use only pre-downloaded json files
+	#GetUpdatedJson() #use this to download new json (required to get updates)
 	
 	for softwarechunk in guicore.hbdict:
 		softwarechunk["photopath"] = None
@@ -109,9 +108,3 @@ if __name__ == '__main__':
 	gui = FrameManager()
 	gui.title("HBUpdater")
 	gui.mainloop()
-
-
-
-
-
-

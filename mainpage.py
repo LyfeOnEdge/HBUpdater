@@ -3,7 +3,7 @@ from format import *
 import homebrewcore
 import guicore
 import webhandler
-import nutpage
+import installerhelperpage
 
 import tkinter as tk
 from tkinter.constants import *
@@ -26,8 +26,9 @@ class mainPage(tk.Frame,):
         #Shared images
         self.infoimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"info.png")).zoom(3).subsample(5)
         self.returnimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"returnbutton.png")).zoom(3).subsample(5)
-        self.settingsimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"settings.png"))
+        self.settingsimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"settings.png")).zoom(3).subsample(5)
         self.nutimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"nut.png"))
+        self.fluffyimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder, "fluffy.png")).zoom(3).subsample(5)
 
         #Full window frame, holds everything
         self.outer_frame = cw.themedframe(self,frame_borderwidth=0,frame_highlightthickness= 0)
@@ -49,6 +50,11 @@ class mainPage(tk.Frame,):
         self.iconspacer += searchboxheight-2*icon_and_search_bar_spacing
         self.nuticon = cw.iconbutton(self.searchbox_frame,self.nutimage,command_name=self.checknutandstart)
         self.nuticon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -((searchboxheight)/2) + icon_and_search_bar_spacing,width = searchboxheight-2*icon_and_search_bar_spacing, height=searchboxheight-2*icon_and_search_bar_spacing)
+        self.iconspacer += icon_and_search_bar_spacing
+
+        self.iconspacer += searchboxheight-2*icon_and_search_bar_spacing
+        self.fluffyicon = cw.iconbutton(self.searchbox_frame,self.fluffyimage,command_name=self.checkfluffyandstart)
+        self.fluffyicon.place(relx= 1, rely=.5, x=-self.iconspacer, y = -((searchboxheight)/2) + icon_and_search_bar_spacing,width = searchboxheight-2*icon_and_search_bar_spacing, height=searchboxheight-2*icon_and_search_bar_spacing)
         self.iconspacer += icon_and_search_bar_spacing
         
         self.iconspacer += searchboxheight-2*icon_and_search_bar_spacing
@@ -284,10 +290,19 @@ class mainPage(tk.Frame,):
                 print("SD Path Not set, not installing")
 
     def checknutandstart(self):
-        if not nutpage.checkifnutdownloaded():
-            self.controller.show_frame("nutPage")
+        if not installerhelperpage.checkifhelperdownloaded("nut"):
+            installerhelperpage.seterrorstate("nut")
+            self.controller.show_frame("installerHelperPage")
             return
-        nutpage.startnut()
+        installerhelperpage.starthelper("nut")
+
+    def checkfluffyandstart(self):
+        if not installerhelperpage.checkifhelperdownloaded("fluffy"):
+            installerhelperpage.seterrorstate("fluffy")
+            self.controller.show_frame("installerHelperPage")
+            return
+        installerhelperpage.starthelper("fluffy")
+
 
     #raises the details frame
     def showdetails(self):
