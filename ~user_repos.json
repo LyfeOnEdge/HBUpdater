@@ -1,0 +1,72 @@
+{
+    "created_with": 0.1,
+    "Snake-SDL-Switch": {
+        "software": "Snake-SDL-Switch",
+        "githuburl": "https://github.com/T3CHNOLOG1C/Snake-SDL-Switch/releases",
+        "githubapi": "https://api.github.com/repos/T3CHNOLOG1C/Snake-SDL-Switch/releases",
+        "githubjson": "C:\\Users\\Andrew\\Documents\\GitHub\\HBUpdater\\cache\\json\\Snake-SDL-Switch.json",
+        "github_asset": null,
+        "author": "T3CHNOLOG1C",
+        "projectpage": null,
+        "description": "Added by user, you can edit this in the repos menu.",
+        "group": "user repo",
+        "install_subfolder": "switch",
+        "zip_items": null,
+        "photopath": null
+    },
+    "twili": {
+        "software": "twili",
+        "githuburl": "https://github.com/misson20000/twili",
+        "githubapi": "https://api.github.com/repos/misson20000/twili/releases",
+        "githubjson": "C:\\Users\\Andrew\\Documents\\GitHub\\HBUpdater\\cache\\json\\twili.json",
+        "github_asset": null,
+        "author": "misson20000",
+        "projectpage": null,
+        "description": "poop",
+        "group": "gords",
+        "install_subfolder": "switch",
+        "zip_items": null,
+        "photopath": null
+    },
+    "T-Rekt-NX": {
+        "software": "T-Rekt-NX",
+        "githuburl": "https://github.com/Manurocker95/T-Rekt-NX/releases",
+        "githubapi": "https://api.github.com/repos/Manurocker95/T-Rekt-NX/releases",
+        "githubjson": "C:\\Users\\Andrew\\Documents\\GitHub\\HBUpdater\\cache\\json\\T-Rekt-NX.json",
+        "github_asset": null,
+        "author": "Manurocker95",
+        "projectpage": null,
+        "description": "Added by user, you can edit this in the repos menu.",
+        "group": "asd",
+        "install_subfolder": null,
+        "zip_items": null,
+        "photopath": null
+    },
+    "Strobe-Alarm-Clock-for-switch": {
+        "software": "Strobe-Alarm-Clock-for-switch",
+        "githuburl": "https://github.com/ELY3M/Strobe-Alarm-Clock-for-switch/releases",
+        "githubapi": "https://api.github.com/repos/ELY3M/Strobe-Alarm-Clock-for-switch/releases",
+        "githubjson": "C:\\Users\\Andrew\\Documents\\GitHub\\HBUpdater\\cache\\json\\Strobe-Alarm-Clock-for-switch.json",
+        "github_asset": null,
+        "author": "ELY3M",
+        "projectpage": null,
+        "description": "Added by user, you can edit this in the repos menu.",
+        "group": "user repo",
+        "install_subfolder": "",
+        "zip_items": null
+    },
+    "SlitherlinkNX": {
+        "software": "SlitherlinkNX",
+        "githuburl": "https://github.com/Tardigrade-nx/SlitherlinkNX/releases",
+        "githubapi": "https://api.github.com/repos/Tardigrade-nx/SlitherlinkNX/releases",
+        "githubjson": "C:\\Users\\Andrew\\Documents\\GitHub\\HBUpdater\\cache\\json\\SlitherlinkNX.json",
+        "github_asset": null,
+        "author": "Tardigrade-nx",
+        "projectpage": null,
+        "description": "Added by user, you can edit this in the repos menu.",
+        "group": "user repo",
+        "install_subfolder": "",
+        "zip_items": null,
+        "photopath": null
+    }
+}

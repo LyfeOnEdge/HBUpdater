@@ -11,11 +11,10 @@ version = "0.5_cleanup (BETA)"
 print("HBUpdater version {}".format(version))
 
 #My modules
-import webhandler 
-import homebrewcore
-import locations
-from format import *
-import webhandler
+from modules.format import *
+import modules.homebrewcore as homebrewcore
+import modules.locations as locations
+import modules.webhandler as webhandler
 
 chosensdpath = None
 sdpathset = False

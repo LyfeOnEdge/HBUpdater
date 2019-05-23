@@ -1,14 +1,15 @@
-import HBUpdater
-from format import * 
-import homebrewcore
-import guicore
-import webhandler
-import installerhelperpage
+from modules.format import * 
+import modules.customwidgets as cw
+import modules.guicore as guicore
+import modules.HBUpdater as HBUpdater
+import modules.homebrewcore as homebrewcore
+import modules.webhandler as webhandler
+
+import pages.installerhelperpage as installerhelperpage
 
 import tkinter as tk
 from tkinter.constants import *
 from tkinter import filedialog
-import customwidgets as cw
 
 import json
 import webbrowser

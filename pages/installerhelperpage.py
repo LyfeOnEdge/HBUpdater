@@ -1,10 +1,15 @@
-import webhandler, homebrewcore, HBUpdater, locations, guicore
+from modules.format import *
+import modules.customwidgets as cw
+import modules.guicore as guicore
+import modules.HBUpdater as HBUpdater
+import modules.homebrewcore as homebrewcore
+import modules.locations as locations
+import modules.webhandler as webhandler
+
 from zipfile import ZipFile
-import sys, os, json, subprocess,imp, shutil
-import threading
+import sys, os, json, subprocess, imp, shutil, threading
 import tkinter as tk
-import customwidgets as cw
-from format import *
+
 
 nutfolder = homebrewcore.get_path("nut")
 if not os.path.isdir(nutfolder):
@@ -27,28 +32,31 @@ class installerHelperPage(tk.Frame,):
         self.returnimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"returnbutton.png")).zoom(3).subsample(5)
 
         #page for warning users that nut isn't installed and asking if they want to install it
-        self.installerwarningframe = cw.themedframe(self,frame_borderwidth=0,frame_highlightthickness=0)
+        self.installerwarningframe = cw.themedframe(self,)
         self.installerwarningframe.place(relwidth=1,relheight=1)
         self.returnbutton = cw.navbutton(self.installerwarningframe, image_object=self.returnimage, command_name=self.controller.show_frame("mainPage"))
         self.returnbutton.place(relx=1, rely=1, x=-(separatorwidth+navbuttonheight), y=-(separatorwidth+navbuttonheight), height=navbuttonheight, width=navbuttonheight)
 
-        self.nutnotdownloadedwarningframe= cw.themedframe(self.installerwarningframe,frame_highlightthickness=0,frame_borderwidth=0)
+        self.nutnotdownloadedwarningframe= cw.themedframe(self.installerwarningframe)
         self.nutnotdownloadedwarningframe.place(relheight=1,relwidth=1)
         self.nutnotdownloadedwarning = cw.themedguidelabel(self.nutnotdownloadedwarningframe,"IT LOOKS LIKE YOU DON'T HAVE NUT DOWNLOADED YET,\n WOULD YOU LIKE TO DOWNLOAD IT AND INSTALL ITS DEPENDENCIES?",anchor="center")
         self.nutnotdownloadedwarning.place(relx=0.5,rely=0.5,x=-250, width=500,height=3*navbuttonheight,y=-(1.5*navbuttonheight))
         self.installnutbutton = cw.navbutton(self.nutnotdownloadedwarningframe, command_name=self.getnut,text_string="YES")
         self.installnutbutton.place(relx=0.5,rely=0.5,y=+(2*navbuttonheight + separatorwidth),width=100,x=-50)
+        self.nutcancelbutton = cw.navbutton(self.nutnotdownloadedwarningframe, command_name=lambda: self.controller.show_frame("mainPage"),text_string="NO")
+        self.nutcancelbutton.place(relx=0.5,rely=0.5,y=+(3*navbuttonheight + separatorwidth),width=100,x=-50)
 
-        self.fluffynotdownloadedwarningframe= cw.themedframe(self.installerwarningframe,frame_highlightthickness=0,frame_borderwidth=0)
+
+        self.fluffynotdownloadedwarningframe= cw.themedframe(self.installerwarningframe)
         self.fluffynotdownloadedwarningframe.place(relheight=1,relwidth=1)
         self.fluffynotdownloadedwarning = cw.themedguidelabel(self.fluffynotdownloadedwarningframe,"IT LOOKS LIKE YOU DON'T HAVE FLUFFY DOWNLOADED YET,\n WOULD YOU LIKE TO DOWNLOAD IT AND INSTALL ITS DEPENDENCIES?",anchor="center")
         self.fluffynotdownloadedwarning.place(relx=0.5,rely=0.5,x=-250, width=500,height=3*navbuttonheight,y=-(1.5*navbuttonheight))
         self.installfluffybutton = cw.navbutton(self.fluffynotdownloadedwarningframe, command_name=self.getfluffy,text_string="YES")
         self.installfluffybutton.place(relx=0.5,rely=0.5,y=+(2*navbuttonheight + separatorwidth),width=100,x=-50)
+        self.fluffycancelbutton = cw.navbutton(self.fluffynotdownloadedwarningframe, command_name=lambda: self.controller.show_frame("mainPage"),text_string="NO")
+        self.fluffycancelbutton.place(relx=0.5,rely=0.5,y=+(3*navbuttonheight + separatorwidth),width=100,x=-50)
 
-        self.cancelbutton = cw.navbutton(self.nutnotdownloadedwarningframe, command_name=lambda: self.controller.show_frame("mainPage"),text_string="NO")
-        self.cancelbutton.place(relx=0.5,rely=0.5,y=+(3*navbuttonheight + separatorwidth),width=100,x=-50)
-
+       
         self.nutnotdownloadedwarningframe.tkraise()
 
 
@@ -109,10 +117,10 @@ def installmodulelist(modules):
 
 
 def checkifhelperdownloaded(helper):
-    if guicore.checkguitag(helper, "version") == "not installed" or guicore.checkguitag(helper, "version") == None:
+    if guicore.checkguisetting(helper, "version") == "not installed" or guicore.checkguisetting(helper, "version") == None:
         return False
     else:
-        print(guicore.checkguitag(helper, "version"))
+        print(guicore.checkguisetting(helper, "version"))
         return True
     return False
 
@@ -121,7 +129,7 @@ def starthelper(helper):
         nutnotdownloadedwarningframe.tkraise()
         print("not installed")
         return
-    script_path = guicore.checkguitag(helper, "location")
+    script_path = guicore.checkguisetting(helper, "location")
     print("starting {} server at {}".format(helper,script_path))
     if script_path == None:
         print("invalid path")

@@ -1,10 +1,9 @@
-import homebrewcore
+import modules.homebrewcore as homebrewcore
 import json
 import shutil
 
 #archive handling
 from zipfile import ZipFile
-import tarfile
 
 import urllib.request 
 opener = urllib.request.build_opener()

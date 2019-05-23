@@ -1,12 +1,12 @@
-import HBUpdater
-from format import * 
-import homebrewcore
-import webhandler
-import guicore
+from modules.format import * 
+import modules.customwidgets as cw
+import modules.guicore as guicore
+import modules.HBUpdater as HBUpdater
+import modules.homebrewcore as homebrewcore
+import modules.webhandler as webhandler
 
 import tkinter as tk
 from tkinter.constants import *
-import customwidgets as cw
 
 import json
 import sys,subprocess

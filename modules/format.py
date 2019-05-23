@@ -47,6 +47,8 @@ b = "#000000"
 ash = "#c4c4c4"
 #lgray (used for author / priject title / description
 lgray = "#acadaf"
+#darker gray
+dgray = "#888888"
 
 listboxselectionbackground =  "#c4c4c4",
 listboxselectionforeground = b
@@ -157,3 +159,6 @@ repoguidefont = smallerboldtext
 
 
 details_guide_font = smallerboldtext
+
+
+settingsbuttonheight = 30

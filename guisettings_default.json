@@ -1,4 +1,7 @@
 {
+	"automatically_check_for_updates": {
+        "enabled": null
+    },
 	"fusee-launcher" : {
 		"version": "not installed",
 		"location": "none"

@@ -1,7 +1,7 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 from tkinter.constants import *
-from format import *
+from modules.format import *
 import platform
 
 class Placeholder_State(object):
@@ -507,7 +507,7 @@ class infobox(themedframe):
 
 class consolebox(themedframe):
 	def __init__(self,frame,):
-		themedframe.__init__(self,frame,frame_borderwidth=0, frame_highlightthickness=0)
+		themedframe.__init__(self,frame)
 
 		self.textoutput = tk.Text(self)
 		self.textoutput.place(x=0,y=0,relwidth=1,relheight=1)
@@ -531,8 +531,8 @@ class consolebox(themedframe):
 
 class titledlistboxframe(themedframe):
 	def __init__(self,frame,title):
-		themedframe.__init__(self,frame,frame_borderwidth=0, frame_highlightthickness=0)
-		self.label_frame = themedframe(self,frame_borderwidth=0, frame_highlightthickness=0)
+		themedframe.__init__(self,frame)
+		self.label_frame = themedframe(self)
 		self.label_frame.place(relx=0.0, rely=0.0, height=columtitlesheight, relwidth=1)
 		self.listbox_label = columnlabel(self.label_frame, title)
 		self.listbox_label.place(relx=0, x=+5, rely=0, relheight=1, relwidth=1, width = -5)
@@ -588,7 +588,7 @@ class cwdevtext(tk.Text):
 
 class devbox(themedframe):
 	def __init__(self,frame,devname,devtext,devimage,command_name=None):
-		themedframe.__init__(self,frame,frame_borderwidth=0,frame_highlightthickness=0)
+		themedframe.__init__(self,frame)
 
 		self.devimage = navbutton(self,image_object=devimage,command_name=command_name)
 		self.devimage.place(x=0,y=0,width=2*navbuttonheight,height=2*navbuttonheight)
@@ -600,4 +600,30 @@ class devbox(themedframe):
 		self.devtext.place(x=2*navbuttonheight+separatorwidth,y=0.5*navbuttonheight+separatorwidth,relwidth=1,width=-(2*navbuttonheight+separatorwidth))
 		self.devtext.insert(END,devtext)
 
+
+
+class settingbox(themedframe):
+	def __init__(self,frame,settingtext):
+		v = tk.IntVar()
+		themedframe.__init__(self,frame)
+		
+		self.c = tk.Checkbutton(self, text=settingtext, variable=v,
+			anchor="w",
+			foreground=dgray,
+			activeforeground=dgray,
+			background=light_color,
+			activebackground=light_color,
+			borderwidth=0,
+			highlightthickness=0,
+			font=mediumboldtext
+			)
+
+		self.c.var = v
+		self.c.place(x=0,relwidth=1,relheight=1,y=0)
+
+	def set(self,bool):
+		self.c.var.set(bool)
+
+	def get(self):
+		return self.c.var.get()
 

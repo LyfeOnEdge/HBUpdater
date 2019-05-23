@@ -12,13 +12,13 @@ version = "0.5 (BETA)"
 print("HBUpdaterGUI version {}".format(version))
 
 #My modules
-import webhandler 
-import homebrewcore
-import guicore
-import locations 
-from format import * #We import format in this manner for simplicity's sake
-import customwidgets as cw #Custom tkinter widgets
-import HBUpdater #import backend, will not run standalone
+from modules.format import * #We import format in this manner for simplicity's sake
+import modules.customwidgets as cw #Custom tkinter widgets
+import modules.guicore as guicore
+import modules.HBUpdater as HBUpdater #import backend, will not run standalone
+import modules.homebrewcore as homebrewcore
+import modules.locations as locations
+import modules.webhandler as webhandler
 
 import threading
 import tkinter as tk
@@ -26,11 +26,11 @@ from tkinter.constants import *
 print("using tkinter version {}".format(tk.Tcl().eval('info patchlevel')))
 
 #import pages for appManager (Needs to be done after dict is populated)
-import injectorpage as ip
-import mainpage as mp
-import settingspage as sp
-import addrepopage as ar
-import installerhelperpage as hp
+import pages.injectorpage as ip
+import pages.mainpage as mp
+import pages.settingspage as sp
+import pages.addrepopage as ar
+import pages.installerhelperpage as hp
 #Main frame handler, raises and pages in z layer
 class FrameManager(tk.Tk):
 	def __init__(self, *args, **kwargs):
@@ -99,8 +99,10 @@ def GetUpdatedJson():
 
 # def HandleUserAddedRepos():
 if __name__ == '__main__':  
-	#UseCachedJson() #use this to use only pre-downloaded json files
-	GetUpdatedJson() #use this to download new json (required to get updates)
+	if guicore.checkguisetting("automatically_check_for_updates","enabled"):
+		GetUpdatedJson() #use this to download new json (required to get updates)
+	else:
+		UseCachedJson() #use this to use only pre-downloaded json files
 	
 	for softwarechunk in guicore.hbdict:
 		softwarechunk["photopath"] = None

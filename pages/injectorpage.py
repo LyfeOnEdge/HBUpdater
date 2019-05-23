@@ -1,16 +1,16 @@
-import HBUpdater
-from format import * 
-import homebrewcore
-import webhandler
-import guicore
-from zipfile import ZipFile
+from modules.format import * 
+import modules.guicore as guicore
+import modules.HBUpdater as HBUpdater
+import modules.homebrewcore as homebrewcore
+import modules.webhandler as webhandler
+import modules.customwidgets as cw
 
 import tkinter as tk
 from tkinter.constants import *
-import customwidgets as cw
 
 import json
 import sys,subprocess
+from zipfile import ZipFile
 
 
 # #ijdict
@@ -121,7 +121,7 @@ class injectorScreen(tk.Frame):
 
 			self.payload_latest_version_listbox.insert(END, version)
 
-			status = guicore.checkguitag(softwarename, "version")
+			status = guicore.checkguisetting(softwarename, "version")
 
 			if status == version:
 				self.payload_version_listbox.insert(END, checkmark)
@@ -149,7 +149,7 @@ class injectorScreen(tk.Frame):
 			jfile = json.load(json_file)
 			softwarename = guicore.ijdict[guicore.payloadchunknumber]["software"]
 			version = jfile[0]["tag_name"]
-			if guicore.checkguitag(softwarename,"version") == None or guicore.checkguitag(softwarename,"version") =="not installed":
+			if guicore.checkguisetting(softwarename,"version") == None or guicore.checkguisetting(softwarename,"version") =="not installed":
 				self.printtoboth("payload not yet downloaded, downloading...")
 
 				#default asset number
@@ -203,7 +203,7 @@ class injectorScreen(tk.Frame):
 
 			#If payload is already downloaded and up-to-date
 			else:
-				payload = guicore.checkguitag(softwarename,"location")
+				payload = guicore.checkguisetting(softwarename,"location")
 
 
 		injectpayload(self,payload)
@@ -331,7 +331,7 @@ def installPyUSB():
 
 
 def injectpayload(self,payload):
-	fuseestatus = guicore.checkguitag("fusee-launcher", "version")
+	fuseestatus = guicore.checkguisetting("fusee-launcher", "version")
 	if fuseestatus == "not installed" or fuseestatus == "none" or fuseestatus == None:
 		# self.printtoboth("fusee-launcher not installed, downloading")
 		with open(guicore.payloadinjector[0]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
@@ -359,7 +359,7 @@ def injectpayload(self,payload):
 			}
 			guicore.setguisetting(newentry)
 
-	script_path = guicore.checkguitag("fusee-launcher", "location")
+	script_path = guicore.checkguisetting("fusee-launcher", "location")
 	script_path = homebrewcore.joinpaths(homebrewcore.payloadsfolder, script_path)
 	payload_file = payload
 	p = subprocess.Popen([sys.executable, '-u', script_path, payload_file],

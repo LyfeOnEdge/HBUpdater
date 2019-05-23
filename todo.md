@@ -56,3 +56,21 @@ Thomleg50 (untrusted, attempted to collect people's information without their co
 NEED TO LOOK AT:
 
 https://gbatemp.net/threads/switchguide-updater.522136/
+
+
+todo:
+
+
+settings:
+(download by default)
+window launch size
+double click for more info
+
+
+
+
+pillow on-demand
+injector remembers last selection
+double-click payloads brings up old versions
+blank button when no repo dev page is available
+stop crash when new json fails to download

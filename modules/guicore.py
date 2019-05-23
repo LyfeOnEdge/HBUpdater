@@ -1,5 +1,5 @@
-import homebrewcore 
-import webhandler
+import modules.homebrewcore as homebrewcore
+import modules.webhandler as webhandler
 import json, shutil
 version = 0.2
 
@@ -71,7 +71,7 @@ def setguisetting(newentry):
 	with open(guisettings, 'w') as jfile:
 		json.dump(originaljfile, jfile, indent=4,)
 
-def checkguitag(software, key):
+def checkguisetting(software, key):
 	try:
 		with open(guisettings, 'r') as json_file:  
 			jfile = json.load(json_file)
