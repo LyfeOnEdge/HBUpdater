@@ -7,7 +7,7 @@ import json
 if __name__ == '__main__':
 	sys.exit("This script was not meant to run without a frontend. Exiting...")
 
-version = "0.5_cleanup (BETA)"
+version = "0.6 (BETA)"
 print("HBUpdater version {}".format(version))
 
 #My modules
