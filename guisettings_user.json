@@ -1,6 +1,6 @@
 {
     "automatically_check_for_updates": {
-        "enabled": null
+        "enabled": 0
     },
     "fusee-launcher": {
         "version": "1.0",

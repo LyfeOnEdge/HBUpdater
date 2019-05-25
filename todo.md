@@ -30,6 +30,7 @@ https://github.com/vgmoose/nro-asset-editor/releases
 PYNX
 
 https://gbatemp.net/threads/pynx-game-redirector.507726/
+^No releases
 
 https://github.com/Genwald/Generic-Mod-Manager/releases
 

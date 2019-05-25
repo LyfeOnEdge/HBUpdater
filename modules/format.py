@@ -14,6 +14,7 @@ separatorwidth = 4
 
 #Height of the frames holding the column titles
 columtitlesheight= 25 
+columnoffset = 5
 
 #secondary column relwidth
 column_relwidth = .20
@@ -71,6 +72,7 @@ settings_font_color = w
 #Font when typing in search box
 search_font = mediumtext
 search_font_color = w
+searchoffset = 8
 
 #font for placeholder in search bar
 place_holder_font = mediumboldtext

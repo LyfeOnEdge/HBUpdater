@@ -104,7 +104,7 @@ def installfiletosd(filename,subfolder):
 	if not homebrewcore.direxist(subdir):
 		os.mkdir(subdir)
 
-	if filename.endswith(".nro"):
+	if filename.endswith(".nro") or filename.endswith(".py"):
 		try:
 			shutil.move(file, sdlocation)
 			print("Successfully copied {} to SD".format(filename))

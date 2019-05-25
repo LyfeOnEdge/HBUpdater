@@ -1,5 +1,4 @@
 import tkinter as tk
-import tkinter.ttk as ttk
 from tkinter.constants import *
 from modules.format import *
 import platform
@@ -53,7 +52,7 @@ class SearchBox(tk.Frame):
 		self._command = command
 
 		self.entry = tk.Entry(self, width=entry_width, background=entry_background, highlightcolor=button_background, highlightthickness=0, foreground = entry_foreground,borderwidth=0)
-		self.entry.place(x=0,y=0,relwidth=1,relheight=1)
+		self.entry.place(x=+searchoffset,y=0,relwidth=1,relheight=1,width=-searchoffset)
 		
 		if entry_font:
 			self.entry.configure(font=entry_font)
@@ -168,10 +167,10 @@ class entrybox(tk.Frame):
 class AutoScroll(object):
 	def __init__(self, master):
 		try:
-			vsb = ttk.Scrollbar(master, orient='vertical', command=self.yview)
+			vsb = tk.Scrollbar(master, orient='vertical', command=self.yview)
 		except:
 			pass
-		hsb = ttk.Scrollbar(master, orient='horizontal', command=self.xview)
+		hsb = tk.Scrollbar(master, orient='horizontal', command=self.xview)
 
 		try:
 			self.configure(yscrollcommand=self._autoscroll(vsb))
@@ -219,7 +218,7 @@ def _create_container(func):
 	'''Creates a ttk Frame with a given master, and use this new frame to
 	place the scrollbars and the widget.'''
 	def wrapped(cls, master, **kw):
-		container = ttk.Frame(master)
+		container = tk.Frame(master)
 		container.bind('<Enter>', lambda e: _bound_to_mousewheel(e, container))
 		container.bind('<Leave>', lambda e: _unbound_to_mousewheel(e, container))
 		return func(cls, container, **kw)
@@ -411,7 +410,9 @@ class themedguidelabel(tk.Label):
 	def set(self,text):
 		self.configure(text=text)
 
-
+class separator(themedlabel):
+	def __init__(self,frame):
+		themedlabel.__init__(self,frame,"")
 
 
 class infobox(themedframe):
@@ -498,11 +499,11 @@ class infobox(themedframe):
 		self.project_description.configure(state=DISABLED)
 
 	#update all info in the info box
-	def updateinfo(self, softwarechunknumber):
+	def updateinfo(self, list, softwarechunknumber):
 
 		self.updateAuthorImage()
 
-		self.updatedescription(hbdict[softwarechunknumber]["description"])
+		self.updatedescription(list[softwarechunknumber]["description"])
 
 
 class consolebox(themedframe):
@@ -537,31 +538,77 @@ class titledlistboxframe(themedframe):
 		self.listbox_label = columnlabel(self.label_frame, title)
 		self.listbox_label.place(relx=0, x=+5, rely=0, relheight=1, relwidth=1, width = -5)
 
-class separator(themedlabel):
-	def __init__(self,frame):
-		themedlabel.__init__(self,frame,"")
 
-	
-# class thankyoubox(themedframe):
-# 	def __init__(self,frame,author="",thanks=""):
-# 		themedframe.__init__(self,frame)
-# 		self.author_name = columnlabel(self, author)
-# 		self.author_name.place(x=0,y=0,height=navbuttonheight,relwidth=1)
-# 		self.thanks_text = tk.Text(self,background=dark_color,foreground=lgray,borderwidth=0,highlightthickness=0,font=smallerboldtext)
-# 		self.thanks_text.place(relx=0,y=+(navbuttonheight + separatorwidth), relwidth=1,relheight=1)
-# 		self.thanks_text.insert(END,thanks)
+class titledlistbox(themedframe):
+	def __init__(self,frame,title):
+		themedframe.__init__(self,frame)
+		self.label_frame = themedframe(self)
+		self.label_frame.place(relx=0.0, rely=0.0, height=columtitlesheight, relwidth=1)
+		self.listbox_label = columnlabel(self.label_frame, title)
+		self.listbox_label.place(relx=0, x=+columnoffset, rely=0, height=columtitlesheight-separatorwidth/2, relwidth=1, width = -columnoffset)
+		self.listbox_separator = separator(self)
+		self.listbox_separator.place(y=columtitlesheight-separatorwidth/2,relwidth=1,height=separatorwidth/2)
+		self.listbox_frame = themedframe(self)
+		self.listbox_frame.place(relx=0, x=+2*columnoffset,rely=0, y=+columtitlesheight, relheight=1,height=-columtitlesheight, relwidth=1,width=-2*columnoffset)
+		self.listbox = customlistbox(self.listbox_frame)
+		self.listbox.place(relheight=1,relwidth=1)
 
-# class cwlabel(tk.Label):
-# 	def __init__(self,frame,label_text,anchor="w"):
-# 		tk.Label.__init__(self,frame,
-# 			background = dark_color, 
-# 			foreground = lgray,
-# 			borderwidth = 0,
-# 			highlightthickness = 0,
-# 			font = mediumboldtext,
-# 			anchor = anchor,
-# 			text = label_text,
-# 			)
+	def bind(self,event,callback):
+		self.listbox.bind(event,callback)
+
+	def configure(self, **args):
+		self.listbox.configure(**args)
+
+	def itemconfig(self,index,**args):
+		self.listbox.itemconfig(index,**args)
+
+	def insert(self, index, item):
+		self.listbox.insert(index, item)
+
+	def curselection(self):
+		return self.listbox.curselection()
+
+	def get(self, **args):
+		return self.listbox.get(**args)
+
+	def selection_clear(self,index,end):
+		self.listbox.selection_clear(index,end)
+
+	def selection_set(self,index):
+		self.listbox.selection_set(index)
+
+	def see(self, index):
+		self.listbox.see(index)
+
+	def yview(self,event,delta,units):
+		self.listbox.yview(event,delta,units)
+
+	def delete(self, index,end):
+		self.listbox.delete(index,end)
+
+tablecolumnwidth = 125
+class themedtable(themedframe):
+	def __init__(self,frame,columns,columnwidth):
+		self.listboxes = {}
+		themedframe.__init__(self,frame)
+		numcolumns = len(columns)
+		curcolumn = 0
+		curx = 0
+		self.listbox= {}
+		for column in reversed(columns):
+			self.listbox[column] = titledlistbox(self, column)
+			
+			#if we are on last column, make it fill the rest of the available space
+			if curcolumn == numcolumns-1:
+				self.listbox[column].place(relx=0,relwidth=1,width=-curx,relheight=1)
+			else:
+				self.listbox[column].place(relx=1,x=-(curx+tablecolumnwidth-separatorwidth/2),relheight=1,width=(tablecolumnwidth-separatorwidth/2))
+				self.separator = separator(self)
+				self.separator.place(relx=1,x=-(curx+tablecolumnwidth),relheight=1,width=separatorwidth/2)
+				curx += tablecolumnwidth
+
+			self.listboxes[column] = self.listbox[column]
+			curcolumn += 1
 
 class cwdevlabel(tk.Label):
 	def __init__(self,frame,label_text,anchor="w"):
@@ -626,4 +673,67 @@ class settingbox(themedframe):
 
 	def get(self):
 		return self.c.var.get()
+
+class ToolTipBase:
+
+    def __init__(self, button):
+        self.button = button
+        self.tipwindow = None
+        self.id = None
+        self.x = self.y = 0
+        self._id1 = self.button.bind("<Enter>", self.enter)
+        self._id2 = self.button.bind("<Leave>", self.leave)
+        self._id3 = self.button.bind("<ButtonPress>", self.leave)
+
+    def enter(self, event=None):
+        self.schedule()
+
+    def leave(self, event=None):
+        self.unschedule()
+        self.hidetip()
+
+    def schedule(self):
+        self.unschedule()
+        self.id = self.button.after(10, self.showtip)
+
+    def unschedule(self):
+        id = self.id
+        self.id = None
+        if id:
+            self.button.after_cancel(id)
+
+    def showtip(self):
+        if self.tipwindow:
+            return
+        # The tip window must be completely outside the button;
+        # otherwise when the mouse enters the tip window we get
+        # a leave event and it disappears, and then we get an enter
+        # event and it reappears, and so on forever :-(
+        x = self.button.winfo_rootx() + 20
+        y = self.button.winfo_rooty() + self.button.winfo_height() + 1
+        self.tipwindow = tw = tk.Toplevel(self.button)
+        tw.wm_overrideredirect(1)
+        tw.wm_geometry("+%d+%d" % (x, y))
+        self.showcontents()
+
+    def showcontents(self, text="Your text here"):
+        # Override this in derived class
+        label = tk.Label(self.tipwindow, text=text, justify=LEFT,
+                      background=dark_color, relief=SOLID, borderwidth=2,foreground=lgray)
+        label.pack()
+
+    def hidetip(self):
+        tw = self.tipwindow
+        self.tipwindow = None
+        if tw:
+            tw.destroy()
+
+
+class tooltip(ToolTipBase):
+    def __init__(self, button, text):
+        ToolTipBase.__init__(self, button)
+        self.text = text
+
+    def showcontents(self):
+        ToolTipBase.showcontents(self, self.text)
 

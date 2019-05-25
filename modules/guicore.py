@@ -26,33 +26,40 @@ if not homebrewcore.exists(repolog):
 
 newrepotempvariable = {}
 
-hbdict = []
+hblist = []
 softwarechunknumber = 0 #variable to track where we are in the list of homebrew
 dictlen = 0 
 
 tagversionnumber = 0 #variable to track currently selected tag number
 taglen=0 #variable to track number of items in version listbox 
 
-ijdict = []
+ijlist = []
 payloadchunknumber = 0
-ijdictlen = 0
+ijlistlen = 0
+
+nxpylist = []
+nxpychunknumber = 0
 
 payloadinjector = []
 
 
 def setDict(dicty):
-	global hbdict
+	global hblist
 	global dictlen
-	hbdict = dicty
-	# print(json.dumps(hbdict, indent=8))
-	dictlen = len(hbdict)
+	hblist = dicty
+	dictlen = len(hblist)
 
-def setIJDict(dicty):
-	global ijdict
-	global ijdictlen
-	ijdict = dicty
-	# print(json.dumps(ijdict, indent=8))
-	ijdictlen = len(ijdict)
+def setIJlist(dicty):
+	global ijlist
+	global ijlistlen
+	ijlist = dicty
+	ijlistlen = len(ijlist)
+
+def setNXPYList(list):
+	global nxpylist
+	global nxpylen
+	nxpylist = list
+	nxpylen = len(list)
 
 def setPayloadInjector(dicty):
 	global payloadinjector

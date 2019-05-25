@@ -329,19 +329,34 @@ Known Bugs: There appears to be some bug that causes the screen to flicker durin
 
 ]
 
+nxpythonlist = [
+	{
+	"software" : "Generic Mod Manager",
+	"githubapi" : "https://api.github.com/repos/Genwald/Generic-Mod-Manager/releases",
+	"github_asset" : 1, 
+	"author" : "Genwald", 
+	"projectpage": "https://gbatemp.net/threads/generic-mod-manager-a-mod-manager.517626/",
+	"description" : """Generic Mod Manager is a simple mod manager written in python, for use with the homebrew PyNX. 
+It lets you easily activate and deactivate mods as well as handle conflicting mod files. Its mods folder and layeredFS folder can be set in the ModManager.ini in order to support multiple cfw's and user preferences.""",
+	"group" : TOOL,
+	"install_subfolder": "switch\\PyNX",
+	"zip_items": None,
+	},
+
+]
+	
+
+
+
 	# {
 	# "software" : "",
 	# "githubapi" : "",
 	# "github_asset" : None, 
-	# 
-
 	# "author" : None, 
 	# "projectpage": None,
 	# "description" : "",
 	# "group" : ,
-
 	# "install_subfolder": None,
-	# 
 	# "zip_items": None,
 	# },
 

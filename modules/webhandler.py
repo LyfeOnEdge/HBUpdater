@@ -1,14 +1,20 @@
 import modules.homebrewcore as homebrewcore
 import json
 import shutil
+import threading
 
 #archive handling
 from zipfile import ZipFile
 
+#web handling
+import webbrowser
 import urllib.request 
 opener = urllib.request.build_opener()
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 urllib.request.install_opener(opener)
+
+def opentab(url):
+	webbrowser.open_new_tab(url)
 
 #Download a file as a specfic name, returns true if successful
 def downloadFile(fileURL, filename): #Download 
@@ -52,25 +58,39 @@ def cacheimage(url,softwarename):
 
 def getUpdatedSoftwareLinks(dicttopopulate):
 	# print("Downloading software json files from github")
+	threadlist = "[]"
 	for softwarechunk in dicttopopulate:
 		githubjsonlink = softwarechunk["githubapi"]
 		softwarename = softwarechunk["software"]
 		jsonfile = homebrewcore.joinpaths(homebrewcore.jsoncachefolder, softwarename + ".json")
 
-		try:
-			urllib.request.urlretrieve(githubjsonlink,jsonfile)
-			print("Successfully downloaded {} to {}".format(githubjsonlink, jsonfile))
-			softwarechunk["githubjson"] = jsonfile
+		thread = threading.Thread(target=lambda: getJsonThread(softwarename, githubjsonlink, jsonfile, softwarechunk))
+		threadlist.append(thread)
 
-		except:
-			if homebrewcore.exists(jsonfile):
-				print("could not get updated link, falling back on older version")
-				softwarechunk["githubjson"] = jsonfile
-			else:
-				print("No fallback available, software will be unavailable")
+	for thread in threadlist:
+		thread.start()
+
+	for thread in threadlist:
+		thread.join()
 
 	dicttopopulate = sorted(dicttopopulate, key = lambda i: i["software"])
 	return dicttopopulate
+
+def getJsonThread(softwarename, apiurl, jsonfile, softwarechunk):
+	try:
+		urllib.request.urlretrieve(apiurl,jsonfile)
+		print("Downloaded new json file for {}".format(softwarename))
+		softwarechunk["githubjson"] = jsonfile
+		return jsonfile
+	except:
+		if homebrewcore.exists(jsonfile):
+				print("could not get updated link, falling back on older version")
+				softwarechunk["githubjson"] = jsonfile
+		else:
+			print("No fallback available, software will be unavailable")
+
+
+
 
 def getJsonSoftwareLinks(dicttopopulate):
 	for softwarechunk in dicttopopulate:
@@ -93,14 +113,6 @@ def getJson(softwarename, apiurl):
 	except:
 		print("failed to download json file for {}".format(softwarename))
 		return None
-
-
-
-
-
-
-
-
 
 def parse_standard_github_to_api(url):
 	remove = [

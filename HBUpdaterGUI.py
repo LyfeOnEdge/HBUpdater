@@ -6,7 +6,7 @@ import os, sys, platform
 import json
 print("Using Python {}.{}".format(sys.version_info[0],sys.version_info[1]))
 if sys.version_info[0] < 3 or sys.version_info[1] < 6:
-    sys.exit("Python 3.6 or greater is required to run this program.")
+	sys.exit("Python 3.6 or greater is required to run this program.")
 
 version = "0.6 (BETA)"
 print("HBUpdaterGUI version {}".format(version))
@@ -22,15 +22,18 @@ import modules.webhandler as webhandler
 
 import threading
 import tkinter as tk
+from tkinter import filedialog
 from tkinter.constants import *
 print("using tkinter version {}".format(tk.Tcl().eval('info patchlevel')))
 
-#import pages for appManager (Needs to be done after dict is populated)
+#import pages for FrameManager (Needs to be done after dict is populated)
 import pages.injectorpage as ip
 import pages.mainpage as mp
 import pages.settingspage as sp
 import pages.addrepopage as ar
 import pages.installerhelperpage as hp
+import pages.pythonnxpage as py
+
 #Main frame handler, raises and pages in z layer
 class FrameManager(tk.Tk):
 	def __init__(self, *args, **kwargs):
@@ -56,19 +59,16 @@ class FrameManager(tk.Tk):
 		# the container is where we'll stack a bunch of frames
 		# on top of each other, then the one we want visible
 		# will be raised above the others
-		container = tk.Frame(self,
-			borderwidth = 0,
-			highlightthickness = 0
-			)
+		container = cw.themedframe(self)
 		container.pack(side="top", fill="both", expand=True)
 		container.grid_rowconfigure(0, weight=1)
 		container.grid_columnconfigure(0, weight=1)
 
 		self.frames = {}
 		#Add frames to dict, with keyword being the name of the frame
-		for F in (mp.mainPage,ip.injectorScreen,sp.settingsPage,ar.addRepoScreen,hp.installerHelperPage):
+		for F in (mp.mainPage,ip.injectorScreen,sp.settingsPage,ar.addRepoScreen,hp.installerHelperPage,py.pynxPage):
 			page_name = F.__name__
-			frame = F(parent=container, controller=self,back_command = lambda: self.controller.show_frame("mainPage")) 
+			frame = F(parent=container, controller=self,back_command = lambda: self.show_frame("mainPage")) 
 			self.frames[page_name] = frame
 
 			frame.grid(row=0, column=0, sticky="nsew")
@@ -82,19 +82,23 @@ class FrameManager(tk.Tk):
 		frame.tkraise()
 
 def UseCachedJson():
-	hbdict = webhandler.getJsonSoftwareLinks(locations.softwarelist)
+	hblist = webhandler.getJsonSoftwareLinks(locations.softwarelist)
 	repodict = webhandler.getJsonSoftwareLinks(guicore.makerepodict())
-	hbdict.extend(repodict)
-	guicore.setDict(hbdict)
-	guicore.setIJDict(webhandler.getJsonSoftwareLinks(locations.payloadlist))
+	pylist = webhandler.getJsonSoftwareLinks(locations.nxpythonlist)
+	hblist.extend(repodict)
+	guicore.setDict(hblist)
+	guicore.setIJlist(webhandler.getJsonSoftwareLinks(locations.payloadlist))
+	guicore.setNXPYList(pylist)
 	guicore.setPayloadInjector(webhandler.getJsonSoftwareLinks(locations.payloadinjector))
 
 def GetUpdatedJson():
-	hbdict = webhandler.getUpdatedSoftwareLinks(locations.softwarelist)
+	hblist = webhandler.getUpdatedSoftwareLinks(locations.softwarelist)
 	repodict = webhandler.getUpdatedSoftwareLinks(guicore.makerepodict())
-	hbdict.extend(repodict)
-	guicore.setDict(hbdict)
-	guicore.setIJDict(webhandler.getUpdatedSoftwareLinks(locations.payloadlist))
+	pylist = webhandler.getUpdatedSoftwareLinks(locations.nxpythonlist)
+	hblist.extend(repodict)
+	guicore.setDict(hblist)
+	guicore.setIJlist(webhandler.getUpdatedSoftwareLinks(locations.payloadlist))
+	guicore.setNXPYList(pylist)
 	guicore.setPayloadInjector(webhandler.getUpdatedSoftwareLinks(locations.payloadinjector))
 
 # def HandleUserAddedRepos():
@@ -104,7 +108,12 @@ if __name__ == '__main__':
 	else:
 		UseCachedJson() #use this to use only pre-downloaded json files
 	
-	for softwarechunk in guicore.hbdict:
+	#Add missing dict item for each homebrew
+	for softwarechunk in guicore.hblist:
+		softwarechunk["photopath"] = None
+	for softwarechunk in guicore.nxpylist:
+		softwarechunk["photopath"] = None
+	for softwarechunk in guicore.ijlist:
 		softwarechunk["photopath"] = None
 
 	gui = FrameManager()
