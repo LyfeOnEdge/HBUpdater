@@ -18,7 +18,7 @@ class page(cw.themedframe,):
 	def setbuttons(self,buttonlist):
 		#Variable to track place searchbox buttons in correct location
 		# self.iconspacer = icon_and_search_bar_spacing
-		self.iconspacer = searchboxheight - 2*icon_and_search_bar_spacing
+		self.iconspacer = searchboxheight - icon_and_search_bar_spacing
 		for button in buttonlist:
 			if not button == buttonlist[0]:
 				self.iconspacer += searchboxheight-2*icon_and_search_bar_spacing
