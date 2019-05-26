@@ -16,8 +16,8 @@ separatorwidth = 4
 columtitlesheight= 25 
 columnoffset = 5
 
-#secondary column relwidth
-column_relwidth = .20
+#secondary column width
+tablecolumnwidth = 135
 
 #Image for when there is an author image incompatible with tkinter
 notfoundimage = "notfound.png"

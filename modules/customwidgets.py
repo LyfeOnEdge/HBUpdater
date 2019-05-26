@@ -499,7 +499,6 @@ class infobox(themedframe):
 				if art_image.width() < (imagemax - 80):
 					art_image = art_image.zoom(3)
 		else:
-			print("used pil handling")
 		#Pillow handling
 			art_image = Image.open(image_path)
 			art_image = art_image.resize((infoframewidth, infoframewidth), Image.ANTIALIAS)
@@ -604,7 +603,6 @@ class titledlistbox(themedframe):
 	def delete(self, index,end):
 		self.listbox.delete(index,end)
 
-tablecolumnwidth = 125
 class themedtable(themedframe):
 	def __init__(self,frame,columns,columnwidth):
 		self.listboxes = {}

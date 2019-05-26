@@ -325,41 +325,41 @@ def installPyUSB():
     	return(False)
 
 
-def injectpayload(self,payload):
-	fuseestatus = guicore.checkguisetting("fusee-launcher", "version")
-	if fuseestatus == "not installed" or fuseestatus == "none" or fuseestatus == None:
-		# self.printtoboth("fusee-launcher not installed, downloading")
-		with open(guicore.payloadinjector[0]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
-			jfile = json.load(json_file)
-			downloadurl = jfile[0]["zipball_url"]
-			file = webhandler.download(downloadurl)
-			file = homebrewcore.joinpaths(homebrewcore.downloadsfolder, file)
-			version = jfile[0]["tag_name"]
-			with ZipFile(file, 'r') as zipObj:
-				zipObj.extractall(homebrewcore.payloadsfolder)
-				self.printtoboth("Sucessfully extracted {} to payloads folder".format(file))
-				files = zipObj.namelist()
-				injector = None
-				for possiblepayloadfile in files:
-					if possiblepayloadfile.startswith(files[0] + "fusee"):
-						injector = possiblepayloadfile
-				if injector == None:
-					self.printtoboth("Could not find injector in extracted files")
-					return 
-			newentry = {
-				"fusee-launcher" : {
-					"version": version,
-					"location": injector,
-				}
-			}
-			guicore.setguisetting(newentry)
+# def injectpayload(self,payload):
+# 	fuseestatus = guicore.checkguisetting("fusee-launcher", "version")
+# 	if fuseestatus == "not installed" or fuseestatus == "none" or fuseestatus == None:
+# 		# self.printtoboth("fusee-launcher not installed, downloading")
+# 		with open(guicore.payloadinjector[0]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
+# 			jfile = json.load(json_file)
+# 			downloadurl = jfile[0]["zipball_url"]
+# 			file = webhandler.download(downloadurl)
+# 			file = homebrewcore.joinpaths(homebrewcore.downloadsfolder, file)
+# 			version = jfile[0]["tag_name"]
+# 			with ZipFile(file, 'r') as zipObj:
+# 				zipObj.extractall(homebrewcore.payloadsfolder)
+# 				self.printtoboth("Sucessfully extracted {} to payloads folder".format(file))
+# 				files = zipObj.namelist()
+# 				injector = None
+# 				for possiblepayloadfile in files:
+# 					if possiblepayloadfile.startswith(files[0] + "fusee"):
+# 						injector = possiblepayloadfile
+# 				if injector == None:
+# 					self.printtoboth("Could not find injector in extracted files")
+# 					return 
+# 			newentry = {
+# 				"fusee-launcher" : {
+# 					"version": version,
+# 					"location": injector,
+# 				}
+# 			}
+# 			guicore.setguisetting(newentry)
 
-	script_path = guicore.checkguisetting("fusee-launcher", "location")
-	script_path = homebrewcore.joinpaths(homebrewcore.payloadsfolder, script_path)
-	payload_file = payload
-	p = subprocess.Popen([sys.executable, '-u', script_path, payload_file],
-	          stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1)
-	with p.stdout:
-	    for line in iter(p.stdout.readline, b''):
-	    	self.printtoboth(line)
-	p.wait()
+# 	script_path = guicore.checkguisetting("fusee-launcher", "location")
+# 	script_path = homebrewcore.joinpaths(homebrewcore.payloadsfolder, script_path)
+# 	payload_file = payload
+# 	p = subprocess.Popen([sys.executable, '-u', script_path, payload_file],
+# 	          stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1)
+# 	with p.stdout:
+# 	    for line in iter(p.stdout.readline, b''):
+# 	    	self.printtoboth(line)
+# 	p.wait()

@@ -146,36 +146,46 @@ def getcachedimage(imagename):
 			return False
 
 def installpipmodule(module):
-    try:
-        print("installing {} via pip".format(module))
-        print(subprocess.call([sys.executable, "-m", "pip", "install", module]))
-        return(True)
-    except:
-        print("Error installing module")
-        return(False)
+	try:
+		print("installing {} via pip".format(module))
+		print(subprocess.call([sys.executable, "-m", "pip", "install", module]))
+		return(True)
+	except:
+		print("Error installing module")
+		return(False)
    
 def checkifmoduleinstalled(module):
-        try:
-            imp.find_module(module)
-            return True
-        except ImportError:
-            print("module {} not installed".format(module))
-            return False
+	found = False
+	try:
+		imp.find_module(module)
+		found = True
+	except ImportError:
+		found = False
+
+	if not found: 
+		reqs = subprocess.check_output([sys.executable, '-m', 'pip', 'list'])
+		installed_packages = [r.decode().split(' ')[0] for r in reqs.split()]
+		if module in installed_packages:
+			found = True
+
+	if not found:
+		print("module {} not installed".format(module))
+	return found
 
 def installmodulelist(modules):
-    threads = []
-    for module in modules:
-        if not checkifmoduleinstalled(module):
-            modulethread = threading.Thread(target=installpipmodule, args=(module,))
-            threads.append(modulethread)
+	threads = []
+	for module in modules:
+		if not checkifmoduleinstalled(module):
+			modulethread = threading.Thread(target=installpipmodule, args=(module,))
+			threads.append(modulethread)
 
-    # Start all threads
-    if not threads == []:
-        for thread in threads:
-            thread.start()
-        # Wait for all of them to finish
-        for thread in threads:
-            thread.join()
+	# Start all threads
+	if not threads == []:
+		for thread in threads:
+			thread.start()
+		# Wait for all of them to finish
+		for thread in threads:
+			thread.join()
 
 
 

@@ -7,13 +7,9 @@ settings.txt
 nut/*
 /fluffy/*
 user_repos.json
-guisettings_user*
 conf/nut.conf
 conf/users.conf
 fluffy.conf
 fluffy.log
 *.pyc
-
-
-guisettings_user.json
 guisettings_user.json

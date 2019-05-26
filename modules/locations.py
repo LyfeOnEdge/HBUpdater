@@ -467,7 +467,7 @@ payloadlist = [
 	"githubapi": "https://api.github.com/repos/CTCaer/hekate/releases",
 	"github_asset" : None, 
 	"author" : None, 
-	"projectpage": None,
+	"projectpage": "https://gbatemp.net/threads/rcm-payload-hekate-ctcaer-mod.502604/",
 	"description": """Custom Nintendo Switch bootloader, firmware patcher, and more.
 This version supports booting ALL current OS/CS CFW, Linux chainloading and payload tools.
 No more SD card removals""",
@@ -482,7 +482,7 @@ No more SD card removals""",
 	"githubapi": "https://api.github.com/repos/Atmosphere-NX/Atmosphere/releases",
 	"github_asset" : 1, 
 	"author" : None, 
-	"projectpage": None,
+	"projectpage": "https://github.com/Atmosphere-NX/Atmosphere/tree/master/fusee/fusee-primary",
 	"description" : "Bootloader for Atmosphere",
 	"group" : "PAYLOADS",
 	"install_subfolder": None,
@@ -495,7 +495,7 @@ No more SD card removals""",
 	"githubapi" : "https://api.github.com/repos/Guillem96/argon-nx/releases",
 	"github_asset" : 0, 
 	"author" : None, 
-	"projectpage": None,
+	"projectpage": "https://gbatemp.net/threads/argon-nx-payload-chainloader.527178/",
 	"description": """
 What Argon is?
 	Argon is a noble gas. "Argon" comes from Greek "Argon", neuter of "argos" meaning lazy , idle or inactive. Argon recieved this name because of its chemical inactivity.
@@ -521,7 +521,7 @@ How can it be immutable?
 	"githubapi" : "https://api.github.com/repos/shchmue/Lockpick_RCM/releases",
 	"github_asset" : None, 
 	"author" : None, 
-	"projectpage": None,
+	"projectpage": "https://gbatemp.net/threads/lockpick-switch-key-derivation-homebrew.525575/",
 	"description": """Lockpick_RCM is a bare metal Nintendo Switch payload that derives encryption keys for use in Switch file handling software like hactool, hactoolnet/LibHac, ChoiDujour, etc. without booting Horizon OS.
 
 Due to changes imposed by firmware 7.0.0, Lockpick homebrew can no longer derive the latest keys. In the boot-time environment however, there are fewer limitations.""",

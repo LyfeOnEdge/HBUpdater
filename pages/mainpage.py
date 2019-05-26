@@ -1,6 +1,7 @@
 from modules.format import * 
 import modules.guicore as guicore
 import modules.homebrewcore as homebrewcore
+import modules.HBUpdater as HBUpdater
 
 import pages.installerhelperpage as installerhelperpage
 import pages.pagetemplate as pt
@@ -13,7 +14,7 @@ details_guide_text = """This menu will allow you to install older versions of ap
 
 class mainPage(pt.page):
     def __init__(self, parent, controller,back_command):
-        pt.page.__init__(self,parent=parent, controller=controller,back_command=back_command)
+        pt.page.__init__(self,parent=parent, controller=controller,back_command=back_command,version_function=HBUpdater.checkversion)
 
         self.addrepoimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"plus.png")).subsample(2)
         self.sdimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"sd.png")).zoom(2).subsample(4)

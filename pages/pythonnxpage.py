@@ -16,7 +16,7 @@ import pages.pagetemplate as pt
 
 class pynxPage(pt.page):
 	def __init__(self, parent, controller,back_command):
-		pt.page.__init__(self,parent=parent, controller=controller,back_command=back_command)
+		pt.page.__init__(self,parent=parent, controller=controller,back_command=back_command,version_function=HBUpdater.checkversion)
 		self.setlist(guicore.nxpylist)
 
 		self.pythonimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder, "python.png")).zoom(3).subsample(5)

@@ -36,7 +36,7 @@ class page(cw.themedframe,):
 		self.details_guide.insert(END,text)
 
 
-	def __init__(self, parent, controller,back_command):
+	def __init__(self, parent, controller,back_command,primary_button_command=None,secondary_button_command=None,primary_button_text=None,secondary_button_text=None,version_function=None):
 		self.softwarelist = []
 		self.softwarelistlen = 0
 		self.currentselection = 0
@@ -45,6 +45,7 @@ class page(cw.themedframe,):
 		cw.themedframe.__init__(self,parent)
 		self.bind("<<ShowFrame>>", self.on_show_frame)
 		self.controller = controller
+		self.version_function = version_function
 
 		#Shared images
 		self.backimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"returnbutton.png")).zoom(3).subsample(5)
@@ -134,9 +135,20 @@ class page(cw.themedframe,):
 		self.uninstall_button = cw.navbutton(self.details_right_column,command_name=self.uninstall,image_object= None,text_string="UNINSTALL")
 		self.uninstall_button.place(relx=0, rely=1, y=-3*(navbuttonheight+separatorwidth), height=navbuttonheight, x=+separatorwidth,relwidth=1, width=-(2*separatorwidth))
 
+
 		#Back to list button frame, placed first so the details button covers it
+		if secondary_button_command == None:
+			sbc = self.specificinstall
+		else:
+			sbc = secondary_button_command
+
+		if secondary_button_text == None:
+			sbt = "INSTALL"
+		else:
+			sbt = secondary_button_text
 		self.details_buttons =cw.navbox(self.details_right_column,
-			primary_button_command = self.specificinstall,
+			primary_button_command = sbc,
+			primary_button_text = sbt,
 			etc_button_image = self.backimage,
 			etc_button_command = self.showlist,
 			left_context_command = self.versioncusordown,
@@ -151,8 +163,19 @@ class page(cw.themedframe,):
 		self.infobox = cw.infobox(self.main_right_column)
 		self.infobox.place(relwidth=1,relheight=1,)
 
+
+		if primary_button_command == None:
+			pbc = self.install
+		else:
+			pbc = primary_button_command
+
+		if primary_button_text == None:
+			pbt = "INSTALL"
+		else:
+			pbt = primary_button_text
 		self.list_buttons_frame = cw.navbox(self.main_right_column,
-			primary_button_command = self.install,
+			primary_button_command = pbc,
+			primary_button_text = pbt,
 			etc_button_image = self.infoimage,
 			etc_button_command = self.showdetails,
 			left_context_command = self.pagedown,
@@ -171,19 +194,19 @@ class page(cw.themedframe,):
 		chosensdpath = tk.filedialog.askdirectory(initialdir="/",  title='Please select your SD card')
 		HBUpdater.setSDpath(chosensdpath)
 		if HBUpdater.sdpathset:
-			self.updatelistbox(None)
+			self.updatetable(None)
 
 	def install(self):
 		self.currentselection
 		if HBUpdater.sdpathset:
 			HBUpdater.installitem(self.softwarelist, self.currentselection,0)
-			self.updatelistbox(None)
+			self.updatetable(None)
 		else:
 			self.setSDpath()
 
 			if HBUpdater.sdpathset:
 				HBUpdater.installitem(self.softwarelist, self.currentselection,0)
-				self.updatelistbox(None)
+				self.updatetable(None)
 			else:
 				print("SD Path Not set, not installing")
 
@@ -191,13 +214,13 @@ class page(cw.themedframe,):
 		self.currentselection
 		if HBUpdater.sdpathset:
 			HBUpdater.installitem(self.softwarelist, self.currentselection, self.currenttagselection)
-			self.updatelistbox(None)
+			self.updatetable(None)
 		else:
 			self.setSDpath()
 
 			if HBUpdater.sdpathset:
 				HBUpdater.installitem(self.softwarelist, self.currentselection, self.currenttagselection)
-				self.updatelistbox(None)
+				self.updatetable(None)
 			else:
 				print("SD Path Not set, not installing")
 
@@ -205,18 +228,18 @@ class page(cw.themedframe,):
 		self.currentselection
 		if HBUpdater.sdpathset:
 			HBUpdater.uninstallsoftware(self.softwarelist[self.currentselection]["software"])
-			self.updatelistbox(None)
+			self.updatetable(None)
 		else:
 			self.setSDpath()
 
 			if HBUpdater.sdpathset:
 				HBUpdater.uninstallsoftware(self.softwarelist[self.currentselection]["software"])
-				self.updatelistbox(None)
+				self.updatetable(None)
 			else:
 				print("SD Path Not set, not installing")
 
 	def search(self, searchstring):
-		self.updatelistbox(searchstring)
+		self.updatetable(searchstring)
 
 
 	#raises the details frame
@@ -273,7 +296,7 @@ class page(cw.themedframe,):
 			listbox.configure(state=DISABLED)      
 		self.software_listbox.configure(state=NORMAL)
 
-	def updatelistbox(self,searchterm):
+	def updatetable(self,searchterm):
 		for listbox in self.listbox_list:
 			listbox.configure(state=NORMAL)
 		self.cleartable()
@@ -286,7 +309,7 @@ class page(cw.themedframe,):
 			version = jfile[0]["tag_name"]
 			self.latest_listbox.insert(END, version)
 
-			installedversion = HBUpdater.checkversion(softwarechunk["software"])
+			installedversion = self.version_function(softwarechunk["software"])
 
 			if installedversion == version:
 				self.status_listbox.insert(END, checkmark)
@@ -314,6 +337,7 @@ class page(cw.themedframe,):
 		selection=widget.curselection()
 		picked = widget.get(selection[0])
 		self.currentselection = widget.get(0, "end").index(picked)
+		self.currenttagselection = 0
 		self.updateinfo()
 		self.refreshdetailwindow()
 
@@ -405,12 +429,14 @@ class page(cw.themedframe,):
 	def pageup(self):
 		if self.currentselection < self.softwarelistlen-1:
 			self.currentselection += 1
+			self.currenttagselection = 0
 			self.updateinfo()
 			self.refreshdetailwindow()
 
 	def pagedown(self):
 		if self.currentselection > 0:
 			self.currentselection -= 1
+			self.currenttagselection = 0
 			self.updateinfo()
 			self.refreshdetailwindow()
 
@@ -495,6 +521,6 @@ class page(cw.themedframe,):
 		self.updatewindow()
 
 	def updatewindow(self):
-		self.populatetable()
+		self.updatetable(None)
 		self.refreshdetailwindow()
 

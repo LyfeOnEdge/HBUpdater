@@ -35,7 +35,7 @@ from tkinter.constants import *
 print("using tkinter version {}".format(tk.Tcl().eval('info patchlevel')))
 
 #import pages for FrameManager (Needs to be done after dict is populated)
-import pages.injectorpage as ip
+import pages.injectorpagenew as ip
 import pages.mainpage as mp
 import pages.settingspage as sp
 import pages.addrepopage as ar
