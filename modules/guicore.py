@@ -42,6 +42,15 @@ nxpychunknumber = 0
 
 payloadinjector = []
 
+pilstatus = None
+
+def getpilstatus():
+	global pilstatus
+	return pilstatus
+
+def setpilstatus(status):
+	global pilstatus
+	pilstatus = status
 
 def setDict(dicty):
 	global hblist

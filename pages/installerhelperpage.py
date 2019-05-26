@@ -7,7 +7,7 @@ import modules.locations as locations
 import modules.webhandler as webhandler
 
 from zipfile import ZipFile
-import sys, os, json, subprocess, imp, shutil, threading
+import sys, os, json, subprocess, shutil, threading
 import tkinter as tk
 
 
@@ -83,39 +83,6 @@ def seterrorstate(state):
     global errorstate
     errorstate = state
 
-def installpipmodule(module):
-    try:
-        print("installing {} via pip".format(module))
-        print(subprocess.call([sys.executable, "-m", "pip", "install", module]))
-        return(True)
-    except:
-        print("Error installing module")
-        return(False)
-   
-def checkifmoduleinstalled(module):
-        try:
-            imp.find_module(module)
-            return True
-        except ImportError:
-            print("module {} not installed".format(module))
-            return False
-
-def installmodulelist(modules):
-    threads = []
-    for module in modules:
-        if not checkifmoduleinstalled(module):
-            modulethread = threading.Thread(target=installpipmodule, args=(module,))
-            threads.append(modulethread)
-
-    # Start all threads
-    if not threads == []:
-        for thread in threads:
-            thread.start()
-        # Wait for all of them to finish
-        for thread in threads:
-            thread.join()
-
-
 def checkifhelperdownloaded(helper):
     if guicore.checkguisetting(helper, "version") == "not installed" or guicore.checkguisetting(helper, "version") == None:
         return False
@@ -179,7 +146,7 @@ def downloadNUTandinstalldependencies():
     print("checking nut dependencies")
 
     dependencies = locations.nutserverdict["dependencies"]
-    installmodulelist(dependencies)
+    webhandler.installmodulelist(dependencies)
 
 def downloadFLUFFYandinstalldependencies():
     fluffyjson = webhandler.getJson("fluffy", locations.fluffydict["githubapi"])
@@ -215,4 +182,4 @@ def downloadFLUFFYandinstalldependencies():
 
     threads = []
     dependencies = locations.fluffydict["dependencies"]
-    installmodulelist(dependencies)
+    webhandler.installmodulelist(dependencies)

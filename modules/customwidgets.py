@@ -1,7 +1,12 @@
 import tkinter as tk
 from tkinter.constants import *
 from modules.format import *
+import modules.guicore as guicore
 import platform
+
+if guicore.getpilstatus():
+	from PIL import Image, ImageTk
+
 
 class Placeholder_State(object):
 	 __slots__ = 'normal_color', 'normal_font', 'placeholder_text', 'placeholder_color', 'placeholder_font', 'contains_placeholder'
@@ -322,9 +327,9 @@ class iconbutton(tk.Listbox):
 
 #themed colum label
 class columnlabel(tk.Label):
-	def __init__(self,frame,label_text,anchor="w"):
+	def __init__(self,frame,label_text,anchor="w",background=dark_color):
 		tk.Label.__init__(self,frame,
-			background = dark_color, 
+			background = background, 
 			foreground = columnlabelcolor,
 			borderwidth = 0,
 			highlightthickness = 0,
@@ -384,9 +389,9 @@ class navbox(themedframe):
 
 #themed author/ etc label
 class themedlabel(tk.Label):
-	def __init__(self,frame,label_text,label_font=smalltext,label_color=w,text_variable=None):
+	def __init__(self,frame,label_text,label_font=smalltext,label_color=w,text_variable=None,background = light_color,):
 		tk.Label.__init__(self,frame,
-			background = light_color,
+			background = background,
 			highlightthickness=0,
 			anchor="n",
 			text = label_text,
@@ -413,6 +418,10 @@ class themedguidelabel(tk.Label):
 class separator(themedlabel):
 	def __init__(self,frame):
 		themedlabel.__init__(self,frame,"")
+
+class darkseparator(themedlabel):
+	def __init__(self,frame):
+		themedlabel.__init__(self,frame,"",background=dark_color)
 
 
 class infobox(themedframe):
@@ -479,14 +488,23 @@ class infobox(themedframe):
 	def updateauthor(self,author):
 		self.authorvar.set("by {}".format(author))
 
-	def updateimage(self,art_image):
-
-		imagemax = infoframewidth
-		while not (art_image.width() > (imagemax - 80) and not (art_image.width() > imagemax)):
-			if art_image.width() > imagemax:
-				art_image = art_image.subsample(2)
-			if art_image.width() < (imagemax - 80):
-				art_image = art_image.zoom(3)
+	def updateimage(self,image_path):
+		#Default image handling method
+		if not guicore.getpilstatus():
+			imagemax = infoframewidth
+			art_image = tk.PhotoImage(file=image_path)
+			while not (art_image.width() > (imagemax - 80) and not (art_image.width() > imagemax)):
+				if art_image.width() > imagemax:
+					art_image = art_image.subsample(2)
+				if art_image.width() < (imagemax - 80):
+					art_image = art_image.zoom(3)
+		else:
+			print("used pil handling")
+		#Pillow handling
+			art_image = Image.open(image_path)
+			art_image = art_image.resize((infoframewidth, infoframewidth), Image.ANTIALIAS)
+			art_image = ImageTk.PhotoImage(art_image)
+		
 
 		self.project_art_label.configure(image=art_image)
 		self.project_art_label.image = art_image
@@ -498,12 +516,12 @@ class infobox(themedframe):
 		self.project_description.insert(END, desc)
 		self.project_description.configure(state=DISABLED)
 
-	#update all info in the info box
-	def updateinfo(self, list, softwarechunknumber):
+	# #update all info in the info box
+	# def updateinfo(self, list, softwarechunknumber):
 
-		self.updateAuthorImage()
+	# 	self.updateAuthorImage()
 
-		self.updatedescription(list[softwarechunknumber]["description"])
+	# 	self.updatedescription(list[softwarechunknumber]["description"])
 
 
 class consolebox(themedframe):

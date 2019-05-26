@@ -1,6 +1,6 @@
 {
-	"automatically_check_for_updates": {
-        "enabled": "true"
+	"guisettings" : {
+        "automatically_check_for_updates" : 1
     },
 	"fusee-launcher" : {
 		"version": "not installed",

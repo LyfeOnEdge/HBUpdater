@@ -13,12 +13,20 @@ print("HBUpdaterGUI version {}".format(version))
 
 #My modules
 from modules.format import * #We import format in this manner for simplicity's sake
-import modules.customwidgets as cw #Custom tkinter widgets
 import modules.guicore as guicore
 import modules.HBUpdater as HBUpdater #import backend, will not run standalone
 import modules.homebrewcore as homebrewcore
 import modules.locations as locations
 import modules.webhandler as webhandler
+
+#Need to check if pil and set status before importing customwidgets
+if webhandler.checkifmoduleinstalled("PIL"):
+	print("pillow detected, using improved scaling method")
+	guicore.setpilstatus(True)
+else:
+	print("pillow not detected, using standard picture scaling method")
+	guicore.setpilstatus(False)
+import modules.customwidgets as cw #Custom tkinter widgets
 
 import threading
 import tkinter as tk
@@ -103,7 +111,7 @@ def GetUpdatedJson():
 
 # def HandleUserAddedRepos():
 if __name__ == '__main__':  
-	if guicore.checkguisetting("automatically_check_for_updates","enabled"):
+	if guicore.checkguisetting("guisettings","automatically_check_for_updates"):
 		GetUpdatedJson() #use this to download new json (required to get updates)
 	else:
 		UseCachedJson() #use this to use only pre-downloaded json files

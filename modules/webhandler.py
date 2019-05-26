@@ -1,7 +1,5 @@
 import modules.homebrewcore as homebrewcore
-import json
-import shutil
-import threading
+import threading, sys, imp, shutil, json, subprocess
 
 #archive handling
 from zipfile import ZipFile
@@ -56,22 +54,15 @@ def cacheimage(url,softwarename):
 	return file
 
 
+
 def getUpdatedSoftwareLinks(dicttopopulate):
 	# print("Downloading software json files from github")
-	threadlist = "[]"
 	for softwarechunk in dicttopopulate:
 		githubjsonlink = softwarechunk["githubapi"]
 		softwarename = softwarechunk["software"]
 		jsonfile = homebrewcore.joinpaths(homebrewcore.jsoncachefolder, softwarename + ".json")
 
-		thread = threading.Thread(target=lambda: getJsonThread(softwarename, githubjsonlink, jsonfile, softwarechunk))
-		threadlist.append(thread)
-
-	for thread in threadlist:
-		thread.start()
-
-	for thread in threadlist:
-		thread.join()
+		getJsonThread(softwarename, githubjsonlink, jsonfile, softwarechunk)
 
 	dicttopopulate = sorted(dicttopopulate, key = lambda i: i["software"])
 	return dicttopopulate
@@ -137,14 +128,54 @@ def parse_standard_github_to_api(url):
 def grabgravatar(url):
 	downloadedfile = urllib.request.urlretrieve(url)[0]
 	dljsonfile = url.rsplit("/",1)[1]
+	imagename = dljsonfile.rsplit(".",1)[0]
 	downloadlocation = homebrewcore.joinpaths(homebrewcore.downloadsfolder,dljsonfile)
 	shutil.move(downloadedfile, downloadlocation)
 	with open(downloadlocation) as jsonfile:
 		jfile = json.load(jsonfile)
 		avatarurl = jfile["entry"][0]["thumbnailUrl"]
-	return cacheimage(avatarurl,dljsonfile)
+	return cacheimage(avatarurl,imagename)
 
+def getcachedimage(imagename):
+		photopath = imagename + ".png"
+		photopath = homebrewcore.joinpaths(homebrewcore.imagecachefolder, photopath)
+		photoexists = homebrewcore.exists(photopath)
+		if photoexists:
+			return photopath
+		else:
+			return False
 
+def installpipmodule(module):
+    try:
+        print("installing {} via pip".format(module))
+        print(subprocess.call([sys.executable, "-m", "pip", "install", module]))
+        return(True)
+    except:
+        print("Error installing module")
+        return(False)
+   
+def checkifmoduleinstalled(module):
+        try:
+            imp.find_module(module)
+            return True
+        except ImportError:
+            print("module {} not installed".format(module))
+            return False
+
+def installmodulelist(modules):
+    threads = []
+    for module in modules:
+        if not checkifmoduleinstalled(module):
+            modulethread = threading.Thread(target=installpipmodule, args=(module,))
+            threads.append(modulethread)
+
+    # Start all threads
+    if not threads == []:
+        for thread in threads:
+            thread.start()
+        # Wait for all of them to finish
+        for thread in threads:
+            thread.join()
 
 
 

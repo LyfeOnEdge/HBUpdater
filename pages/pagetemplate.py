@@ -82,6 +82,8 @@ class page(cw.themedframe,):
 			self.listbox_list.append(self.maintable.listboxes[column])
 
 		self.software_listbox = self.maintable.listboxes["NAME"]
+		self.software_listbox.bind('<<ListboxSelect>>',self.CurSelet)
+
 		self.genre_listbox = self.maintable.listboxes["GENRE"]
 		self.latest_listbox = self.maintable.listboxes["LATEST"]
 		self.status_listbox = self.maintable.listboxes["INSTALLED"]
@@ -394,10 +396,9 @@ class page(cw.themedframe,):
 
 		except:
 			photopath = homebrewcore.joinpaths(homebrewcore.assetfolder,notfoundimage)
-			project_image = tk.PhotoImage(file=photopath)
 			print("used not-found image due to error (you can safely ignore this error)")
 
-		self.infobox.updateimage(art_image = project_image)
+		self.infobox.updateimage(image_path = photopath)
 
 
 	#movement buttons, moves through homebrewlist or brew version

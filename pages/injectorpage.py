@@ -269,26 +269,21 @@ class injectorScreen(tk.Frame):
 			photoexists = False
 
 		if not photoexists:
-			# try:
-				with open(guicore.ijlist[guicore.payloadchunknumber]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
-					jfile = json.load(json_file)
-					url = jfile[0]["author"]["avatar_url"]
-					print(softwarename)
-				photopath = webhandler.cacheimage(url,softwarename)
-				guicore.ijlist[guicore.payloadchunknumber]["photopath"] = photopath
-			# except: 
-			# 	print("could not download icon image (you can safely ignore this error)")
-			# 	photopath = homebrewcore.joinpaths(homebrewcore.assetfolder,notfoundimage)
+			with open(guicore.ijlist[guicore.payloadchunknumber]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
+				jfile = json.load(json_file)
+				url = jfile[0]["author"]["avatar_url"]
+				print(softwarename)
+			photopath = webhandler.cacheimage(url,softwarename)
+			guicore.ijlist[guicore.payloadchunknumber]["photopath"] = photopath
 		try:
 			project_image = tk.PhotoImage(file=photopath)
 
 		except:
 			# print(exc)
 			photopath = homebrewcore.joinpaths(homebrewcore.assetfolder,notfoundimage)
-			project_image = tk.PhotoImage(file=photopath)
 			print("used not-found image due to error (you can safely ignore this error)")
 
-		self.infobox.updateimage(art_image = project_image)
+		self.infobox.updateimage(image_path = photopath)
 
 
 	#movement buttons, moves through homebrewlist or brew version
