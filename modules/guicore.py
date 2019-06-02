@@ -27,18 +27,12 @@ if not homebrewcore.exists(repolog):
 newrepotempvariable = {}
 
 hblist = []
-softwarechunknumber = 0 #variable to track where we are in the list of homebrew
-dictlen = 0 
-
-tagversionnumber = 0 #variable to track currently selected tag number
-taglen=0 #variable to track number of items in version listbox 
 
 ijlist = []
-payloadchunknumber = 0
-ijlistlen = 0
 
 nxpylist = []
-nxpychunknumber = 0
+
+cfwlist = []
 
 payloadinjector = []
 
@@ -54,21 +48,19 @@ def setpilstatus(status):
 
 def setDict(dicty):
 	global hblist
-	global dictlen
 	hblist = dicty
-	dictlen = len(hblist)
 
 def setIJlist(dicty):
 	global ijlist
-	global ijlistlen
 	ijlist = dicty
-	ijlistlen = len(ijlist)
 
 def setNXPYList(list):
 	global nxpylist
-	global nxpylen
 	nxpylist = list
-	nxpylen = len(list)
+
+def setCFWlist(list):
+	global cfwlist
+	cfwlist = list
 
 def setPayloadInjector(dicty):
 	global payloadinjector

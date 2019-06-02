@@ -8,7 +8,7 @@ print("Using Python {}.{}".format(sys.version_info[0],sys.version_info[1]))
 if sys.version_info[0] < 3 or sys.version_info[1] < 6:
 	sys.exit("Python 3.6 or greater is required to run this program.")
 
-version = "0.7 (Beta)"
+version = "0.8 (Beta)"
 print("HBUpdaterGUI version {}".format(version))
 
 #My modules
@@ -35,13 +35,13 @@ from tkinter.constants import *
 print("using tkinter version {}".format(tk.Tcl().eval('info patchlevel')))
 
 #import pages for FrameManager (Needs to be done after dict is populated)
-import pages.injectorpagenew as ip
+import pages.injectorpage as ip
 import pages.mainpage as mp
 import pages.settingspage as sp
 import pages.addrepopage as ar
 import pages.installerhelperpage as hp
 import pages.pythonnxpage as py
-
+import pages.cfwpage as fw
 #Main frame handler, raises and pages in z layer
 class FrameManager(tk.Tk):
 	def __init__(self, *args, **kwargs):
@@ -74,7 +74,7 @@ class FrameManager(tk.Tk):
 
 		self.frames = {}
 		#Add frames to dict, with keyword being the name of the frame
-		for F in (mp.mainPage,ip.injectorScreen,sp.settingsPage,ar.addRepoScreen,hp.installerHelperPage,py.pynxPage):
+		for F in (mp.mainPage,ip.injectorScreen,sp.settingsPage,ar.addRepoScreen,hp.installerHelperPage,py.pynxPage,fw.cfwPage):
 			page_name = F.__name__
 			frame = F(parent=container, controller=self,back_command = lambda: self.show_frame("mainPage")) 
 			self.frames[page_name] = frame
@@ -93,20 +93,24 @@ def UseCachedJson():
 	hblist = webhandler.getJsonSoftwareLinks(locations.softwarelist)
 	repodict = webhandler.getJsonSoftwareLinks(guicore.makerepodict())
 	pylist = webhandler.getJsonSoftwareLinks(locations.nxpythonlist)
+	cfwlist = webhandler.getJsonSoftwareLinks(locations.customfirmwarelist)
 	hblist.extend(repodict)
 	guicore.setDict(hblist)
 	guicore.setIJlist(webhandler.getJsonSoftwareLinks(locations.payloadlist))
 	guicore.setNXPYList(pylist)
+	guicore.setCFWlist(cfwlist)
 	guicore.setPayloadInjector(webhandler.getJsonSoftwareLinks(locations.payloadinjector))
 
 def GetUpdatedJson():
 	hblist = webhandler.getUpdatedSoftwareLinks(locations.softwarelist)
 	repodict = webhandler.getUpdatedSoftwareLinks(guicore.makerepodict())
 	pylist = webhandler.getUpdatedSoftwareLinks(locations.nxpythonlist)
+	cfwlist = webhandler.getUpdatedSoftwareLinks(locations.customfirmwarelist)
 	hblist.extend(repodict)
 	guicore.setDict(hblist)
 	guicore.setIJlist(webhandler.getUpdatedSoftwareLinks(locations.payloadlist))
 	guicore.setNXPYList(pylist)
+	guicore.setCFWlist(cfwlist)
 	guicore.setPayloadInjector(webhandler.getUpdatedSoftwareLinks(locations.payloadinjector))
 
 # def HandleUserAddedRepos():
@@ -122,6 +126,8 @@ if __name__ == '__main__':
 	for softwarechunk in guicore.nxpylist:
 		softwarechunk["photopath"] = None
 	for softwarechunk in guicore.ijlist:
+		softwarechunk["photopath"] = None
+	for softwarechunk in guicore.cfwlist:
 		softwarechunk["photopath"] = None
 
 	gui = FrameManager()

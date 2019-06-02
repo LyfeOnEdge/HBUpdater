@@ -14,7 +14,11 @@ details_guide_text = """This menu will allow you to install older versions of ap
 
 class mainPage(pt.page):
     def __init__(self, parent, controller,back_command):
-        pt.page.__init__(self,parent=parent, controller=controller,back_command=back_command,version_function=HBUpdater.checkversion)
+        pt.page.__init__(self,parent=parent, 
+            controller=controller,
+            back_command=back_command,
+            softwaregroup = "homebrew"
+            )
 
         self.addrepoimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"plus.png")).subsample(2)
         self.sdimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"sd.png")).zoom(2).subsample(4)
@@ -23,9 +27,15 @@ class mainPage(pt.page):
         self.nutimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"nut.png"))
         self.fluffyimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder, "fluffy.png")).zoom(3).subsample(5)
         self.pythonimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder, "python.png")).zoom(3).subsample(5)
-        
+        self.cfwimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder, "cfw.png")).zoom(3).subsample(5)
 
         buttonlist = [
+            {
+            "image" : self.cfwimage,
+            "callback" : lambda: self.controller.show_frame("cfwPage"),
+            "tooltip" : "Custom Firmware Manager",
+            },
+
             {
             "image" : self.pythonimage,
             "callback" : lambda: self.controller.show_frame("pynxPage"),

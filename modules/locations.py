@@ -15,12 +15,9 @@ developers = {
 
 GAME = "game"
 TOOL = "tool"
-RECCOMENDED = "recomended"
+RECOMENDED = "recomended"
 TITLEINSTALLER = "title installer"
 EMULATOR = "emulator"
-
-#https://github.com/SilentFlyBy/Blobby-Volley-2-Switch/releases
-
 
 softwarelist = [
 	{
@@ -30,7 +27,7 @@ softwarelist = [
 	"author" : None, 
 	"projectpage": "https://github.com/vgmoose/hb-appstore/releases",
 	"description" : "A graphical frontend to the get package manager for downloading and managing homebrew on video game consoles, such as the Nintendo Switch and Wii U. This is a replacement to the older Wii U Homebrew App Store.",
-	"group" : RECCOMENDED,
+	"group" : RECOMENDED,
 	"install_subfolder": None,
 	"zip_items": None,
 	},
@@ -57,7 +54,7 @@ On-the-fly memory editing
 	Interface for loading, managing and updating Atmosphère cheats.
 	
 	All packed into one easy to use and easy to install Homebrew.""",
-	"group": RECCOMENDED,
+	"group": RECOMENDED,
 	"install_subfolder": None,
 	"zip_items": None,
 	},
@@ -72,7 +69,7 @@ On-the-fly memory editing
 	"description": """Lockpick is a ground-up C++17 rewrite of homebrew key derivation software, namely kezplez-nx. It also dumps titlekeys. This will dump all keys through *_key_05 on firmwares below 6.2.0 and through *_key_06 on 6.2.0.
 
 Due to key generation changes introduced in 7.0.0, Lockpick is not able to dump keys ending in 07 at all. Furthermore, unfortunately the public method to dump tsec_root_key is only available on firmware 6.2.0 so 7.x consoles can only dump through keys ending in 05.""",
-	"group": RECCOMENDED,
+	"group": RECOMENDED,
 	"install_subfolder": "switch",
 	"zip_items": None,
 	},
@@ -329,6 +326,78 @@ Known Bugs: There appears to be some bug that causes the screen to flicker durin
 
 ]
 
+
+customfirmwarelist = [
+	{
+		"software" : "Atmos",
+		"githubapi" : "https://api.github.com/repos/Atmosphere-NX/Atmosphere/releases",
+		"github_asset" : "",
+		"author" : None,
+		"projectpage": "https://github.com/Atmosphere-NX/Atmosphere/releases",
+		"description": "Atmosphère is a customized firmware for the Nintendo Switch.",
+		"group": "CFW",
+		"install_subfolder": None,
+		"zip_items": None,
+		"pattern" : [["atmosphere"],".zip"]
+	},
+
+	{
+	 	"software" : "Kosmos",
+		"githubapi" : "https://api.github.com/repos/AtlasNX/Kosmos/releases",
+		"github_asset" : None, 
+		"author" : None,
+		"projectpage": "https://github.com/AtlasNX/Kosmos/releases",
+		"description" : "All-in-One CFW Package for the Nintendo Switch - previously SDFilesSwitch",
+		"group" : "CFW",
+		"install_subfolder": None,
+		"zip_items": None,
+		"pattern" : [["kosmos", "sdfiles"],".zip"]
+	},
+
+	{
+		"software" : "ReiNX",
+		"githubapi" : "https://api.github.com/repos/Reisyukaku/ReiNX/releases",
+		"github_asset" : None, 
+		"author" : None, 
+		"projectpage": "https://github.com/Reisyukaku/ReiNX",
+		"description" : "A modular Switch custom firmware",
+		"group" : "CFW",
+		"install_subfolder": None,
+		"content_type"
+		"zip_items": None,
+		"pattern" : [["reinx"],".zip"]
+	},
+
+	{
+		"software" : "Argon-NX SD Files",
+		"githubapi" : "https://api.github.com/repos/Guillem96/argon-nx/releases",
+		"github_asset" : 1, 
+		"author" : "Guillem96", 
+		"projectpage": "https://github.com/Guillem96/argon-nx/",
+		"description" : """
+What Argon is?
+	Argon is a noble gas. "Argon" comes from Greek "Argon", neuter of "argos" meaning lazy , idle or inactive. Argon recieved this name because of its chemical inactivity.
+
+	Argon NX is an immutable payload which is injected to your Nintendo Switch via Fusee Gelee exploit.
+
+Purpose
+	The purpose of Argon NX is to stay immutable, so you can always inject it, without caring about other payloads getting updated (Always use ArgonNX for TegraSmash, TegraGUI, TrinkedM0...).
+
+How can it be immutable?
+	When Argon NX is injected, it automatically launches the payload.bin locacted at argon directory on your SD Card root.
+
+	If payload.bin is not present or VOLUME DOWN button is pressed on payload injection, Argon NX will list all payloads located at argon/payloads, and you will be able to select one of them to launch it.
+""",
+		"group" : "CFW",
+
+		"install_subfolder": None,
+		"content_type"
+		"zip_items": None,
+		"pattern" : [["sd-files"], ".zip"]
+	},
+]
+
+
 nxpythonlist = [
 	{
 	"software" : "Generic Mod Manager",
@@ -348,120 +417,11 @@ It lets you easily activate and deactivate mods as well as handle conflicting mo
 
 
 
-	# {
-	# "software" : "",
-	# "githubapi" : "",
-	# "github_asset" : None, 
-	# "author" : None, 
-	# "projectpage": None,
-	# "description" : "",
-	# "group" : ,
-	# "install_subfolder": None,
-	# "zip_items": None,
-	# },
-
-
-#FUTURE CONTENT (Maybe)
-
-
-#https://github.com/nx-python/Pynx/releases
-#https://github.com/TheKgg/switch-brainfuck/releases
-#https://github.com/Marice/ScreenTester-NX/releases
-#https://github.com/colin969/switch-reader/releases
-
-#maybe
-#https://github.com/jakibaki/In-Home-Switching/releases
-#https://f4ke.de/dev/switch/
-
-#7zip
-#https://github.com/WinterMute/chocolate-doom/releases/tag/chocolate-doom-3.0.0-switch
-
-
-# ###NYI PAYLOADS, CFW, Title Installers
-
-
-# 	{
-# 		"software" : "Atmos",
-# 		"githubapi" : "https://api.github.com/repos/Atmosphere-NX/Atmosphere/releases",
-# 		"github_asset" : "",
-# 		
-
-# 		"author" : None,
-# 		"projectpage": "https://github.com/Atmosphere-NX/Atmosphere/releases",
-# 		"description": "Atmosphère is a customized firmware for the Nintendo Switch.",
-# 		"group": "CFW",
-
-# 		"install_subfolder": None,
-# 		
-# 		"zip_items": None,
-# 	},
-
-# 	{
-# 	 	"software" : "Kosmos",
-# 		"githubapi" : "https://api.github.com/repos/AtlasNX/Kosmos/releases",
-# 		"github_asset" : None, 
-# 		
-
-# 		"author" : None,
-# 		"projectpage": "https://github.com/AtlasNX/Kosmos/releases",
-# 		"description" : "All-in-One CFW Package for the Nintendo Switch - previously SDFilesSwitch",
-# 		"group" : "CFW",
-
-# 		"install_subfolder": None,
-# 		
-# 		"zip_items": None,
-# 	},
-
-# 	{
-# 		"software" : "ReiNX",
-# 		"githubapi" : "https://api.github.com/repos/Reisyukaku/ReiNX/releases",
-# 		"github_asset" : None, 
-# 		
-
-# 		"author" : None, 
-# 		"projectpage": "https://github.com/Reisyukaku/ReiNX",
-# 		"description" : "A modular Switch custom firmware",
-# 		"group" : "CFW",
-
-# 		"install_subfolder": None,
-# 		"content_type"
-# 		"zip_items": None,
-# 	},
-
-# 	{
-# 		"software" : "Argon-NX SD Files",
-# 		"githubapi" : "https://api.github.com/repos/Guillem96/argon-nx/releases",
-# 		"github_asset" : 1, 
-# 		
-
-# 		"author" : "Guillem96", 
-# 		"projectpage": "https://github.com/Guillem96/argon-nx/",
-# 		"description" : """
-# What Argon is?
-# 	Argon is a noble gas. "Argon" comes from Greek "Argon", neuter of "argos" meaning lazy , idle or inactive. Argon recieved this name because of its chemical inactivity.
-
-# 	Argon NX is an immutable payload which is injected to your Nintendo Switch via Fusee Gelee exploit.
-
-# Purpose
-# 	The purpose of Argon NX is to stay immutable, so you can always inject it, without caring about other payloads getting updated (Always use ArgonNX for TegraSmash, TegraGUI, TrinkedM0...).
-
-# How can it be immutable?
-# 	When Argon NX is injected, it automatically launches the payload.bin locacted at argon directory on your SD Card root.
-
-# 	If payload.bin is not present or VOLUME DOWN button is pressed on payload injection, Argon NX will list all payloads located at argon/payloads, and you will be able to select one of them to launch it.
-# """,
-# 		"group" : "CFW",
-
-# 		"install_subfolder": None,
-# 		"content_type"
-# 		"zip_items": None,
-# 	},
 
 
 
-
+#Payloads
 payloadlist = [
-
 	{
 	"software": "Hekete",
 	"githubapi": "https://api.github.com/repos/CTCaer/hekate/releases",
@@ -534,19 +494,6 @@ Due to changes imposed by firmware 7.0.0, Lockpick homebrew can no longer derive
 ]
 	
 
-# {
-	# "software": "ReiNX Payload",
-	# "githubapi": "https://api.github.com/repos/Reisyukaku/ReiNX/releases/latest",
-	# "projectpage": "https://reinx.guide/",
-	# "directlink": None,
-	
-	# "itemslist": {"payload" : "ReiNX.bin"},
-	# "asset" : 0,
-	# "author": "ReiNX Team",
-	# "image" : None,
-	# "description": "Launcher for ReiNX",
-	# "group": "PAYLOADS",
-	# },
 
 # 	},
 # #other switch content

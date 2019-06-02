@@ -7,7 +7,7 @@ import json
 if __name__ == '__main__':
 	sys.exit("This script was not meant to run without a frontend. Exiting...")
 
-version = "0.7 (Beta)"
+version = "0.8 (Beta)"
 print("HBUpdater version {}".format(version))
 
 #My modules
@@ -41,6 +41,7 @@ def setSDpath(sdpath):
 			with open(trackingfile, "w+") as jfile:
 				initdata = {}
 				initdata["created_with"] = version
+				initdata["cfw"] = "not installed"
 				json.dump(initdata, jfile, indent=4,)
 
 	else:
@@ -49,11 +50,16 @@ def setSDpath(sdpath):
 
 	print("sdpathset = {}".format(sdpathset))
 
-def installitem(dicty, option, suboption):
+
+
+
+
+
+def installitem(dicty, option, suboption, group):
 	print("\n")
 	softwarename = dicty[option]["software"]
 
-	location = getlogitem(softwarename, "location")
+	location = getlogsetting(group, softwarename, "location")
 
 	with open(dicty[option]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
 		jfile = json.load(json_file)	
@@ -82,12 +88,11 @@ def installitem(dicty, option, suboption):
 		
 		if not (installlocation) == None:
 			newentry = {
-				dicty[option]["software"] : {
-					"version": tag,
-					"location": installlocation,
-				}
+				"software": dicty[option]["software"],
+				"version": tag,
+				"location": installlocation,
 			}
-			updatelog(newentry)
+			updatelog(group, newentry)
 
 def installfiletosd(filename,subfolder):
 	global chosensdpath
@@ -130,7 +135,7 @@ def installfiletosd(filename,subfolder):
 		return None
 
 
-def uninstallsoftware(softwarename):
+def uninstallsoftware(group, softwarename):
 	if not sdpathset:
 		print("SD path not set, can't uninstall")
 		return
@@ -139,7 +144,7 @@ def uninstallsoftware(softwarename):
 		return
 
 
-	filestoremove = getlogitem(softwarename,"location")
+	filestoremove = getlogitem(group, softwarename,"location")
 	print("removing {}".format(filestoremove))
 	if 'str' in str(type(filestoremove)):
 		os.remove(filestoremove)
@@ -165,7 +170,9 @@ def uninstallsoftware(softwarename):
 
 
 
-def updatelog(newentry):
+
+
+def updatelog(group, newentry):
 	if not homebrewcore.direxist(trackingfolder):
 		os.mkdir(trackingfolder)
 
@@ -180,39 +187,48 @@ def updatelog(newentry):
 	with open(trackingfile, 'r') as json_file:  
 		originaljfile = json.load(json_file)
 
+	# print(json.dumps(originaljfile,indent=4))
 	#update value
-	originaljfile.update(newentry)
+	try:
+		groupdict = originaljfile[group]
+		if groupdict == "not installed":
+			groupdict = {}
+	except:
+		groupdict = {}
+
+	location = newentry["location"]
+
+	entry = {	
+		"version" : newentry["version"],
+		"location" : location
+	}
+
+	softwarename = newentry["software"]
+	groupdict[softwarename] = entry
+
+	originaljfile[group] = groupdict
 
 	#write updated log
-	with open(trackingfile, 'w') as jfile:
-		json.dump(originaljfile, jfile, indent=4,)
+	with open(trackingfile, 'w') as newjfile:
+		json.dump(originaljfile, newjfile, indent=4,)
 
-def getlogitem(software, key):
+def getlogvalue(group, software, keyword):
 	try:
 		with open(trackingfile, 'r') as json_file:  
 			jfile = json.load(json_file)
 
 		try:
-			info = jfile[software][key]
+			status = jfile[group][software][keyword]
 		except:
-			info = None
+			status = None
 	except:
-		info = None
+		status = None
 
-	return info
+	return status
 
-def checkversion(software):
-	try:
-		with open(trackingfile, 'r') as json_file:
-			jfile = json.load(json_file)
-			# print(software)
-			if software in jfile.keys():
-				version = jfile[software]["version"]
-				return version
-			else:
-				return "not installed"
-	except:
-		return "not installed"
+
+def getlogstatus(group, software):
+	return getlogvalue(group, software, "version")
 
 
 

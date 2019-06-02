@@ -22,6 +22,7 @@ if not os.path.isdir(fluffyfolder):
     print("initializing fluffy folder")
 
 errorstate = None
+fluffylist = []
 
 class installerHelperPage(tk.Frame,):
     def __init__(self, parent, controller,back_command):
@@ -30,6 +31,7 @@ class installerHelperPage(tk.Frame,):
         self.controller=controller
 
         self.returnimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"returnbutton.png")).zoom(3).subsample(5)
+
 
         #page for warning users that nut isn't installed and asking if they want to install it
         self.installerwarningframe = cw.themedframe(self,)
@@ -149,16 +151,28 @@ def downloadNUTandinstalldependencies():
     webhandler.installmodulelist(dependencies)
 
 def downloadFLUFFYandinstalldependencies():
-    fluffyjson = webhandler.getJson("fluffy", locations.fluffydict["githubapi"])
+    global fluffylist
+    if fluffylist == []:
+        fluffydict = locations.fluffydict
+        fluffylist = [fluffydict]
+        fluffylist = webhandler.getUpdatedSoftwareLinks(fluffylist)
+
+    fluffyjson = fluffylist[0]["githubjson"]
     with open(fluffyjson) as json_file: #jsonfile is path, json_file is file obj
         jfile = json.load(json_file)
         if jfile == [] or jfile == None:
             print("Error: empty json nut file")
             return
 
-        scripturl = jfile[0]["assets"][0]["browser_download_url"]
-        licenseurl = jfile[0]["assets"][1]["browser_download_url"]
         version = jfile[0]["tag_name"]
+        version = version.strip("v")
+        if float(version) > 2.8:
+            asset = 1
+        else:
+            asset = 0
+        scripturl = jfile[0]["assets"][asset]["browser_download_url"]
+        licenseurl = jfile[0]["assets"][asset+1]["browser_download_url"]
+        
 
         #download and move fluffy and license
         script = webhandler.download(scripturl)

@@ -20,7 +20,8 @@ def downloadFile(fileURL, filename): #Download
 		urllib.request.urlretrieve(fileURL, filename)
 		print("Downloaded {} as {}".format(fileURL,filename))
 		return True #Return true if download is successful
-	except:
+	except Exception as e: 
+		print(e)
 		print("Failed to download {}".format(filename))
 		return False
 
@@ -33,6 +34,16 @@ def download(fileURL):
 		shutil.move(downloadedfile, downloadlocation)
 		print("downloaded {} from url {}".format(filename, fileURL))
 		return filename
+	except Exception as e: 
+		print(e)
+		return None
+
+def downloadFileAs(fileURL,filename):
+	try:
+		downloadlocation = homebrewcore.joinpaths(homebrewcore.downloadsfolder,filename)
+		urllib.request.urlretrieve(fileURL,downloadlocation)
+		print("downloaded {} from url {}".format(filename, fileURL))
+		return downloadlocation
 	except Exception as e: 
 		print(e)
 		return None
@@ -53,14 +64,15 @@ def cacheimage(url,softwarename):
 		return None
 	return file
 
-
-
 def getUpdatedSoftwareLinks(dicttopopulate):
 	# print("Downloading software json files from github")
 	for softwarechunk in dicttopopulate:
 		githubjsonlink = softwarechunk["githubapi"]
 		softwarename = softwarechunk["software"]
 		jsonfile = homebrewcore.joinpaths(homebrewcore.jsoncachefolder, softwarename + ".json")
+
+		if softwarechunk["projectpage"] == None or softwarechunk["projectpage"] == "":
+			softwarechunk["projectpage"] = parse_api_to_standard_github(githubjsonlink)
 
 		getJsonThread(softwarename, githubjsonlink, jsonfile, softwarechunk)
 
@@ -80,9 +92,6 @@ def getJsonThread(softwarename, apiurl, jsonfile, softwarechunk):
 		else:
 			print("No fallback available, software will be unavailable")
 
-
-
-
 def getJsonSoftwareLinks(dicttopopulate):
 	for softwarechunk in dicttopopulate:
 		githubjsonlink = softwarechunk["githubapi"]
@@ -91,6 +100,10 @@ def getJsonSoftwareLinks(dicttopopulate):
 		jsonfile = homebrewcore.joinpaths(homebrewcore.jsoncachefolder, softwarename + ".json")
 		softwarechunk["githubjson"] = jsonfile
 		print("using previously downloaded json file {}".format(jsonfile))
+
+		if softwarechunk["projectpage"] == None or softwarechunk["projectpage"] == "":
+			print("No project page found for {}, generating from github api link".format(softwarename))
+			softwarechunk["projectpage"] = parse_api_to_standard_github(githubjsonlink)
 
 	dicttopopulate = sorted(dicttopopulate, key = lambda i: i["software"])
 	return dicttopopulate
@@ -121,6 +134,19 @@ def parse_standard_github_to_api(url):
 		base = "https://api.github.com/repos/"
 		url = base + url.rsplit("https://github.com/",1)[1]
 		url = url + "/releases"
+		return(url)
+	except:
+		return None
+
+def parse_api_to_standard_github(url):
+	remove = [
+	"api.",
+	"/releases",
+	"/repos",
+	]
+	try:
+		for item in remove:
+			url = url.replace(item,"")
 		return(url)
 	except:
 		return None

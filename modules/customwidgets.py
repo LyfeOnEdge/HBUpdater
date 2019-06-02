@@ -352,6 +352,8 @@ class navbutton(tk.Button):
 			font = navbuttonfont,
 			foreground = w
 			)
+	def setcommand(self,command):
+		self.configure(command=command)
 
 class navbox(themedframe):
 	def __init__(self,frame,
@@ -389,18 +391,19 @@ class navbox(themedframe):
 
 #themed author/ etc label
 class themedlabel(tk.Label):
-	def __init__(self,frame,label_text,label_font=smalltext,label_color=w,text_variable=None,background = light_color,):
+	def __init__(self,frame,label_text,label_font=smalltext,label_color=w,text_variable=None,background = light_color,anchor="n",justify=None):
 		tk.Label.__init__(self,frame,
 			background = background,
 			highlightthickness=0,
-			anchor="n",
+			anchor=anchor,
 			text = label_text,
 			font=label_font,
 			foreground= label_color,
 			textvariable = text_variable,
 			)
 
-
+		if not justify == None:
+			self.configure()
 class themedguidelabel(tk.Label):
 	def __init__(self,frame,label_text,label_font=smalltext,label_color=w,text_variable=None,anchor="w",background=light_color):
 		tk.Label.__init__(self,frame,
@@ -527,7 +530,7 @@ class consolebox(themedframe):
 	def __init__(self,frame,):
 		themedframe.__init__(self,frame)
 
-		self.textoutput = tk.Text(self)
+		self.textoutput = tk.Text(self,wrap="word")
 		self.textoutput.place(x=0,y=0,relwidth=1,relheight=1)
 		self.textoutput.configure(background = b)
 		self.textoutput.configure(foreground = w)
@@ -540,6 +543,9 @@ class consolebox(themedframe):
 		self.textoutput.insert(END, textToPrint)
 		self.textoutput.config(state=DISABLED)
 		self.textoutput.see(END)
+
+	def see(self, index):
+		self.textoutput.see(index)
 
 	# def printbytes(self,bytesToPrint):
 	#   self.textoutput.config(state=NORMAL)
@@ -603,6 +609,8 @@ class titledlistbox(themedframe):
 	def delete(self, index,end):
 		self.listbox.delete(index,end)
 
+
+
 class themedtable(themedframe):
 	def __init__(self,frame,columns,columnwidth):
 		self.listboxes = {}
@@ -610,7 +618,7 @@ class themedtable(themedframe):
 		numcolumns = len(columns)
 		curcolumn = 0
 		curx = 0
-		self.listbox= {}
+		self.listbox = {}
 		for column in reversed(columns):
 			self.listbox[column] = titledlistbox(self, column)
 			
@@ -735,7 +743,12 @@ class ToolTipBase:
     def showcontents(self, text="Your text here"):
         # Override this in derived class
         label = tk.Label(self.tipwindow, text=text, justify=LEFT,
-                      background=dark_color, relief=SOLID, borderwidth=2,foreground=lgray)
+                      background=dark_color, 
+                      relief=SOLID, 
+                      borderwidth=2,
+                      foreground=lgray,
+                      font=mediumboldtext
+                      )
         label.pack()
 
     def hidetip(self):
