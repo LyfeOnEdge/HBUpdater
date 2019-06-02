@@ -82,8 +82,12 @@ pynx
 https://github.com/Genwald/Generic-Mod-Manager/releases
 
 0.8:
-    projects missing github links will now get one generated from the github api link to go to the github repo, this applies to user-added homebrew as well. 
-    Added titles to pages so you know what you are looking at
+    Projects missing github links will now get one generated from the github api link to go to the github repo, this applies to user-added homebrew as well. 
+    Added titles to pages so you know what you are looking at.
+    Added CFW manager alpha
+    Payload injector page now indicates if injector is already downloaded
+    Title bar now displays app version
+
 
 
 

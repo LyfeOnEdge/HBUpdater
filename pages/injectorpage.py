@@ -57,6 +57,18 @@ class injectorScreen(pt.page):
 		self.console.place(relx=0,rely=.7,relwidth=1, relheight=.3)
 		self.printtoconsolebox("Connect Switch, select payload, and press inject.\nThe payload and injector will be downloaded from github if they haven't been already.\n")
 
+
+		#Check if fusee launcher is download, display status for user
+		fuseestatus = guicore.checkguisetting("fusee-launcher","version")
+		notinstalled = [None, "not installed"]
+		if fuseestatus in notinstalled:
+			fuseestatus = "needs downloaded"
+		else:
+			fuseestatus = "downloaded"
+
+		self.printtoconsolebox("Injector status: {}".format(fuseestatus))
+
+
 		self.updatetable(None)
 
 		self.setguidetext(details_guide_text)

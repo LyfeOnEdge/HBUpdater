@@ -131,5 +131,5 @@ if __name__ == '__main__':
 		softwarechunk["photopath"] = None
 
 	gui = FrameManager()
-	gui.title("HBUpdater")
+	gui.title("HBUpdater {}".format(version))
 	gui.mainloop()
