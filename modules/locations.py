@@ -58,6 +58,7 @@ softwarelist = [
 	"group" : RECOMENDED,
 	"install_subfolder": None,
 	"zip_items": None,
+	"pattern" : None,
 	},
 
 
@@ -85,6 +86,7 @@ On-the-fly memory editing
 	"group": RECOMENDED,
 	"install_subfolder": None,
 	"zip_items": None,
+	"pattern" : None,
 	},
 
 
@@ -100,6 +102,7 @@ Due to key generation changes introduced in 7.0.0, Lockpick is not able to dump 
 	"group": RECOMENDED,
 	"install_subfolder": "switch",
 	"zip_items": None,
+	"pattern" : None,
 	},
 
 	{
@@ -112,6 +115,7 @@ Due to key generation changes introduced in 7.0.0, Lockpick is not able to dump 
 	"group" : TOOL,
 	"install_subfolder": "switch",
 	"zip_items": None,
+	"pattern" : None,
 	},
 
 
@@ -139,6 +143,7 @@ Misc Extras:
 	"group": TOOL,
 	"install_subfolder": "switch",
 	"zip_items": None,
+	"pattern" : None,
 	},
 
 
@@ -152,6 +157,7 @@ Misc Extras:
  	"group": TOOL,
 	"install_subfolder": "NX-Shell",
 	"zip_items": None,
+	"pattern" : None,
 	},
 
 
@@ -172,6 +178,7 @@ Unfortunately SZS files from the switch os contain copyrighted data so to make t
 	"group": TOOL,
 	"install_subfolder": "switch",
 	"zip_items": None,
+	"pattern" : None,
 	},
 
 
@@ -185,6 +192,7 @@ Unfortunately SZS files from the switch os contain copyrighted data so to make t
 	"group" : TOOL,
 	"install_subfolder": None,
 	"zip_items": None,
+	"pattern" : None,
 	},
 
 
@@ -198,6 +206,7 @@ Unfortunately SZS files from the switch os contain copyrighted data so to make t
 	"group": TOOL,
 	"install_subfolder": "switch",
 	"zip_items": None,
+	"pattern" : None,
 	},
 
 
@@ -211,6 +220,7 @@ Unfortunately SZS files from the switch os contain copyrighted data so to make t
 	"group": TOOL,
 	"install_subfolder": "switch",
 	"zip_items": None,
+	"pattern" : None,
 	},
 
 
@@ -224,6 +234,7 @@ Unfortunately SZS files from the switch os contain copyrighted data so to make t
 	"group": TOOL,
 	"install_subfolder": None,
 	"zip_items": None,
+	"pattern" : None,
 	},
 
 
@@ -239,6 +250,7 @@ After porting 3DSGBA(which often crashed probably because of a huge amount of me
 	"group" : EMULATOR,
 	"install_subfolder": "switch",
 	"zip_items": None,
+	"pattern" : None,
 	},
 	
 	{
@@ -251,6 +263,7 @@ After porting 3DSGBA(which often crashed probably because of a huge amount of me
 	"group" : "tool, REINX ONLY",
 	"install_subfolder": None,
 	"zip_items": None,
+	"pattern" : None,
 	},
 
 
@@ -264,6 +277,7 @@ After porting 3DSGBA(which often crashed probably because of a huge amount of me
 	"group" : TOOL,
 	"install_subfolder": "switch",
 	"zip_items": None,
+	"pattern" : None,
 	},
 ]
 
@@ -278,6 +292,7 @@ gameslist = [
 	"group" : GAME,
 	"install_subfolder": None,
 	"zip_items": None,
+	"pattern" : None,
 	},
 
 	{
@@ -290,6 +305,7 @@ gameslist = [
 	"group" : GAME,
 	"install_subfolder": None,
 	"zip_items": None,
+	"pattern" : None,
 	},
 
 
@@ -307,6 +323,7 @@ Known Bugs: There appears to be some bug that causes the screen to flicker durin
 	"group" : GAME,
 	"install_subfolder": "switch",
 	"zip_items": None,
+	"pattern" : None,
 	},
 
 
@@ -320,6 +337,7 @@ Known Bugs: There appears to be some bug that causes the screen to flicker durin
 	"group" : GAME,
 	"install_subfolder": None,
 	"zip_items": None,
+	"pattern" : None,
 	},
 
 	{
@@ -332,6 +350,7 @@ Known Bugs: There appears to be some bug that causes the screen to flicker durin
 	"group" : GAME,
 	"install_subfolder": "switch",
 	"zip_items": None,
+	"pattern" : None,
 	},
 ]
 
@@ -347,6 +366,32 @@ It lets you easily activate and deactivate mods as well as handle conflicting mo
 	"group" : TOOL,
 	"install_subfolder": "switch\\PyNX",
 	"zip_items": None,
+	"pattern" : None,
+	},
+
+]
+
+experimentallist = [
+	{
+	"software" : "switch-brainfuck",
+	"githubapi" : "https://api.github.com/repos/TheKgg/switch-brainfuck/releases",
+	"github_asset" : None, 
+	"author" : "TheKgg", 
+	"projectpage": "https://github.com/TheKgg/switch-brainfuck/releases",
+	"description" : """switch-brainfuck
+A brainfuck interpreter for the Nintendo Switch
+
+Usage
+Put a .bf file with code (only code, no comments) in either the root of your emulator's SD card or in the same folder as your .nro. It will be booted on start.
+
+When it asks for input move the left joystick to select a number.
+
+Compiling
+Just install devkitPro using this guide, replace the source folder in your new project with the source folder here, and run make build in the same folder as the Makefile.""",
+	"group" : TOOL,
+	"install_subfolder": "switch\\PyNX",
+	"zip_items": None,
+	"pattern" : [["Brainfuck_Interpreter"], ".nro"],
 	},
 
 ]

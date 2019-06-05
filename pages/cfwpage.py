@@ -107,7 +107,6 @@ class cfwPage(pt.page):
 			softwarename = self.softwarelist[self.currentselection]["software"]
 			version = jfile[self.currenttagselection]["tag_name"]
 
-			assetindex = None
 			pattern = self.softwarelist[self.currentselection]["pattern"]
 			assets = jfile[self.currenttagselection]["assets"]
 			if assets == None:

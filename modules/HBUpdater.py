@@ -67,13 +67,42 @@ def installitem(dicty, option, suboption, group):
 
 	with open(dicty[option]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
 		jfile = json.load(json_file)	
-		asset = dicty[option]["github_asset"] 
-		if asset == None:
-			asset = 0
-		downloadlink = jfile[suboption]["assets"][asset]["browser_download_url"]
+		assetnumber = dicty[option]["github_asset"] 
+		if assetnumber == None:
+			assetnumber = 0
 
-		tag = jfile[suboption]["tag_name"]
-	print("installing {} version {}".format(softwarename,tag))
+		downloadlink = None
+
+		version = jfile[suboption]["tag_name"]
+
+		assets = jfile[suboption]["assets"]
+		if assets == None:
+			print("Could not find asset data for selected software")
+			return
+
+
+
+		if not dicty[option]["pattern"] == None:
+			pattern = self.softwarelist[self.currentselection]["pattern"]
+			for asset in assets:
+				asseturl = asset["browser_download_url"]
+				assetname = asseturl.rsplit("/",1)[1].lower()
+				assetwithoutfiletype = assetname.split(".")[0]
+				for firstpartpattern in pattern[0]:
+					if assetwithoutfiletype.startswith(firstpartpattern):
+						if assetname.endswith(pattern[1].lower()):
+							print("found asset: {}".format(assetname))
+							downloadlink = asseturl
+							break
+			if downloadlink == None:
+				print("No asset data found, can't install\n")
+				return
+		else:
+			downloadlink = assets[assetnumber]["browser_download_url"]
+
+
+
+	print("installing {} version {}".format(softwarename,version))
 	downloadedfile = webhandler.download(downloadlink)
 
 	if not downloadedfile == None:
@@ -93,7 +122,7 @@ def installitem(dicty, option, suboption, group):
 		if not (installlocation) == None:
 			newentry = {
 				"software": dicty[option]["software"],
-				"version": tag,
+				"version": version,
 				"location": installlocation,
 			}
 			updatelog(group, newentry)

@@ -5,17 +5,23 @@ Difficulty / Time:
 [EASY]
 [MEDIUM]
 [HRNNN]
+
+mustdo:
+test pattern - based homebrew checking
+
 todo:
 
 Priority:
     High:
         settings:
             window default launch size [EASY] 
+            ftp tool [HARD]
         bugs:
             stop crash when initial json fails to download [MEDIUM]
         features:
             improve repo management and addition [MEDIUM]
             github 304 rate limiting avoidance [HARD]
+        Add pattern-based file finding in HBUpdater install function
 
     Medium:
         features:
@@ -29,6 +35,9 @@ Priority:
         file structure:
             clean up imports
             make entrybox a subclass of searchbox
+        HBUpdater updater
+            use github api (duh)
+            use yes/no screen when new update is available (diable screen in settings)
 
 
 
@@ -38,11 +47,23 @@ Priority:
         implement gross light theme
 
 
-Serial Number checker
-https://github.com/AkdM/ssncpy
-
-totest:
-fluffy and nut error page handling (when not rate limited)
+ongoing:
+No releases (Issue created on github)
+    Python:
+        https://gbatemp.net/threads/pynx-game-redirector.507726/
+    Homebrew:
+        https://github.com/Chrs2324/SSBUStageInjector
+    Tools:
+        https://github.com/friedkeenan/GoldtreePy
+To add:
+    
+    https://github.com/Marice/ScreenTester-NX/releases <- Inconsistent release format but it will work due to flexible handling
+    https://github.com/colin969/switch-reader/releases
+    https://github.com/SilentFlyBy/Blobby-Volley-2-Switch/releases
+    https://github.com/rsn8887/uae4all2/releases
+    https://github.com/ELY3M/Lighting-up-LED-on-right-joycon-for-Nintendo-Switch/releases
+    https://github.com/Manurocker95/TIL_NX/releases/
+    https://github.com/Manurocker95/Evolution-Saved-Me-NX/releases/
 
 todone:
 0.8:
@@ -94,20 +115,10 @@ https://github.com/AnalogMan151/splitNSP/releases
 https://github.com/vgmoose/nro-asset-editor/releases
 
 
-PYNX
-https://gbatemp.net/threads/pynx-game-redirector.507726/
-^No releases
+
 
 NRO (SOME RELEASES MISSING DATA WILL NEED TO UPDATE CODE TO BE ABLE TO HANLDE REPOS WITHOUT ASSETS WITH AN ERROR WINDOW )
-https://github.com/TheKgg/switch-brainfuck/releases
-https://github.com/Marice/ScreenTester-NX/releases
-https://github.com/colin969/switch-reader/releases
-https://github.com/SilentFlyBy/Blobby-Volley-2-Switch/releases
-https://github.com/rsn8887/uae4all2/releases/tag/1.95
-https://github.com/ELY3M/Lighting-up-LED-on-right-joycon-for-Nintendo-Switch/releases
-https://github.com/Manurocker95/TIL_NX/releases/
 https://github.com/keeganatorr/openfodder-switch/releases
-https://github.com/Manurocker95/Evolution-Saved-Me-NX/releases/
 
 #maybe
 #https://github.com/jakibaki/In-Home-Switching/releases

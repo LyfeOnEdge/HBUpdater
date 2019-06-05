@@ -330,11 +330,14 @@ class page(cw.themedframe,):
 			#insert name of software in software column
 			self.software_listbox.insert(END, softwarename)
 			
-			with open(softwarechunk["githubjson"], encoding="utf-8") as json_file: 
-				jfile = json.load(json_file) 
-			version = jfile[0]["tag_name"]
-			#Insert latest available software version in latest column
-			self.latest_listbox.insert(END, version)
+			try:
+				with open(softwarechunk["githubjson"], encoding="utf-8") as json_file: 
+					jfile = json.load(json_file) 
+				version = jfile[0]["tag_name"]
+				#Insert latest available software version in latest column
+				self.latest_listbox.insert(END, version)
+			except:
+				continue
 
 			#Check to see if and which version is installed 
 			installedversion = self.version_function(self.softwaregroup,softwarechunk["software"])

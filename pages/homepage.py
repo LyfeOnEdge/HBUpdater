@@ -79,6 +79,13 @@ class homePage(cw.themedframe):
 			"tooltip" : "Homebrew python script for use with NX Python",
 			"shorttip" : "Python Scripts"
 			},
+
+			{
+			"image" : self.betaimage,
+			"callback" : lambda: self.controller.show_frame("experimentalPage"),
+			"tooltip" : "Install experimental homebrew",
+			"shorttip" : "Experimental"
+			},
 		]
 
 
@@ -115,17 +122,17 @@ class homePage(cw.themedframe):
 
 		otherbuttonlist = [
 			{
-			"image" : self.settingsimage,
-			"callback" : lambda: self.controller.show_frame("settingsPage"),
-			"tooltip" : "Open settings page",
-			"shorttip" : "Settings"
-			},
-			
-			{
 			"image" : self.githubimage,
 			"callback" : lambda: webhandler.opentab(),
 			"tooltip" : "Open HBUpdater Github",
 			"shorttip" : "HBU Github"
+			},
+
+			{
+			"image" : self.settingsimage,
+			"callback" : lambda: self.controller.show_frame("settingsPage"),
+			"tooltip" : "Open settings page",
+			"shorttip" : "Settings"
 			},
 		]
 

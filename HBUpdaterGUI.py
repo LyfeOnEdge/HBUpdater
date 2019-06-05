@@ -61,10 +61,10 @@ class FrameManager(tk.Tk):
 		import pages.homepage as lp
 		import pages.gamespage as gp
 		import pages.serialpage as cp
-
+		import pages.experimentalpage as xp
 		self.frames = {}
 		#Add frames to dict, with keyword being the name of the frame
-		for F in (mp.mainPage,ip.injectorScreen,sp.settingsPage,ar.addRepoScreen,py.pynxPage,fw.cfwPage,ep.errorPage,lp.homePage,gp.gamesPage,cp.serialPage):
+		for F in (mp.mainPage,ip.injectorScreen,sp.settingsPage,ar.addRepoScreen,py.pynxPage,fw.cfwPage,ep.errorPage,lp.homePage,gp.gamesPage,cp.serialPage,xp.experimentalPage):
 			page_name = F.__name__
 			frame = F(parent=container, controller=self,back_command = lambda: self.show_frame("homePage")) 
 			self.frames[page_name] = frame
