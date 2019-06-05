@@ -1,14 +1,11 @@
 /cache/*
 /hbupdater/*
-settings.txt
 /downloads/*
 /payloads/*
 /titledb/*
-nut/*
-/fluffy/*
+/conf/*
+/tools/*
 user_repos.json
-conf/nut.conf
-conf/users.conf
 fluffy.conf
 fluffy.log
 *.pyc

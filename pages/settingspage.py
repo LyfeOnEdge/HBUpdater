@@ -2,10 +2,10 @@ from modules.format import *
 import modules.customwidgets as cw
 import modules.guicore as guicore
 import modules.HBUpdater as HBUpdater
-import modules.homebrewcore as homebrewcore
 import modules.locations as locations
 import modules.webhandler as webhandler
 
+import os
 
 import tkinter as tk
 from tkinter.constants import *
@@ -29,7 +29,7 @@ class settingsPage(tk.Frame):
 		self.outer_frame.place(relx=0.0, rely=0.0, relheight=1.0, relwidth=1.0)
 
 		#back to main page button
-		self.returnimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"returnbutton.png"))
+		self.returnimage = tk.PhotoImage(file=os.path.join(locations.assetfolder,"returnbutton.png"))
 		self.returnimage = self.returnimage.zoom((3)).subsample(5)
 		
 		self.settingsframe = cw.themedframe(self.outer_frame,background_color=light_color,frame_highlightthickness=0,frame_borderwidth=0)
@@ -43,6 +43,9 @@ class settingsPage(tk.Frame):
 
 		self.autoupdaterepossettingbox = cw.settingbox(self.settingsframe,"Automatically update repo information on launch")
 		self.settingboxlist.append(self.autoupdaterepossettingbox)
+
+		self.alerttoupdatebox = cw.settingbox(self.settingsframe,"Check for updates to HBUpdater")
+		self.settingboxlist.append(self.alerttoupdatebox)
 
 		spaceincrementer+=1.2
 
@@ -93,7 +96,7 @@ automatically detected on launch.""")
 		if not lyfeimage:
 			lyfeimage = webhandler.grabgravatar(locations.developers["LyfeOnEdge"]["gravatar_url"])
 			if lyfeimage == None:
-				lyfeimage = homebrewcore.joinpaths(homebrewcore.assetfolder,notfoundimage)
+				lyfeimage = os.path.join(locations.assetfolder,notfoundimage)
 
 		#I get an object named after me :D
 		self.lyfeonedgeimage = tk.PhotoImage(file=lyfeimage)
@@ -104,7 +107,7 @@ automatically detected on launch.""")
 		if not pprmntimage:
 			pprmntimage = webhandler.grabgravatar(locations.developers["pprmint"]["gravatar_url"])
 			if pprmntimage == None:
-				pprmntimage = homebrewcore.joinpaths(homebrewcore.assetfolder,notfoundimage)
+				pprmntimage = os.path.join(locations.assetfolder,notfoundimage)
 
 		self.pprmintimage = tk.PhotoImage(file=pprmntimage)
 		self.pprmint = cw.devbox(self.creditsframe,"pprmint",locations.developers["pprmint"]["dev_flavor_text"],self.pprmintimage,command_name=lambda: webbrowser.open_new_tab(locations.developers["pprmint"]["project_page_url"]))
@@ -126,20 +129,23 @@ automatically detected on launch.""")
 		self.thankstext = cw.ScrolledText(self.creditsframe,background=dark_color,borderwidth=0,highlightthickness=0,foreground=lgray,font=smallboldtext,wrap="word")
 		self.thankstext.place(y=+(infoframewidth+5*separatorwidth+navbuttonheight),x=separatorwidth,relwidth=1,width=-(2*separatorwidth),relheight=1,height=-(infoframewidth+3*separatorwidth+navbuttonheight))
 		self.thankstext.insert(END, thankyoutext)
-
-		self.backtomain_button = cw.navbutton(self.settingsframe, image_object=self.returnimage, command_name=lambda: controller.show_frame("mainPage"))
+		self.backtomain_button = cw.navbutton(self.settingsframe, image_object=self.returnimage, command_name=back_command)
 		self.backtomain_button.place(relx=1, rely=1, x=-(separatorwidth+navbuttonheight), y=-(separatorwidth+navbuttonheight), height=navbuttonheight, width=navbuttonheight)
 
 		self.updatesettingsstate()
 
 	def updatesettingsstate(self):
+		autoupdaterepos = guicore.checkguisetting("guisettings","automatically_check_for_repo_updates")
+		self.autoupdaterepossettingbox.set(autoupdaterepos)
+		
 		autoupdate = guicore.checkguisetting("guisettings","automatically_check_for_updates")
-		self.autoupdaterepossettingbox.set(autoupdate)
+		self.alerttoupdatebox.set(autoupdate)
 
 	def save(self):
 		newentry = {
 					"guisettings" : {
-						"automatically_check_for_updates" : self.autoupdaterepossettingbox.get(),
+						"automatically_check_for_repo_updates" : self.autoupdaterepossettingbox.get(),
+						"automatically_check_for_updates" : self.alerttoupdatebox.get(),
 					}
 				}
 		guicore.setguisetting(newentry)

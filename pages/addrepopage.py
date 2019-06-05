@@ -2,14 +2,12 @@ from modules.format import *
 import modules.customwidgets as cw
 import modules.guicore as guicore
 import modules.HBUpdater as HBUpdater
-import modules.homebrewcore as homebrewcore
 import modules.webhandler as webhandler
-
+import modules.locations as locations
 import tkinter as tk
 from tkinter.constants import *
 
-import json
-import sys,subprocess
+import sys, subprocess, os, json
 
 
 sd_subfolder_placeholder = "SD subfolder (blank for root)"
@@ -157,7 +155,7 @@ class addRepoScreen(cw.themedframe):
 
 		self.infobox = cw.infobox(self.mainreposcreen)
 		self.infobox.place(relx=1, x=-infoframewidth, rely=1, y=-87.5, height=87.5, width=infoframewidth)
-		self.returnimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"returnbutton.png"))
+		self.returnimage = tk.PhotoImage(file=os.path.join(locations.assetfolder,"returnbutton.png"))
 		self.returnimage = self.returnimage.zoom((3)).subsample(5)
 		#Back to list button frame, placed first so the details button covers it
 		self.repobuttons =cw.navbox(self.infobox,
@@ -170,7 +168,7 @@ class addRepoScreen(cw.themedframe):
 			)
 		self.repobuttons.place(relx=.5, rely=1, x=-100, y=-87.5, height= 87.5, width=200)
 
-		self.trashimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder, "trash.png"))
+		self.trashimage = tk.PhotoImage(file=os.path.join(locations.assetfolder, "trash.png"))
 		self.trashimage= self.trashimage.subsample(2)
 
 		self.hackynewanddeletebuttons = cw.navbox(self.mainreposcreen,

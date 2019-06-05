@@ -2,7 +2,6 @@ from modules.format import *
 import modules.customwidgets as cw
 import modules.guicore as guicore
 import modules.HBUpdater as HBUpdater
-import modules.homebrewcore as homebrewcore
 import modules.locations as locations
 import modules.webhandler as webhandler
 
@@ -11,12 +10,14 @@ import tkinter as tk
 from tkinter.constants import *
 from tkinter import messagebox
 
-import subprocess, sys, json
+import os, sys, subprocess, json
 
 #archive handling
 from zipfile import ZipFile
 
 import pages.pagetemplate as pt
+
+
 
 details_guide_text = """This menu will allow you to install older versions of payload, and go to the payloads's project page.
 """ 
@@ -35,15 +36,16 @@ class injectorScreen(pt.page):
 			page_title="PAYLOAD INJECTOR"
 			)
 
-		self.setlist(guicore.ijlist)
+		self.ijlist = self.populatesoftwarelist(locations.payloadlist)
+		self.setlist(self.ijlist)
 
-		self.returnimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"returnbutton.png")).zoom(3).subsample(5)
+		self.pjlist = self.populatesoftwarelist(locations.payloadinjector)
 
 		buttonlist = [
 			{
 			"image" : self.returnimage,
 			"callback" : back_command,
-			"tooltip" : "Back to main screen",
+			"tooltip" : "Back to home screen",
 			}
 		]
 
@@ -66,7 +68,7 @@ class injectorScreen(pt.page):
 		else:
 			fuseestatus = "downloaded"
 
-		self.printtoconsolebox("Injector status: {}".format(fuseestatus))
+		self.printtoconsolebox("Injector status: {}\n".format(fuseestatus))
 
 
 		self.updatetable(None)
@@ -129,7 +131,7 @@ class injectorScreen(pt.page):
 
 				#file yielded by the download
 				file = webhandler.download(downloadurl)
-				file = homebrewcore.joinpaths(homebrewcore.downloadsfolder, file) #get absolute path to it
+				file = os.path.join(locations.downloadsfolder, file) #get absolute path to it
 					
 				#if downloaded file is already .bin, set the payload path to it.
 				if file.endswith(".bin"):
@@ -138,7 +140,7 @@ class injectorScreen(pt.page):
 				elif file.endswith(".zip"):
 					#if file is zip, unzip it and find the payload based on the pattern set in its entry in #locations
 					with ZipFile(file, 'r') as zipObj:
-						zipObj.extractall(homebrewcore.payloadsfolder)
+						zipObj.extractall(locations.payloadsfolder)
 						self.printtoboth("Sucessfully extracted {} to payloads folder\n\n".format(file))
 						files = zipObj.namelist()
 						payload = None
@@ -149,7 +151,7 @@ class injectorScreen(pt.page):
 							self.printtoboth("Could not find payload in extracted files")
 							return 
 
-					payload = homebrewcore.joinpaths(homebrewcore.payloadsfolder,payload)
+					payload = os.path.join(locations.payloadsfolder,payload)
 
 				else:
 					self.printtoboth("file handling method not found")
@@ -191,7 +193,7 @@ class injectorScreen(pt.page):
 
 			#file yielded by the download
 			file = webhandler.download(downloadurl)
-			file = homebrewcore.joinpaths(homebrewcore.downloadsfolder, file) #get absolute path to it
+			file = os.path.join(locations.downloadsfolder, file) #get absolute path to it
 				
 			#if downloaded file is already .bin, set the payload path to it.
 			if file.endswith(".bin"):
@@ -200,7 +202,7 @@ class injectorScreen(pt.page):
 			elif file.endswith(".zip"):
 				#if file is zip, unzip it and find the payload based on the pattern set in its entry in #locations
 				with ZipFile(file, 'r') as zipObj:
-					zipObj.extractall(homebrewcore.payloadsfolder)
+					zipObj.extractall(locations.payloadsfolder)
 					self.printtoboth("Sucessfully extracted {} to payloads folder\n\n".format(file))
 					files = zipObj.namelist()
 					payload = None
@@ -211,7 +213,7 @@ class injectorScreen(pt.page):
 						self.printtoboth("Could not find payload in extracted files")
 						return 
 
-				payload = homebrewcore.joinpaths(homebrewcore.payloadsfolder,payload)
+				payload = os.path.join(locations.payloadsfolder,payload)
 
 			else:
 				self.printtoboth("file handling method not found")
@@ -233,14 +235,14 @@ def injectpayload(self,payload):
 	fuseestatus = guicore.checkguisetting("fusee-launcher", "version")
 	if fuseestatus == "not installed" or fuseestatus == "none" or fuseestatus == None:
 		# self.printtoboth("fusee-launcher not installed, downloading")
-		with open(guicore.payloadinjector[0]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
+		with open(self.pjlist[0]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
 			jfile = json.load(json_file)
 			downloadurl = jfile[0]["zipball_url"]
 			file = webhandler.download(downloadurl)
-			file = homebrewcore.joinpaths(homebrewcore.downloadsfolder, file)
+			file = os.path.join(locations.downloadsfolder, file)
 			version = jfile[0]["tag_name"]
 			with ZipFile(file, 'r') as zipObj:
-				zipObj.extractall(homebrewcore.payloadsfolder)
+				zipObj.extractall(locations.injectorfolder)
 				self.printtoboth("Sucessfully extracted {} to payloads folder".format(file))
 				files = zipObj.namelist()
 				injector = None
@@ -259,7 +261,7 @@ def injectpayload(self,payload):
 			guicore.setguisetting(newentry)
 
 	script_path = guicore.checkguisetting("fusee-launcher", "location")
-	script_path = homebrewcore.joinpaths(homebrewcore.payloadsfolder, script_path)
+	script_path = os.path.join(locations.injectorfolder, script_path)
 	payload_file = payload
 	p = subprocess.Popen([sys.executable, '-u', script_path, payload_file],
 	          stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1)

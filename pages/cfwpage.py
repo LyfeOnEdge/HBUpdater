@@ -2,14 +2,14 @@ from modules.format import *
 import modules.customwidgets as cw
 import modules.guicore as guicore
 import modules.HBUpdater as HBUpdater
-import modules.homebrewcore as homebrewcore
 import modules.webhandler as webhandler
+import modules.locations as locations
 
 import tkinter as tk
 from tkinter.constants import *
 from tkinter import messagebox
 
-import subprocess, sys, json, os
+import sys, subprocess, os, json
 
 #archive handling
 from zipfile import ZipFile
@@ -37,10 +37,10 @@ class cfwPage(pt.page):
 			softwaregroup="cfw"
 			)
 
-		self.setlist(guicore.cfwlist)
+		cfwlist = self.populatesoftwarelist(locations.customfirmwarelist)
+		self.setlist(cfwlist)
 
-		self.returnimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"returnbutton.png")).zoom(3).subsample(5)
-		self.sdimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"sd.png")).zoom(2).subsample(4)
+		self.sdimage = tk.PhotoImage(file=os.path.join(locations.assetfolder,"sd.png")).zoom(2).subsample(4)
 
 		buttonlist = [
 			{
@@ -76,6 +76,8 @@ class cfwPage(pt.page):
 			software, cfwpackageurl, filename, version = self.getSoftwareURLbyPattern()
 			if cfwpackageurl == None:
 				print("No data, not installing")
+				self.controller.seterrorstate("Failed to find asset data for {}".format(software))
+				self.controller.event_generate("<<error>>")
 				return
 			installcfw(self, software, cfwpackageurl, filename, version)
 			self.updatetable(None)
@@ -107,6 +109,10 @@ class cfwPage(pt.page):
 
 			assetindex = None
 			pattern = self.softwarelist[self.currentselection]["pattern"]
+			assets = jfile[self.currenttagselection]["assets"]
+			if assets == None:
+				print("Could not find selected software in this version")
+				return(softwarename,None,None,None)
 			for asset in jfile[self.currenttagselection]["assets"]:
 				asseturl = asset["browser_download_url"]
 				assetname = asseturl.rsplit("/",1)[1].lower()
@@ -118,18 +124,18 @@ class cfwPage(pt.page):
 							print("asset url: {}".format(asseturl))
 							return(softwarename,asseturl,assetname,version)
 			print("No asset data found")
-			return(None)
+			return(softwarename,None,None,None)
 
 
 def installcfwtosd(filename,subfolder):
 	if not subfolder == None:
-		subdir = homebrewcore.joinpaths(HBUpdater.chosensdpath,subfolder)
+		subdir = os.path.join(HBUpdater.chosensdpath,subfolder)
 	else: 
 		subdir = HBUpdater.chosensdpath
 
-	sdlocation = homebrewcore.joinpaths(subdir, filename)
+	sdlocation = os.path.join(subdir, filename)
 
-	if not homebrewcore.direxist(subdir):
+	if not os.path.isdir(subdir):
 		os.mkdir(subdir)
 
 	if filename.endswith(".zip"):
@@ -140,7 +146,7 @@ def installcfwtosd(filename,subfolder):
 				sdlocation = zipObj.namelist()
 				namelist = []
 				for location in sdlocation:
-					namelist.append(homebrewcore.joinpaths(subdir,location))
+					namelist.append(os.path.join(subdir,location))
 				print("files copied: \n {}".format(namelist))
 				print("Sucessfully installed custom firmware {} to SD".format(filename))
 				print(subdir)

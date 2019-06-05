@@ -1,5 +1,5 @@
-import modules.homebrewcore as homebrewcore
-import threading, sys, imp, shutil, json, subprocess
+import threading, os, sys, imp, shutil, json, subprocess
+import modules.locations as locations
 
 #archive handling
 from zipfile import ZipFile
@@ -10,6 +10,7 @@ import urllib.request
 opener = urllib.request.build_opener()
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 urllib.request.install_opener(opener)
+
 
 def opentab(url):
 	webbrowser.open_new_tab(url)
@@ -30,7 +31,7 @@ def download(fileURL):
 		downloadedfile, headers = urllib.request.urlretrieve(fileURL)
 		print(headers)
 		filename = headers["Content-Disposition"].split("filename=",1)[1]
-		downloadlocation = homebrewcore.joinpaths(homebrewcore.downloadsfolder,filename)
+		downloadlocation = os.path.join(locations.downloadsfolder,filename)
 		shutil.move(downloadedfile, downloadlocation)
 		print("downloaded {} from url {}".format(filename, fileURL))
 		return filename
@@ -40,7 +41,7 @@ def download(fileURL):
 
 def downloadFileAs(fileURL,filename):
 	try:
-		downloadlocation = homebrewcore.joinpaths(homebrewcore.downloadsfolder,filename)
+		downloadlocation = os.path.join(locations.downloadsfolder,filename)
 		urllib.request.urlretrieve(fileURL,downloadlocation)
 		print("downloaded {} from url {}".format(filename, fileURL))
 		return downloadlocation
@@ -55,7 +56,7 @@ def cacheimage(url,softwarename):
 			info = response.info()
 			type=info.get_content_subtype()
 			file = "{}.{}".format(softwarename,type)
-			file = homebrewcore.joinpaths(homebrewcore.imagecachefolder,file)
+			file = os.path.join(locations.imagecachefolder,file)
 			imagefile = open(file, 'wb')
 			shutil.copyfileobj(response, imagefile)
 			print("downloaded image {}".format(file))
@@ -69,7 +70,7 @@ def getUpdatedSoftwareLinks(dicttopopulate):
 	for softwarechunk in dicttopopulate:
 		githubjsonlink = softwarechunk["githubapi"]
 		softwarename = softwarechunk["software"]
-		jsonfile = homebrewcore.joinpaths(homebrewcore.jsoncachefolder, softwarename + ".json")
+		jsonfile = os.path.join(locations.jsoncachefolder, softwarename + ".json")
 
 		if softwarechunk["projectpage"] == None or softwarechunk["projectpage"] == "":
 			softwarechunk["projectpage"] = parse_api_to_standard_github(githubjsonlink)
@@ -86,7 +87,7 @@ def getJsonThread(softwarename, apiurl, jsonfile, softwarechunk):
 		softwarechunk["githubjson"] = jsonfile
 		return jsonfile
 	except:
-		if homebrewcore.exists(jsonfile):
+		if os.path.isfile(jsonfile):
 				print("could not get updated link, falling back on older version")
 				softwarechunk["githubjson"] = jsonfile
 		else:
@@ -97,7 +98,7 @@ def getJsonSoftwareLinks(dicttopopulate):
 		githubjsonlink = softwarechunk["githubapi"]
 		softwarename = softwarechunk["software"]
 
-		jsonfile = homebrewcore.joinpaths(homebrewcore.jsoncachefolder, softwarename + ".json")
+		jsonfile = os.path.join(locations.jsoncachefolder, softwarename + ".json")
 		softwarechunk["githubjson"] = jsonfile
 		print("using previously downloaded json file {}".format(jsonfile))
 
@@ -110,7 +111,7 @@ def getJsonSoftwareLinks(dicttopopulate):
 
 def getJson(softwarename, apiurl):
 	try:
-		jsonfile = homebrewcore.joinpaths(homebrewcore.jsoncachefolder, softwarename + ".json")
+		jsonfile = os.path.join(locations.jsoncachefolder, softwarename + ".json")
 		urllib.request.urlretrieve(apiurl,jsonfile)
 		print("Downloaded new json file for {}".format(softwarename))
 		return jsonfile
@@ -155,7 +156,7 @@ def grabgravatar(url):
 	downloadedfile = urllib.request.urlretrieve(url)[0]
 	dljsonfile = url.rsplit("/",1)[1]
 	imagename = dljsonfile.rsplit(".",1)[0]
-	downloadlocation = homebrewcore.joinpaths(homebrewcore.downloadsfolder,dljsonfile)
+	downloadlocation = os.path.join(locations.downloadsfolder,dljsonfile)
 	shutil.move(downloadedfile, downloadlocation)
 	with open(downloadlocation) as jsonfile:
 		jfile = json.load(jsonfile)
@@ -164,8 +165,8 @@ def grabgravatar(url):
 
 def getcachedimage(imagename):
 		photopath = imagename + ".png"
-		photopath = homebrewcore.joinpaths(homebrewcore.imagecachefolder, photopath)
-		photoexists = homebrewcore.exists(photopath)
+		photopath = os.path.join(locations.imagecachefolder, photopath)
+		photoexists = os.path.isfile(photopath)
 		if photoexists:
 			return photopath
 		else:

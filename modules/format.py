@@ -35,6 +35,8 @@ smallboldtext = ("Trebuchet MS",10,"bold")
 mediumboldtext = ("Trebuchet MS",12,"bold")
 largeboldtext = ("Trebuchet MS",14,"bold")
 giantboldtext = ("Trebuchet MS",16,"bold")
+hugeboldtext = ("Trebuchet MS",20,"bold")
+mondoboldtext = ("Trebuchet MS",25,"bold")
 
 ##Main colors:
 #background color

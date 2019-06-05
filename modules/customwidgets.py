@@ -115,11 +115,13 @@ class entrybox(tk.Frame):
 			)
 		self.entry.place(x=0,y=0,relwidth=1,relheight=1)
 		
-		if entrybox_font:
-			self.entry.configure(font=entrybox_font)
+		if entry_font:
+			self.entry.configure(font=entry_font)
 
 		if placeholder:
 			add_placeholder_to(self.entry, placeholder, color=placeholder_color, font=repo_placeholder_font)
+
+		self.entry.bind("<Escape>", lambda event: self.entry.nametowidget(".").focus())
 
 		#This entry never gets placed, 
 		#it's just used to jump to whenever 
@@ -156,6 +158,11 @@ class entrybox(tk.Frame):
 		
 	def focus(self):
 		self.entry.focus()
+		self.dummyentry.configure(state=NORMAL)
+		self.dummyentry.focus()
+		self.dummyentry.configure(state=DISABLED)
+
+	def unfocus(self):
 		self.dummyentry.configure(state=NORMAL)
 		self.dummyentry.focus()
 		self.dummyentry.configure(state=DISABLED)
@@ -405,7 +412,7 @@ class themedlabel(tk.Label):
 		if not justify == None:
 			self.configure()
 class themedguidelabel(tk.Label):
-	def __init__(self,frame,label_text,label_font=smalltext,label_color=w,text_variable=None,anchor="w",background=light_color):
+	def __init__(self,frame,label_text,label_font=smalltext,label_color=w,text_variable=None,anchor="w",background=light_color,wraplength = None):
 		tk.Label.__init__(self,frame,
 			background = background,
 			highlightthickness=0,
@@ -415,6 +422,8 @@ class themedguidelabel(tk.Label):
 			foreground= label_color,
 			textvariable = text_variable,
 			) 
+		if not wraplength == None:
+			self.configure(wraplength=wraplength)
 	def set(self,text):
 		self.configure(text=text)
 

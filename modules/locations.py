@@ -1,3 +1,28 @@
+import os, sys
+
+trackingfolder = "hbupdater"
+trackingfile = "hbupdater.json"
+#Folder and file definitions for easy access
+wd = sys.path[0]
+
+downloadsfolder =  os.path.join(wd, "downloads")
+assetfolder =  os.path.join(wd, "assets")
+payloadsfolder =  os.path.join(wd, "payloads")
+
+cachefolder =  os.path.join(wd, "cache")
+jsoncachefolder = os.path.join(cachefolder,"json")
+imagecachefolder = os.path.join(cachefolder,"images")
+
+toolsfolder = os.path.join(wd, "tools")
+if not os.path.isdir(toolsfolder):
+	os.mkdir(toolsfolder)
+nutfolder = os.path.join(toolsfolder, "nut")
+fluffyfolder = os.path.join(toolsfolder, "fluffy")
+injectorfolder = os.path.join(toolsfolder, "fusee")
+ssncfolder = os.path.join(toolsfolder, "ssnc")
+ssncserials = os.path.join(jsoncachefolder,"serials.json")
+
+
 developers = {
 	"LyfeOnEdge" : {
 		"gravatar_url" : "http://de.gravatar.com/lyfeonedge.json",
@@ -12,6 +37,9 @@ developers = {
 	}
 
 }
+
+updateapi = "https://api.github.com/repos/LyfeOnEdge/HBUpdater/releases"
+
 
 GAME = "game"
 TOOL = "tool"
@@ -73,34 +101,6 @@ Due to key generation changes introduced in 7.0.0, Lockpick is not able to dump 
 	"install_subfolder": "switch",
 	"zip_items": None,
 	},
-
-
-
-	{
-	"software": "2048",
-	"githubapi" : "https://api.github.com/repos/FlagBrew/2048/releases",
-	"github_asset" : None, 
-	"author" : "FlagBrew", 
-	"projectpage": "https://gbatemp.net/threads/release-2048-port-for-switch-homebrew.501678/",
-	"description" : "2048 port for Switch Homebrew",
-	"group" : GAME,
-	"install_subfolder": "switch",
-	"zip_items": None,
-	},
-
-
-	# {
-	# "software" : "Calculator-NX",
-	# "githubapi" : "https://api.github.com/repos/thomleg50/Calculator-NX/releases",
-	# "github_asset" : None, 
-	# "author" : "None",
-	# "projectpage": "https://github.com/thomleg50/Calculator-NX/",
-	# "description" : "A simple calculator for Switch !",
-	# "group" : TOOL,
-	# "install_subfolder": "switch",
-	# "zip_items": None,
-	# },
-
 
 	{
 	"software" : "Gag-Order",
@@ -240,7 +240,45 @@ After porting 3DSGBA(which often crashed probably because of a huge amount of me
 	"install_subfolder": "switch",
 	"zip_items": None,
 	},
+	
+	{
+	"software" : "Incognito",
+	"githubapi" : "https://api.github.com/repos/blawar/incognito/releases",
+	"github_asset" : None, 
+	"author" : None, 
+	"projectpage": "https://gbatemp.net/threads/incognito.531924/",
+	"description" : "Wipes personal information from your Nintendo Switch by removing it from prodinfo.",
+	"group" : "tool, REINX ONLY",
+	"install_subfolder": None,
+	"zip_items": None,
+	},
 
+
+	{
+	"software" : "PyNX",
+	"githubapi" : "https://api.github.com/repos/nx-python/PyNX/releases",
+	"github_asset" : None, 
+	"author" : None, 
+	"projectpage": "https://gbatemp.net/threads/nx-python-create-python-homebrew-for-the-switch.499150/",
+	"description" : """nx-python is an ecosystem for developing and running Python homebrew applications on the Nintendo Switch. PyNX serves as the entry point to running Python apps on your Switch. It is a homebrew app that contains a port of the CPython interpreter and allows you to run Python applications from the Homebrew Menu. Just name your application main.py and place it next to the PyNX.nro, and it will be executed as soon as you launch PyNX from the Homebrew Menu. Currently, Python 3.5 is supported.""",
+	"group" : TOOL,
+	"install_subfolder": "switch",
+	"zip_items": None,
+	},
+]
+
+gameslist = [
+	{
+	"software" : "Meritous",
+	"githubapi" : "https://api.github.com/repos/Nop90-Switch/Meritous-Switch/releases",
+	"github_asset" : None, 
+	"author" : None, 
+	"projectpage": "https://gbatemp.net/threads/release-meritous-for-switch.498356/",
+	"description" : "Top View Dungeon Game",
+	"group" : GAME,
+	"install_subfolder": None,
+	"zip_items": None,
+	},
 
 	{
 	"software" : "Duke Nukem 3D",
@@ -284,48 +322,34 @@ Known Bugs: There appears to be some bug that causes the screen to flicker durin
 	"zip_items": None,
 	},
 
-
 	{
-	"software" : "Meritous",
-	"githubapi" : "https://api.github.com/repos/Nop90-Switch/Meritous-Switch/releases",
+	"software": "2048",
+	"githubapi" : "https://api.github.com/repos/FlagBrew/2048/releases",
 	"github_asset" : None, 
-	"author" : None, 
-	"projectpage": "https://gbatemp.net/threads/release-meritous-for-switch.498356/",
-	"description" : "Top View Dungeon Game",
+	"author" : "FlagBrew", 
+	"projectpage": "https://gbatemp.net/threads/release-2048-port-for-switch-homebrew.501678/",
+	"description" : "2048 port for Switch Homebrew",
 	"group" : GAME,
-	"install_subfolder": None,
-	"zip_items": None,
-	},
-	
-	
-	{
-	"software" : "Incognito",
-	"githubapi" : "https://api.github.com/repos/blawar/incognito/releases",
-	"github_asset" : None, 
-	"author" : None, 
-	"projectpage": "https://gbatemp.net/threads/incognito.531924/",
-	"description" : "Wipes personal information from your Nintendo Switch by removing it from prodinfo.",
-	"group" : "tool, REINX ONLY",
-	"install_subfolder": None,
-	"zip_items": None,
-	},
-
-
-	{
-	"software" : "PyNX",
-	"githubapi" : "https://api.github.com/repos/nx-python/PyNX/releases",
-	"github_asset" : None, 
-	"author" : None, 
-	"projectpage": "https://gbatemp.net/threads/nx-python-create-python-homebrew-for-the-switch.499150/",
-	"description" : """nx-python is an ecosystem for developing and running Python homebrew applications on the Nintendo Switch. PyNX serves as the entry point to running Python apps on your Switch. It is a homebrew app that contains a port of the CPython interpreter and allows you to run Python applications from the Homebrew Menu. Just name your application main.py and place it next to the PyNX.nro, and it will be executed as soon as you launch PyNX from the Homebrew Menu. Currently, Python 3.5 is supported.""",
-	"group" : TOOL,
 	"install_subfolder": "switch",
 	"zip_items": None,
 	},
-
-
 ]
 
+nxpythonlist = [
+	{
+	"software" : "Generic Mod Manager",
+	"githubapi" : "https://api.github.com/repos/Genwald/Generic-Mod-Manager/releases",
+	"github_asset" : 1, 
+	"author" : "Genwald", 
+	"projectpage": "https://gbatemp.net/threads/generic-mod-manager-a-mod-manager.517626/",
+	"description" : """Generic Mod Manager is a simple mod manager written in python, for use with the homebrew PyNX. 
+It lets you easily activate and deactivate mods as well as handle conflicting mod files. Its mods folder and layeredFS folder can be set in the ModManager.ini in order to support multiple cfw's and user preferences.""",
+	"group" : TOOL,
+	"install_subfolder": "switch\\PyNX",
+	"zip_items": None,
+	},
+
+]
 
 customfirmwarelist = [
 	{
@@ -396,29 +420,6 @@ How can it be immutable?
 		"pattern" : [["sd-files"], ".zip"]
 	},
 ]
-
-
-nxpythonlist = [
-	{
-	"software" : "Generic Mod Manager",
-	"githubapi" : "https://api.github.com/repos/Genwald/Generic-Mod-Manager/releases",
-	"github_asset" : 1, 
-	"author" : "Genwald", 
-	"projectpage": "https://gbatemp.net/threads/generic-mod-manager-a-mod-manager.517626/",
-	"description" : """Generic Mod Manager is a simple mod manager written in python, for use with the homebrew PyNX. 
-It lets you easily activate and deactivate mods as well as handle conflicting mod files. Its mods folder and layeredFS folder can be set in the ModManager.ini in order to support multiple cfw's and user preferences.""",
-	"group" : TOOL,
-	"install_subfolder": "switch\\PyNX",
-	"zip_items": None,
-	},
-
-]
-	
-
-
-
-
-
 
 #Payloads
 payloadlist = [
@@ -531,7 +532,7 @@ payloadinjector = [
 	"githubapi" : "https://api.github.com/repos/Cease-and-DeSwitch/fusee-launcher/releases",
 	"github_asset" : "tarball_url", 
 	"author" : "Qyriad", 
-	"projectpage": None,
+	"projectpage": "https://gbatemp.net/threads/web-fusee-launcher.502423/",
 	"description" : "",
 	"group" : "SPECIAL",
 	"install_subfolder": None,
@@ -559,7 +560,7 @@ nutserverdict = {
 		"flask", 
 		"pyqt5"
 		]
-	}
+}
 
 fluffydict = {
 	"software" : "Fluffy",
@@ -576,5 +577,19 @@ fluffydict = {
 		"qdarkstyle",
 		"configparser"
 		]
-	}
+}
+
+serialcheckerdict = {
+	"software" : "SSNC",
+	"githubapi" : "https://api.github.com/repos/AkdM/ssncpy/releases",
+	"author" : "AkdM", 
+	"projectpage": "https://www.github.com/AkdM/ssncpy",
+	"description" : "Switch Serial Number Checker",
+	"group" : "SPECIAL",
+	"dependencies" : [
+		"argparse",
+		"requests",
+		"configparser",
+		],
+}
 

@@ -1,9 +1,10 @@
 {
 	"guisettings" : {
-        "automatically_check_for_updates" : 1
+		"automatically_check_for_updates" : 1,
+        "automatically_check_for_repo_updates" : 1
     },
 	"fusee-launcher" : {
 		"version": "not installed",
 		"location": "none"
-	},
+	}
 }

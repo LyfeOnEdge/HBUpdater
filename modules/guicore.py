@@ -1,6 +1,6 @@
-import modules.homebrewcore as homebrewcore
 import modules.webhandler as webhandler
-import json, shutil
+import modules.HBUpdater as HBUpdater
+import os, json, shutil
 version = 0.2
 
 #variable to hold repo list
@@ -11,30 +11,18 @@ repolistlen = None
 
 guisettings = "guisettings_user.json"
 guisettings_default = "guisettings_default.json"
-if not homebrewcore.exists(guisettings):
+if not os.path.isfile(guisettings):
 	print("Gui json not found, initializing")
 	shutil.copy(guisettings_default,guisettings)
 
 repolog = "user_repos.json"
-if not homebrewcore.exists(repolog):
+if not os.path.isfile(repolog):
 	print("Repo json not found, initializing")
 
 	newentry = 	{ "created_with" : version }
 
 	with open(repolog, 'w') as outfile:
 	    json.dump(newentry, outfile,indent=4)
-
-newrepotempvariable = {}
-
-hblist = []
-
-ijlist = []
-
-nxpylist = []
-
-cfwlist = []
-
-payloadinjector = []
 
 pilstatus = None
 
@@ -46,29 +34,9 @@ def setpilstatus(status):
 	global pilstatus
 	pilstatus = status
 
-def setDict(dicty):
-	global hblist
-	hblist = dicty
-
-def setIJlist(dicty):
-	global ijlist
-	ijlist = dicty
-
-def setNXPYList(list):
-	global nxpylist
-	nxpylist = list
-
-def setCFWlist(list):
-	global cfwlist
-	cfwlist = list
-
-def setPayloadInjector(dicty):
-	global payloadinjector
-	payloadinjector = dicty
-
 def setguisetting(newentry):
 	#open log
-	print("updating gui log with {}".format(newentry))
+	print("\n updating gui log with {}".format(json.dumps(newentry,indent=4)))
 	with open(guisettings, 'r') as jfile:  
 		originaljfile = json.load(jfile)
 

@@ -2,24 +2,14 @@ from modules.format import *
 import modules.customwidgets as cw
 import modules.guicore as guicore
 import modules.HBUpdater as HBUpdater
-import modules.homebrewcore as homebrewcore
 import modules.locations as locations
 import modules.webhandler as webhandler
 
+import json, os, shutil, subprocess, sys, threading
+
 from zipfile import ZipFile
-import sys, os, json, subprocess, shutil, threading
 import tkinter as tk
 
-
-nutfolder = homebrewcore.get_path("nut")
-if not os.path.isdir(nutfolder):
-    os.mkdir(nutfolder)
-    print("initializing nut folder")
-
-fluffyfolder = homebrewcore.get_path("fluffy")
-if not os.path.isdir(fluffyfolder):
-    os.mkdir(fluffyfolder)
-    print("initializing fluffy folder")
 
 errorstate = None
 fluffylist = []
@@ -29,8 +19,9 @@ class installerHelperPage(tk.Frame,):
         tk.Frame.__init__(self,parent)
         self.bind("<<ShowFrame>>", self.on_show_frame)
         self.controller=controller
+        self.back_command = back_command
 
-        self.returnimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"returnbutton.png")).zoom(3).subsample(5)
+        self.returnimage = tk.PhotoImage(file=os.path.join(locations.assetfolder,"returnbutton.png")).zoom(3).subsample(5)
 
 
         #page for warning users that nut isn't installed and asking if they want to install it
@@ -45,7 +36,7 @@ class installerHelperPage(tk.Frame,):
         self.nutnotdownloadedwarning.place(relx=0.5,rely=0.5,x=-250, width=500,height=3*navbuttonheight,y=-(1.5*navbuttonheight))
         self.installnutbutton = cw.navbutton(self.nutnotdownloadedwarningframe, command_name=self.getnut,text_string="YES")
         self.installnutbutton.place(relx=0.5,rely=0.5,y=+(2*navbuttonheight + separatorwidth),width=100,x=-50)
-        self.nutcancelbutton = cw.navbutton(self.nutnotdownloadedwarningframe, command_name=lambda: self.controller.show_frame("mainPage"),text_string="NO")
+        self.nutcancelbutton = cw.navbutton(self.nutnotdownloadedwarningframe, command_name=back_command,text_string="NO")
         self.nutcancelbutton.place(relx=0.5,rely=0.5,y=+(3*navbuttonheight + separatorwidth),width=100,x=-50)
 
 
@@ -55,7 +46,7 @@ class installerHelperPage(tk.Frame,):
         self.fluffynotdownloadedwarning.place(relx=0.5,rely=0.5,x=-250, width=500,height=3*navbuttonheight,y=-(1.5*navbuttonheight))
         self.installfluffybutton = cw.navbutton(self.fluffynotdownloadedwarningframe, command_name=self.getfluffy,text_string="YES")
         self.installfluffybutton.place(relx=0.5,rely=0.5,y=+(2*navbuttonheight + separatorwidth),width=100,x=-50)
-        self.fluffycancelbutton = cw.navbutton(self.fluffynotdownloadedwarningframe, command_name=lambda: self.controller.show_frame("mainPage"),text_string="NO")
+        self.fluffycancelbutton = cw.navbutton(self.fluffynotdownloadedwarningframe, command_name=back_command,text_string="NO")
         self.fluffycancelbutton.place(relx=0.5,rely=0.5,y=+(3*navbuttonheight + separatorwidth),width=100,x=-50)
 
        
@@ -73,12 +64,12 @@ class installerHelperPage(tk.Frame,):
     def getnut(self):
         downloadNUTandinstalldependencies()
 
-        self.controller.show_frame("mainPage")
+        self.back_command()
         starthelper("nut")
 
     def getfluffy(self):
         downloadFLUFFYandinstalldependencies()
-        self.controller.show_frame("mainPage")
+        self.back_command()
         starthelper("fluffy")
 
 def seterrorstate(state):
@@ -106,6 +97,10 @@ def starthelper(helper):
     subprocess.Popen([sys.executable,script_path])
 
 def downloadNUTandinstalldependencies():
+    if not os.path.isdir(locations.nutfolder):
+        os.mkdir(locations.nutfolder)
+        print("initializing nut folder")
+    
     nutjson = webhandler.getJson("nut", locations.nutserverdict["githubapi"])
     with open(nutjson) as json_file: #jsonfile is path, json_file is file obj
         jfile = json.load(json_file)
@@ -119,10 +114,10 @@ def downloadNUTandinstalldependencies():
             print("zip file url invalid, can't download nut assets")
 
         nutzip = webhandler.download(zipurl)
-        nutzip = homebrewcore.joinpaths(homebrewcore.downloadsfolder, nutzip)
+        nutzip = os.path.join(locations.downloadsfolder, nutzip)
 
         with ZipFile(nutzip, 'r') as zipObj:
-            zipObj.extractall(nutfolder)
+            zipObj.extractall(locations.nutfolder)
             print("Sucessfully extracted {} to nut folder\n".format(nutzip))
 
             extractedfiles = zipObj.namelist()
@@ -135,7 +130,7 @@ def downloadNUTandinstalldependencies():
                 print("Could not find server file in extracted files")
                 return 
 
-            serverfile = homebrewcore.joinpaths(nutfolder, serverfile)
+            serverfile = os.path.join(locations.nutfolder, serverfile)
 
         newentry = {
             "nut" : {
@@ -151,6 +146,10 @@ def downloadNUTandinstalldependencies():
     webhandler.installmodulelist(dependencies)
 
 def downloadFLUFFYandinstalldependencies():
+    if not os.path.isdir(locations.fluffyfolder):
+        os.mkdir(locations.fluffyfolder)
+        print("initializing fluffy folder")
+
     global fluffylist
     if fluffylist == []:
         fluffydict = locations.fluffydict
@@ -177,10 +176,10 @@ def downloadFLUFFYandinstalldependencies():
         #download and move fluffy and license
         script = webhandler.download(scripturl)
         license = webhandler.download(licenseurl)
-        scriptpath = homebrewcore.joinpaths(homebrewcore.downloadsfolder, script)
-        licensepath = homebrewcore.joinpaths(homebrewcore.downloadsfolder, license)
-        newscriptpath = homebrewcore.joinpaths(fluffyfolder, script)
-        newlicensepath = homebrewcore.joinpaths(fluffyfolder, license)
+        scriptpath = os.path.join(locations.downloadsfolder, script)
+        licensepath = os.path.join(locations.downloadsfolder, license)
+        newscriptpath = os.path.join(locations.fluffyfolder, script)
+        newlicensepath = os.path.join(locations.fluffyfolder, license)
         shutil.move(scriptpath,newscriptpath)
         shutil.move(licensepath,newlicensepath)
 
@@ -197,3 +196,6 @@ def downloadFLUFFYandinstalldependencies():
     threads = []
     dependencies = locations.fluffydict["dependencies"]
     webhandler.installmodulelist(dependencies)
+
+
+

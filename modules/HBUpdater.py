@@ -7,25 +7,29 @@ import json
 if __name__ == '__main__':
 	sys.exit("This script was not meant to run without a frontend. Exiting...")
 
-version = "0.8 (Beta)"
+version = "0.9 (Beta)"
 print("HBUpdater version {}".format(version))
 
 #My modules
 from modules.format import *
-import modules.homebrewcore as homebrewcore
 import modules.locations as locations
 import modules.webhandler as webhandler
 
 chosensdpath = None
 sdpathset = False
+
+#folders and files for tracking installed apps on the sd
 trackingfolder = ""
 trackingfile = ""
+
 
 
 #update global "chosensdpath"
 def setSDpath(sdpath):
 	global chosensdpath
+	global trackingfoldername
 	global trackingfolder
+	global trackingfilename
 	global trackingfile
 	global sdpathset
 	if not(str(sdpath) == ""):
@@ -33,11 +37,11 @@ def setSDpath(sdpath):
 		print("SD path set to: {}".format(str(chosensdpath)))
 		sdpathset = True
 
-		trackingfolder = homebrewcore.joinpaths(chosensdpath, homebrewcore.trackingfolder)
-		if not homebrewcore.direxist(trackingfolder):
+		trackingfolder = os.path.join(chosensdpath, locations.trackingfolder)
+		if not os.path.isdir(trackingfolder):
 			os.mkdir(trackingfolder)
-		trackingfile = homebrewcore.joinpaths(trackingfolder, homebrewcore.trackingfile)
-		if not homebrewcore.exists(trackingfile):
+		trackingfile = os.path.join(trackingfolder, locations.trackingfile)
+		if not os.path.isfile(trackingfile):
 			with open(trackingfile, "w+") as jfile:
 				initdata = {}
 				initdata["created_with"] = version
@@ -59,7 +63,7 @@ def installitem(dicty, option, suboption, group):
 	print("\n")
 	softwarename = dicty[option]["software"]
 
-	location = getlogsetting(group, softwarename, "location")
+	location = getlogvalue(group, softwarename, "location")
 
 	with open(dicty[option]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
 		jfile = json.load(json_file)	
@@ -76,11 +80,11 @@ def installitem(dicty, option, suboption, group):
 
 		if type(location) is list:
 			for loc in location:
-				if homebrewcore.exists(loc):
+				if os.path.isfile(loc):
 					os.remove(loc)
 					print("removed old file {}".format(loc))
 		elif type(location) is str:
-			if homebrewcore.exists(location):
+			if os.path.isfile(location):
 				os.remove(location)
 				print("removed {}".format(location))
 
@@ -97,16 +101,16 @@ def installitem(dicty, option, suboption, group):
 def installfiletosd(filename,subfolder):
 	global chosensdpath
 
-	file = homebrewcore.joinpaths(homebrewcore.downloadsfolder, filename)
+	file = os.path.join(locations.downloadsfolder, filename)
 
 	if not subfolder == None:
-		subdir = homebrewcore.joinpaths(chosensdpath,subfolder)
+		subdir = os.path.join(chosensdpath,subfolder)
 	else: 
 		subdir = chosensdpath
 
-	sdlocation = homebrewcore.joinpaths(subdir, filename)
+	sdlocation = os.path.join(subdir, filename)
 
-	if not homebrewcore.direxist(subdir):
+	if not os.path.isdir(subdir):
 		os.mkdir(subdir)
 
 	if filename.endswith(".nro") or filename.endswith(".py"):
@@ -126,7 +130,7 @@ def installfiletosd(filename,subfolder):
 				sdlocation = zipObj.namelist()
 				namelist = []
 				for location in sdlocation:
-					namelist.append(homebrewcore.joinpaths(subdir,location))
+					namelist.append(os.path.join(subdir,location))
 				print("files copied: \n {}".format(namelist))
 				print(subdir)
 				return namelist
@@ -139,12 +143,12 @@ def uninstallsoftware(group, softwarename):
 	if not sdpathset:
 		print("SD path not set, can't uninstall")
 		return
-	if checkversion(softwarename) == "not installed":
+	if getlogstatus(group,softwarename) == "not installed":
 		print("Not installed.")
 		return
 
 
-	filestoremove = getlogitem(group, softwarename,"location")
+	filestoremove = getlogvalue(group, softwarename,"location")
 	print("removing {}".format(filestoremove))
 	if 'str' in str(type(filestoremove)):
 		os.remove(filestoremove)
@@ -160,12 +164,12 @@ def uninstallsoftware(group, softwarename):
 		# 		print("removed folder {}".format(file))
 
 	newentry = {
-				softwarename : {
-					"version": "not installed",
-					"location": None,
-				}
+				"software": softwarename,
+				"version": "not installed",
+				"location": None,
 			}
-	updatelog(newentry)
+
+	updatelog(group, newentry)
 	print("uninstalled {}".format(softwarename))
 
 
@@ -173,11 +177,11 @@ def uninstallsoftware(group, softwarename):
 
 
 def updatelog(group, newentry):
-	if not homebrewcore.direxist(trackingfolder):
+	if not os.path.isdir(trackingfolder):
 		os.mkdir(trackingfolder)
 
 	#create log is it doesn't exist
-	if homebrewcore.exists(trackingfile):
+	if os.path.isfile(trackingfile):
 		pass
 		# print("Found Tracking File")
 	else:

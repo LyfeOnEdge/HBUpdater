@@ -2,18 +2,27 @@ from modules.format import *
 import modules.customwidgets as cw
 import modules.guicore as guicore
 import modules.HBUpdater as HBUpdater
-import modules.homebrewcore as homebrewcore
 import modules.webhandler as webhandler
+import modules.locations as locations
 
 import tkinter as tk
 from tkinter.constants import *
 
-import json
+import os, json
 
 class page(cw.themedframe,):
 	#Call this with an appropriately formatted list to populate the table with
 	def setlist(self,list):
 		self.softwarelist = list
+
+	def populatesoftwarelist(self,list):
+		if guicore.checkguisetting("guisettings","automatically_check_for_repo_updates"):
+			populatedlist = webhandler.getUpdatedSoftwareLinks(list) #use this to download new json (required to get updates)
+		else:
+			populatedlist = webhandler.getJsonSoftwareLinks(list) #use this to use only pre-downloaded json files
+		for softwarechunk in populatedlist:
+			softwarechunk["photopath"] = None
+		return(populatedlist)
 
 	#Call this with a list of image objects, tooltips, and associated callbacks to initialize the search box and add buttons
 	#It will automatically generate a row of buttons depending on how the page was initialized 
@@ -70,18 +79,14 @@ class page(cw.themedframe,):
 			self.version_function = HBUpdater.getlogstatus #Checks to see what version of each app in installed
 		else:
 			self.version_function = version_function
-			print("Set version function")
-
-
 
 		cw.themedframe.__init__(self,parent)#Init frame
 		self.bind("<<ShowFrame>>", self.on_show_frame) #Bind on_show_frame to showframe event
 		
 
-
 		#Shared images
-		self.backimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"returnbutton.png")).zoom(3).subsample(5)
-		self.infoimage = tk.PhotoImage(file=homebrewcore.joinpaths(homebrewcore.assetfolder,"info.png")).zoom(3).subsample(5)
+		self.infoimage = tk.PhotoImage(file=os.path.join(locations.assetfolder,"info.png")).zoom(3).subsample(5)
+		self.returnimage = tk.PhotoImage(file=os.path.join(locations.assetfolder,"returnbutton.png")).zoom(3).subsample(5)
 
 		#Full window frame, holds everything
 		self.outer_frame = cw.themedframe(self,frame_borderwidth=0,frame_highlightthickness= 0)
@@ -186,7 +191,7 @@ class page(cw.themedframe,):
 		self.details_buttons =cw.navbox(self.details_right_column,
 			primary_button_command = sbc,
 			primary_button_text = sbt,
-			etc_button_image = self.backimage,
+			etc_button_image = self.returnimage,
 			etc_button_command = self.showlist,
 			left_context_command = self.versioncusordown,
 			right_context_command = self.versioncursorup,
@@ -407,13 +412,13 @@ class page(cw.themedframe,):
 
 	def updateAuthorImage(self):
 		softwarename = self.softwarelist[self.currentselection]["software"]
-		photopath = homebrewcore.checkphoto(homebrewcore.imagecachefolder, softwarename)
+		photopath = self.checkphoto(locations.imagecachefolder, softwarename)
 		if self.softwarelist[self.currentselection]["photopath"] == None:
 			self.softwarelist[self.currentselection]["photopath"] = photopath
 
 		if not photopath == None:
-			photopath = homebrewcore.joinpaths(homebrewcore.imagecachefolder, photopath)
-			photoexists = homebrewcore.exists(photopath)
+			photopath = os.path.join(locations.imagecachefolder, photopath)
+			photoexists = os.path.isfile(photopath)
 		else:
 			photoexists = False
 
@@ -426,15 +431,22 @@ class page(cw.themedframe,):
 				self.softwarelist[self.currentselection]["photopath"] = photopath
 			except: 
 				print("could not download icon image (you can safely ignore this error)")
-				photopath = homebrewcore.joinpaths(homebrewcore.assetfolder,notfoundimage)
+				photopath = os.path.join(locations.assetfolder,notfoundimage)
 		try:
 			project_image = tk.PhotoImage(file=photopath)
 
 		except:
-			photopath = homebrewcore.joinpaths(homebrewcore.assetfolder,notfoundimage)
+			photopath = os.path.join(locations.assetfolder,notfoundimage)
 			print("used not-found image due to error (you can safely ignore this error)")
 
 		self.infobox.updateimage(image_path = photopath)
+
+	def checkphoto(self,dir, photo):
+		for s in os.listdir(dir):
+			if os.path.splitext(s)[0] == photo and os.path.isfile(os.path.join(dir, s)):
+				return s
+
+		return "Not found"
 
 
 #movement button callbacks, moves up or down main list
@@ -552,4 +564,8 @@ class page(cw.themedframe,):
 			url = webhandler.parse_api_to_standard_github(self.softwarelist[self.currentselection]["githubapi"])
 		print("Opening {}".format(url))
 		webhandler.opentab(url)
+
+
+
+
 
