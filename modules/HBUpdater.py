@@ -61,6 +61,8 @@ def setSDpath(sdpath):
 
 def installitem(dicty, option, suboption, group):
 	print("\n")
+	if not os.path.isdir(locations.downloadsfolder):
+		of.mkdir(locations.downloadsfolder)
 	softwarename = dicty[option]["software"]
 
 	location = getlogvalue(group, softwarename, "location")

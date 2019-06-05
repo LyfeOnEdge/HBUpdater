@@ -117,7 +117,8 @@ class injectorScreen(pt.page):
 			jfile = json.load(json_file)
 			softwarename = self.softwarelist[self.currentselection]["software"]
 			version = jfile[self.currenttagselection]["tag_name"]
-
+			if not os.path.isdir(locations.payloadsfolder):
+				os.mkdir(locations.payloadsfolder)
 			if guicore.checkguisetting(softwarename,"version") == None or guicore.checkguisetting(softwarename,"version") =="not installed":
 				self.printtoboth("payload not yet downloaded, downloading...")
 

@@ -95,6 +95,8 @@ def getJsonThread(softwarename, apiurl, jsonfile, softwarechunk):
 			print("No fallback available, software will be unavailable")
 
 def getJsonSoftwareLinks(dicttopopulate):
+	if not os.path.isdir(locations.jsoncachefolder):
+		of.mkdir(locations.jsoncachefolder)
 	for softwarechunk in dicttopopulate:
 		githubjsonlink = softwarechunk["githubapi"]
 		softwarename = softwarechunk["software"]

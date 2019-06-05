@@ -5,21 +5,36 @@ trackingfile = "hbupdater.json"
 #Folder and file definitions for easy access
 wd = sys.path[0]
 
+folders_to_init = []
+
 downloadsfolder =  os.path.join(wd, "downloads")
-assetfolder =  os.path.join(wd, "assets")
+folders_to_init.append(downloadsfolder)
 payloadsfolder =  os.path.join(wd, "payloads")
-
+folders_to_init.append(payloadsfolder)
 cachefolder =  os.path.join(wd, "cache")
+folders_to_init.append(cachefolder)
 jsoncachefolder = os.path.join(cachefolder,"json")
+folders_to_init.append(jsoncachefolder)
 imagecachefolder = os.path.join(cachefolder,"images")
-
+folders_to_init.append(imagecachefolder)
 toolsfolder = os.path.join(wd, "tools")
-if not os.path.isdir(toolsfolder):
-	os.mkdir(toolsfolder)
+folders_to_init.append(toolsfolder)
 nutfolder = os.path.join(toolsfolder, "nut")
+folders_to_init.append(nutfolder)
 fluffyfolder = os.path.join(toolsfolder, "fluffy")
+folders_to_init.append(fluffyfolder)
 injectorfolder = os.path.join(toolsfolder, "fusee")
+folders_to_init.append(injectorfolder)
 ssncfolder = os.path.join(toolsfolder, "ssnc")
+folders_to_init.append(ssncfolder)
+
+for folder in folders_to_init:
+	if not os.path.isdir(folder):
+		print("initializing folder {}".format(folder))
+		os.mkdir(folder)
+
+
+assetfolder =  os.path.join(wd, "assets")
 ssncserials = os.path.join(jsoncachefolder,"serials.json")
 
 
