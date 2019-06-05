@@ -86,7 +86,8 @@ def getJsonThread(softwarename, apiurl, jsonfile, softwarechunk):
 		print("Downloaded new json file for {}".format(softwarename))
 		softwarechunk["githubjson"] = jsonfile
 		return jsonfile
-	except:
+	except Exception as e:
+		print("getJson error - {}".format(e))
 		if os.path.isfile(jsonfile):
 				print("could not get updated link, falling back on older version")
 				softwarechunk["githubjson"] = jsonfile
