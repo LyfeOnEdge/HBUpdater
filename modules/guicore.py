@@ -26,8 +26,6 @@ if not os.path.isfile(repolog):
 
 pilstatus = None
 
-guiwidth = 
-
 def getpilstatus():
 	global pilstatus
 	return pilstatus
