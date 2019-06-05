@@ -5,6 +5,7 @@
 /titledb/*
 /conf/*
 /tools/*
+/titles/*
 user_repos.json
 fluffy.conf
 fluffy.log

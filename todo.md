@@ -15,6 +15,7 @@ Priority:
             stop crash when initial json fails to download [MEDIUM]
         features:
             improve repo management and addition [MEDIUM]
+            github 304 rate limiting avoidance [HARD]
 
     Medium:
         features:
@@ -60,6 +61,7 @@ todone:
     removed homebrewcore.py to simplify backend
     download - on - demand serial checker
     nut, fluffy, serial checker, payload injector, etc download into a tools subfolder for better folder structure 
+    installerhelperpage's functions have been moved to toolhelper.py in modules, the giu code has been taken over by errorpage.py
 
 
 

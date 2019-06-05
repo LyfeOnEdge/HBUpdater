@@ -25,16 +25,16 @@ class errorPage(cw.themedframe):
         self.backbuttonframe = cw.themedframe(self,background_color=dark_color)
         self.backbuttonframe.place(relx=0.5,rely=0.5,y=+(3*navbuttonheight + separatorwidth),width=300,x=-150,height=navbuttonheight)
 
-        self.backbutton = cw.navbutton(self.backbuttonframe, command_name=self.back_command,text_string="RIP. Take me back to the app.")
+        self.backbutton = cw.navbutton(self.backbuttonframe, command_name=self.back_command,text_string="RIP. Take me back to the app.",background=light_color)
         self.backbutton.place(relwidth=1,relheight=1)
 
         self.yesnobuttonframe = cw.themedframe(self,background_color=dark_color)
         self.yesnobuttonframe.place(relx=0.5,rely=0.5,y=+(3*navbuttonheight + separatorwidth),width=300,x=-150,height=navbuttonheight)
 
-        self.yesbutton = cw.navbutton(self.yesnobuttonframe, command_name=self.on_yes,text_string="Yes")
+        self.yesbutton = cw.navbutton(self.yesnobuttonframe, command_name=self.on_yes,text_string="Yes",background=light_color)
         self.yesbutton.place(relx=0,relwidth=0.33,relheight=1)
 
-        self.nobutton = cw.navbutton(self.yesnobuttonframe, command_name=self.on_no,text_string="No")
+        self.nobutton = cw.navbutton(self.yesnobuttonframe, command_name=self.on_no,text_string="No",background=light_color)
         self.nobutton.place(relx=0.67,relwidth=0.33,relheight=1)
 
         self.backbuttonframe.tkraise()

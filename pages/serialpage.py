@@ -10,7 +10,6 @@ from zipfile import ZipFile
 import tkinter as tk
 from tkinter.constants import *
 
-import pages.installerhelperpage as installerhelperpage
 import pages.errorpage as errorpage
 
 serialboxheight = 90

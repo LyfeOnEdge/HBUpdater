@@ -9,7 +9,7 @@ import os
 import tkinter as tk
 from tkinter.constants import *
 
-import pages.installerhelperpage as installerhelperpage
+import modules.toolhelper as toolhelper
 import pages.serialpage as serialpage
 import pages.errorpage as errorpage
 homebuttonwidth = 120
@@ -49,6 +49,7 @@ class homePage(cw.themedframe):
 		self.betaimage = tk.PhotoImage(file=os.path.join(locations.assetfolder, "beta.png"))
 		self.homebrewimage = tk.PhotoImage(file=os.path.join(locations.assetfolder, "homebrew.png"))
 		self.gameimage = tk.PhotoImage(file=os.path.join(locations.assetfolder, "games.png"))
+		self.githubimage = tk.PhotoImage(file=os.path.join(locations.assetfolder, "github.png"))
 
 		homebrewbuttonlist = [
 			{
@@ -114,18 +115,17 @@ class homePage(cw.themedframe):
 
 		otherbuttonlist = [
 			{
-			"image" : self.betaimage,
-			"callback" : lambda: self.controller.show_frame("errorPage"),
-			"tooltip" : "Whatever is in beta",
-			"shorttip" : "In beta"
-			},
-
-
-			{
 			"image" : self.settingsimage,
 			"callback" : lambda: self.controller.show_frame("settingsPage"),
 			"tooltip" : "Open settings page",
 			"shorttip" : "Settings"
+			},
+			
+			{
+			"image" : self.githubimage,
+			"callback" : lambda: webhandler.opentab(),
+			"tooltip" : "Open HBUpdater Github",
+			"shorttip" : "HBU Github"
 			},
 		]
 
@@ -149,18 +149,22 @@ class homePage(cw.themedframe):
 		separator.place(relx=0,rely=0.65,relwidth=1,height=separatorwidth)
 
 	def checknutandstart(self):
-		if not installerhelperpage.checkifhelperdownloaded("nut"):
-			installerhelperpage.seterrorstate("nut")
-			self.controller.show_frame("installerHelperPage")
+		if not toolhelper.checkifhelperdownloaded("nut"):
+			self.controller.show_frame("errorPage")
+			self.controller.frames["errorPage"].getanswer("homePage","It looks like you don't have nut installed yet,\nwould you like to install it and its dependencies?\nThis can take up to a minute",toolhelper.getnut)
 			return
-		installerhelperpage.starthelper("nut")
+		else:
+			toolhelper.starthelper("nut")
+
 
 	def checkfluffyandstart(self):
-		if not installerhelperpage.checkifhelperdownloaded("fluffy"):
-			installerhelperpage.seterrorstate("fluffy")
-			self.controller.show_frame("installerHelperPage")
+		if not toolhelper.checkifhelperdownloaded("fluffy"):
+			self.controller.show_frame("errorPage")
+			self.controller.frames["errorPage"].getanswer("homePage","It looks like you don't have fluffy installed yet,\nwould you like to install it and its dependencies?\nThis can take up to a minute",toolhelper.getfluffy)
 			return
-		installerhelperpage.starthelper("fluffy")
+		else:
+			toolhelper.starthelper("fluffy")
+
 
 	def checkserialandstart(self):
 		status = serialpage.checkifSSNCinstalled()

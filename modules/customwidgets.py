@@ -347,11 +347,11 @@ class columnlabel(tk.Label):
 
 #themed nav button
 class navbutton(tk.Button):
-	def __init__(self,frame,command_name=None,image_object= None,text_string=None):
+	def __init__(self,frame,command_name=None,image_object= None,text_string=None,background=dark_color):
 		tk.Button.__init__(self,frame,
-			background=dark_color,
+			background=background,
 			borderwidth=0,
-			activebackground=dark_color,
+			activebackground=background,
 			#pady="0",
 			image=image_object,
 			command=command_name,
