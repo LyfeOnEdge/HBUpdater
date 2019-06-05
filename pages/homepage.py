@@ -1,6 +1,6 @@
 from modules.format import * 
 import modules.customwidgets as cw
-# import modules.guicore as guicore
+import modules.guicore as guicore
 # import modules.HBUpdater as HBUpdater
 import modules.webhandler as webhandler
 import modules.locations as locations
@@ -36,9 +36,14 @@ class homePage(cw.themedframe):
 		self.back_command = back_command
 		self.controller = controller
 
+		geometry = guicore.checkguisetting("guisettings","dimensions")
+		width = geometry["guiwidth"]
+		print("width {}".format(width))
+		height = geometry["guiheight"]
+
 		cw.themedframe.__init__(self,parent,background_color= light_color)
 		self.outerframe = cw.themedframe(self)
-		self.outerframe.place(relx=0.5,rely=0.5,x=-(790/2),y=-(510/2),width=790,height=510)
+		self.outerframe.place(relx=0.5,rely=0.5,x=-(width/2),y=-(height/2),width=width,height=height)
 
 		self.settingsimage = tk.PhotoImage(file=os.path.join(locations.assetfolder,"settings.png"))
 		self.injectimage = tk.PhotoImage(file=os.path.join(locations.assetfolder,"injector.png"))

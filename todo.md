@@ -10,6 +10,7 @@ mustdo:
 test pattern - based homebrew checking
 
 todo:
+    fix search bar to update every character
 
 Priority:
     High:
@@ -17,7 +18,6 @@ Priority:
             window default launch size [EASY] 
             ftp tool [HARD]
         bugs:
-            stop crash when initial json fails to download [MEDIUM]
         features:
             improve repo management and addition [MEDIUM]
             github 304 rate limiting avoidance [HARD]
@@ -38,6 +38,8 @@ Priority:
         HBUpdater updater
             use github api (duh)
             use yes/no screen when new update is available (diable screen in settings)
+    Code clean-up:
+    move cfw install code to core
 
 
 
@@ -45,6 +47,17 @@ Priority:
         borderless window, settings on top bar with quick-access
         fix linux icon
         implement gross light theme
+
+Prerelease checklist 
+Try:
+    Nut
+    Fluffy
+    Injector
+    inject
+    Serial Checker
+    Install
+    Uninstall
+
 
 
 ongoing:
@@ -83,6 +96,11 @@ todone:
     download - on - demand serial checker
     nut, fluffy, serial checker, payload injector, etc download into a tools subfolder for better folder structure 
     installerhelperpage's functions have been moved to toolhelper.py in modules, the giu code has been taken over by errorpage.py
+0.10
+    stopped crash when initial json fails to download
+    app now works offline
+    app size now set in guisettings_user.json
+    homepage scales better
 
 
 
@@ -136,3 +154,5 @@ https://gbatemp.net/threads/sys-audioplayer-background-audio-player-for-the-nint
 Future
 https://gbatemp.net/threads/switchguide-updater.522136/
 
+huh
+https://github.com/Povstalez/Kefir-Updater/releases

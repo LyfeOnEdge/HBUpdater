@@ -113,15 +113,20 @@ class injectorScreen(pt.page):
 		if not os.path.isdir(locations.ssncfolder):
 			os.mkdir(locations.ssncfolder)
 			print("initializing ssnc folder")
-		with open(self.softwarelist[self.currentselection]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
-			jfile = json.load(json_file)
-			softwarename = self.softwarelist[self.currentselection]["software"]
-			version = jfile[self.currenttagselection]["tag_name"]
-			if not os.path.isdir(locations.payloadsfolder):
-				os.mkdir(locations.payloadsfolder)
-			if guicore.checkguisetting(softwarename,"version") == None or guicore.checkguisetting(softwarename,"version") =="not installed":
-				self.printtoboth("payload not yet downloaded, downloading...")
 
+		if not os.path.isdir(locations.payloadsfolder):
+				os.mkdir(locations.payloadsfolder)
+
+		softwarename = self.softwarelist[self.currentselection]["software"]
+		if guicore.checkguisetting(softwarename,"version") == None or guicore.checkguisetting(softwarename,"version") =="not installed":
+			self.printtoboth("payload not yet downloaded, downloading...")
+
+			try:
+				with open(self.softwarelist[self.currentselection]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
+					jfile = json.load(json_file)
+					version = jfile[self.currenttagselection]["tag_name"]
+			except:
+				print("Failed to find repo json file, can't install.")
 				#default asset number
 				assetnumber = 0
 
@@ -171,9 +176,9 @@ class injectorScreen(pt.page):
 				guicore.setguisetting(newentry)
 				self.updatetable(None)
 
-			#If payload is already downloaded and up-to-date
-			else:
-				payload = guicore.checkguisetting(softwarename,"location")
+		#If payload is already downloaded and up-to-date
+		else:
+			payload = guicore.checkguisetting(softwarename,"location")
 
 		return payload
 

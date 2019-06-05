@@ -336,21 +336,32 @@ class page(cw.themedframe,):
 				version = jfile[0]["tag_name"]
 				#Insert latest available software version in latest column
 				self.latest_listbox.insert(END, version)
-			except:
-				continue
 
-			#Check to see if and which version is installed 
-			installedversion = self.version_function(self.softwaregroup,softwarechunk["software"])
-			#If the installed version is up-to-date print a check mark, else insert not installed or the installed version
-			if installedversion == version:
-				self.status_listbox.insert(END, checkmark)
-				self.status_listbox.itemconfig(END, foreground="white")
-			elif installedversion == None:
-				installedversion = "not installed"
-				self.status_listbox.insert(END, installedversion)
+				#Check to see if and which version is installed 
+				installedversion = self.version_function(self.softwaregroup,softwarechunk["software"])
+				#If the installed version is up-to-date print a check mark, else insert not installed or the installed version
+				if installedversion == version:
+					self.status_listbox.insert(END, checkmark)
+					self.status_listbox.itemconfig(END, foreground="white")
+				elif installedversion == None:
+					installedversion = "not installed"
+					self.status_listbox.insert(END, installedversion)
 
-			else: 
-				self.status_listbox.insert(END, installedversion)
+				else: 
+					self.status_listbox.insert(END, installedversion)
+
+			except Exception as e:
+				print("updatetable error {}".format(e))
+				#Check to see if and which version is installed 
+				installedversion = self.version_function(self.softwaregroup,softwarechunk["software"])
+				#If the installed version is up-to-date print a check mark, else insert not installed or the installed version
+				if installedversion == None:
+					installedversion = "not installed"
+					self.status_listbox.insert(END, installedversion)
+
+				else: 
+					self.status_listbox.insert(END, installedversion)
+
 
 			#Get the genre of the software item and insert it
 			group = softwarechunk["group"]
@@ -397,16 +408,24 @@ class page(cw.themedframe,):
 			softwarename = self.softwarelist[self.currentselection]["software"]
 			self.infobox.updatetitle(softwarename)
 
-			with open(self.softwarelist[self.currentselection]["githubjson"],encoding="utf-8") as json_file: #jsonfile is path, json_file is file obj
-				jfile = json.load(json_file)
+			try:
+				with open(self.softwarelist[self.currentselection]["githubjson"],encoding="utf-8") as json_file: #jsonfile is path, json_file is file obj
+					jfile = json.load(json_file)
 
-			#update author
-			author = jfile[0]["author"]["login"]
+				#update author
+				author = jfile[0]["author"]["login"]
+				
+
+				self.updateAuthorImage()
+
+			except Exception as e:
+				print("updateinfobox error - {}".format(e))
+				author = self.softwarelist[self.currentselection]["author"]
+
 			self.infobox.updateauthor(author)
 
-			self.updateAuthorImage()
-
 			self.infobox.updatedescription(self.softwarelist[self.currentselection]["description"])
+
 		else:
 			pass
 
@@ -513,13 +532,16 @@ class page(cw.themedframe,):
 		self.tags_listbox.see(self.currenttagselection)
 
 	def updatetagnotes(self):
-		with open(self.softwarelist[self.currentselection]["githubjson"],encoding="utf-8") as json_file: #jsonfile is path, json_file is file obj
-			jfile = json.load(json_file)
-		tagnotes = jfile[self.currenttagselection]["body"]
-		self.scrolling_patch_notes.configure(state=NORMAL)
-		self.scrolling_patch_notes.delete('1.0', END)
-		self.scrolling_patch_notes.insert(END, tagnotes)
-		self.scrolling_patch_notes.configure(state=DISABLED)
+		try:
+			with open(self.softwarelist[self.currentselection]["githubjson"],encoding="utf-8") as json_file: #jsonfile is path, json_file is file obj
+				jfile = json.load(json_file)
+			tagnotes = jfile[self.currenttagselection]["body"]
+			self.scrolling_patch_notes.configure(state=NORMAL)
+			self.scrolling_patch_notes.delete('1.0', END)
+			self.scrolling_patch_notes.insert(END, tagnotes)
+			self.scrolling_patch_notes.configure(state=DISABLED)
+		except:
+			return
 
 	def gettagdescription(self,index_string):
 		with open(self.softwarelist[self.currentselection]["githubjson"],encoding="utf-8") as json_file: #jsonfile is path, json_file is file obj
@@ -536,13 +558,16 @@ class page(cw.themedframe,):
 		self.currenttagselection = 0
 		self.tags_listbox.delete(0,END)
 		if not self.softwarelist == []:
-			with open(self.softwarelist[self.currentselection]["githubjson"],encoding="utf-8") as json_file: #jsonfile is path, json_file is file obj
-				jfile = json.load(json_file)
+			try:
+				with open(self.softwarelist[self.currentselection]["githubjson"],encoding="utf-8") as json_file: #jsonfile is path, json_file is file obj
+					jfile = json.load(json_file)
 
-			for version in jfile:
-				guicore.taglen+=1
-				tag = version["tag_name"]
-				self.tags_listbox.insert(END, tag)
+				for version in jfile:
+					guicore.taglen+=1
+					tag = version["tag_name"]
+					self.tags_listbox.insert(END, tag)
+			except:
+				print("detailwindow refresh error - failed to load repo json")
 
 			self.updatetagsbox()
 			self.updatetagnotes()

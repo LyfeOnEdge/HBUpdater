@@ -1,7 +1,13 @@
 {
 	"guisettings" : {
 		"automatically_check_for_updates" : 1,
-        "automatically_check_for_repo_updates" : 1
+        "automatically_check_for_repo_updates" : 1,
+        "dimensions" : {
+        	"minguiheight" : 510,
+            "minguiwidth" : 700,
+            "guiheight" : 510,
+            "guiwidth" : 700
+        }
     },
 	"fusee-launcher" : {
 		"version": "not installed",

@@ -40,8 +40,13 @@ class FrameManager(tk.Tk):
 	def __init__(self, *args, **kwargs):
 		tk.Tk.__init__(self, *args, **kwargs)
 		# self.resizable(False,False)
-		self.geometry("790x510")   #startup size 720p
-		self.minsize(width=790, height=510) #minimum size currently supported
+		geometry = guicore.checkguisetting("guisettings","dimensions")
+		width = geometry["guiwidth"]
+		height = geometry["guiheight"]
+		minwidth = geometry["minguiwidth"]
+		minheight = geometry["minguiheight"]
+		self.geometry("{}x{}".format(width,height)) 
+		self.minsize(width=minwidth, height=minheight) #minimum size currently supported
 		# the container is where we'll stack a bunch of frames
 		# on top of each other, then the one we want visible
 		# will be raised above the others
@@ -109,24 +114,28 @@ def stripversion(string):
 	return string
 
 def CheckForUpdates():
-	updatefile = webhandler.getJson("HBUpdater", locations.updateapi)
-	if updatefile == None:
-		print("Failed to download HBU update file. A new version may be avaialable.")
-	else:
-		with open(updatefile,encoding="utf-8") as json_file: #jsonfile is path, json_file is file obj
-			jfile = json.load(json_file)
-			newestversion = jfile[0]["tag_name"]
-		if float(stripversion(newestversion)) > float(stripversion(version)):
-			print("A new update to HBUpdater is avaialable, go to https://www.github.com/LyfeOnEdge/HBUpdater/releases to download it.")
+	try:
+		updatefile = webhandler.getJson("HBUpdater", locations.updateapi)
+		if updatefile == None:
+			print("Failed to download HBU update file. A new version may be avaialable.")
 		else:
-			print("HBUpdater is up to date")
+			with open(updatefile,encoding="utf-8") as json_file: #jsonfile is path, json_file is file obj
+				jfile = json.load(json_file)
+				newestversion = jfile[0]["tag_name"]
+			if float(stripversion(newestversion)) > float(stripversion(version)):
+				print("A new update to HBUpdater is avaialable, go to https://www.github.com/LyfeOnEdge/HBUpdater/releases to download it.")
+			else:
+				print("HBUpdater is up to date")
+	except Exception as e:
+		print("checkforupdateserror - {}".format(e))
 
 # def HandleUserAddedRepos():
 if __name__ == '__main__':  
 	if guicore.checkguisetting("guisettings","automatically_check_for_updates"):
-		CheckForUpdates()
+		# CheckForUpdates()
+		print("Update checking disabled in beta")
 	else:
-		print("Update checking diabled")
+		print("Update checking disabled")
 
 	gui = FrameManager()
 	gui.title("HBUpdater {}".format(version))
