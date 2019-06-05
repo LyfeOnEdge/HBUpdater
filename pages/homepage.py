@@ -2,7 +2,7 @@ from modules.format import *
 import modules.customwidgets as cw
 # import modules.guicore as guicore
 # import modules.HBUpdater as HBUpdater
-# import modules.webhandler as webhandler
+import modules.webhandler as webhandler
 import modules.locations as locations
 import os
 
