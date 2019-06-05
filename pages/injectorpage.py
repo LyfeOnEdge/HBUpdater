@@ -110,6 +110,9 @@ class injectorScreen(pt.page):
 		return version
 
 	def getordownloadpayload(self):
+		if not os.path.isdir(locations.ssncfolder):
+			os.mkdir(locations.ssncfolder)
+			print("initializing ssnc folder")
 		with open(self.softwarelist[self.currentselection]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
 			jfile = json.load(json_file)
 			softwarename = self.softwarelist[self.currentselection]["software"]

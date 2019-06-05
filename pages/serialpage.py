@@ -62,7 +62,7 @@ class serialPage(cw.themedframe):
 		self.back_command()
 
 def checkserial(serial):
-	if len(serial) < 10:
+	if len(serial) < 5:
 		status =  "Too short"
 		return status
 

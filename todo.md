@@ -7,9 +7,6 @@ Difficulty / Time:
 [HRNNN]
 todo:
 
-mustdo:
-fix payloads folder to only initialize when needed
-
 Priority:
     High:
         settings:
@@ -29,7 +26,6 @@ Priority:
 
     Low:
         file structure:
-            subfolder
             clean up imports
             make entrybox a subclass of searchbox
 
@@ -43,7 +39,9 @@ Priority:
 
 Serial Number checker
 https://github.com/AkdM/ssncpy
- 
+
+totest:
+fluffy and nut error page handling (when not rate limited)
 
 todone:
 0.8:

@@ -41,7 +41,7 @@ class settingsPage(tk.Frame):
 		self.settingslabel = cw.columnlabel(self.settingsframe,"SETTINGS",anchor="center",background=light_color)
 		self.settingslabel.place(relx=0.5,width=5*navbuttonheight,x=-2.5*navbuttonheight,y=spaceincrementer*navbuttonheight)
 
-		self.autoupdaterepossettingbox = cw.settingbox(self.settingsframe,"Automatically update repo information on launch")
+		self.autoupdaterepossettingbox = cw.settingbox(self.settingsframe,"Automatically update repo information on launch\n(leads to faster launch time and less bandwidth)")
 		self.settingboxlist.append(self.autoupdaterepossettingbox)
 
 		self.alerttoupdatebox = cw.settingbox(self.settingsframe,"Check for updates to HBUpdater")
