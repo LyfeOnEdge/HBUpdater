@@ -362,6 +362,11 @@ class navbutton(tk.Button):
 	def setcommand(self,command):
 		self.configure(command=command)
 
+	def setimage(self,image=None):
+		self.configure(image=image)
+
+
+
 class navbox(themedframe):
 	def __init__(self,frame,
 		

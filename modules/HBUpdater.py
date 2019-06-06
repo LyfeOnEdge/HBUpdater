@@ -17,43 +17,81 @@ import modules.webhandler as webhandler
 
 chosensdpath = None
 sdpathset = False
-
+trackingfilefound = False
 #folders and files for tracking installed apps on the sd
 trackingfolder = ""
 trackingfile = ""
 
-
-
 #update global "chosensdpath"
 def setSDpath(sdpath):
 	global chosensdpath
-	global trackingfoldername
-	global trackingfolder
-	global trackingfilename
-	global trackingfile
 	global sdpathset
+	global trackingfile
+	global trackingfolder
+	global trackingfilefound
+
 	if not(str(sdpath) == ""):
 		chosensdpath = sdpath
 		print("SD path set to: {}".format(str(chosensdpath)))
+		trackingfolder = os.path.join(chosensdpath, locations.trackingfolder)
+		trackingfile = os.path.join(trackingfolder, locations.trackingfile)
+
+		if checktrackingfile():
+			trackingfilefound = True
+			print("Tracking file found")
+		else:
+			trackingfilefound = False
+			print("Tracking file not found")
+
 		sdpathset = True
 
-		trackingfolder = os.path.join(chosensdpath, locations.trackingfolder)
+	else:
+		print("invalid path chosen")
+		sdpathset = False
+		trackingfilefound = False
+
+	print("sdpathset - {}".format(sdpathset))
+	return sdpathset
+
+def maketrackingfile():
+	global trackingfile
+	global trackingfolder
+	global sdpathset
+	if not sdpathset: return None
+
+	trackingfilestatus = checktrackingfile()
+	if not trackingfilestatus:
 		if not os.path.isdir(trackingfolder):
 			os.mkdir(trackingfolder)
-		trackingfile = os.path.join(trackingfolder, locations.trackingfile)
+
+		#Make tracking file
 		if not os.path.isfile(trackingfile):
 			with open(trackingfile, "w+") as jfile:
 				initdata = {}
 				initdata["created_with"] = version
 				initdata["cfw"] = "not installed"
 				json.dump(initdata, jfile, indent=4,)
-
 	else:
-		print("invalid path chosen")
-		sdpathset = False
+		print("Tracking file already exists")
+	
+def checktrackingfile():
+	global trackingfile
+	global trackingfolder
+	global sdpathset
+	global trackingfilefound
 
-	print("sdpathset = {}".format(sdpathset))
+	if not sdpathset: return None
 
+	if not os.path.isdir(trackingfolder):
+		os.mkdir(trackingfolder)
+
+	if os.path.isfile(trackingfile):
+		print("found tracking file - {}".format(trackingfile))
+		trackingfilefound = True
+		return True
+
+	trackingfilefound = False
+	return False
 
 
 
@@ -79,19 +117,19 @@ def installitem(dicty, option, suboption, group):
 
 		assets = jfile[suboption]["assets"]
 		if assets == None:
+			print("jfile - {}".format(assets))
 			print("Could not find asset data for selected software")
 			return
 
-
-
 		if not dicty[option]["pattern"] == None:
-			pattern = self.softwarelist[self.currentselection]["pattern"]
+			pattern = dicty[option]["pattern"]
 			for asset in assets:
 				asseturl = asset["browser_download_url"]
 				assetname = asseturl.rsplit("/",1)[1].lower()
 				assetwithoutfiletype = assetname.split(".")[0]
 				for firstpartpattern in pattern[0]:
-					if assetwithoutfiletype.startswith(firstpartpattern):
+					if assetwithoutfiletype.lower().startswith(firstpartpattern.lower()):
+						print("firstpartpattern")
 						if assetname.endswith(pattern[1].lower()):
 							print("found asset: {}".format(assetname))
 							downloadlink = asseturl

@@ -36,7 +36,7 @@ To edit a repo: select the repo you wish to edit, change desired values, and cli
 
 #Main screen for adding repositories to the gui
 class addRepoScreen(cw.themedframe):
-	def __init__(self, parent, controller,back_command):
+	def __init__(self, parent, controller, page_name, back_command):
 		cw.themedframe.__init__(self,parent,background_color= light_color)
 
 		#Screen for viewing current repos

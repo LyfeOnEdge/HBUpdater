@@ -32,13 +32,12 @@ class homePage(cw.themedframe):
 		rowlabel.place(x=0, y = 0,relwidth=1)
 		#Generate a button and link a tooltip for each button in the list
 
-	def __init__(self, parent, controller,back_command):
+	def __init__(self, parent, controller,page_name,back_command):
 		self.back_command = back_command
 		self.controller = controller
 
 		geometry = guicore.checkguisetting("guisettings","dimensions")
 		width = geometry["guiwidth"]
-		print("width {}".format(width))
 		height = geometry["guiheight"]
 
 		cw.themedframe.__init__(self,parent,background_color= light_color)
@@ -59,7 +58,7 @@ class homePage(cw.themedframe):
 		homebrewbuttonlist = [
 			{
 			"image" : self.homebrewimage,
-			"callback" : lambda: self.controller.show_frame("mainPage"),
+			"callback" : lambda: self.controller.show_frame("homebrewPage"),
 			"tooltip" : "Install homebrew apps",
 			"shorttip" : "Homebrew Apps"
 			},
@@ -122,6 +121,13 @@ class homePage(cw.themedframe):
 			"tooltip" : "Built-in Switch serial number checker GUI",
 			"shorttip" : "Serial Checker"
 			},
+
+			# {
+			# "image" : self.betaimage,
+			# "callback" : lambda: self.controller.show_frame("backupPage"),
+			# "tooltip" : "Beta version SD card backup manager",
+			# "shorttip" : "Backup Manager"
+			# },
 		]
 
 

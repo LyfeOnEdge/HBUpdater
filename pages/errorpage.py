@@ -9,7 +9,7 @@ import os
 from tkinter.constants import *
 
 class errorPage(cw.themedframe):
-    def __init__(self, parent, controller,back_command):
+    def __init__(self, parent, controller,page_name,back_command):
         self.back_command = back_command
         self.controller = controller
         self.return_frame = "homePage"
@@ -48,7 +48,7 @@ class errorPage(cw.themedframe):
         print("Question raised {}".format(question))
         self.errortext.set(question)
         self.yesnobuttonframe.tkraise()
-        self.return_screen = return_screen
+        self.return_frame = return_screen
         self.yes_command = yes_command
 
     def on_yes(self):

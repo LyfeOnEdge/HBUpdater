@@ -21,7 +21,7 @@ HBG Discord, /r/SwitchPirates, and the members of GBAtemp for their ideas, criti
 """
 
 class settingsPage(tk.Frame):
-	def __init__(self, parent, controller,back_command):
+	def __init__(self, parent, controller,page_name,back_command):
 		tk.Frame.__init__(self,parent)
 
 		#Full window frame, holds everything

@@ -23,7 +23,7 @@ details_guide_text = """This menu will allow you to install older versions of pa
 """ 
 
 class injectorScreen(pt.page):
-	def __init__(self, parent, controller,back_command):
+	def __init__(self, parent, controller,page_name,back_command):
 		pt.page.__init__(self, parent=parent, 
 			controller=controller,
 			back_command=back_command,
@@ -33,7 +33,8 @@ class injectorScreen(pt.page):
 			secondary_button_text="DOWNLOAD",
 			version_function=self.checkpayloadversion,
 			status_column="DOWNLOADED",
-			page_title="PAYLOAD INJECTOR"
+			page_title="PAYLOAD INJECTOR",
+			page_name=page_name
 			)
 
 		self.ijlist = self.populatesoftwarelist(locations.payloadlist)

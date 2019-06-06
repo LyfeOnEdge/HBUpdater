@@ -13,12 +13,13 @@ details_guide_text = """This menu will allow you to install expermental content.
 """ 
 
 class experimentalPage(pt.page):
-    def __init__(self, parent, controller,back_command):
+    def __init__(self, parent, controller,page_name,back_command):
         pt.page.__init__(self,parent=parent, 
             controller=controller,
             back_command=back_command,
             softwaregroup = "experimental",
             page_title="EXPERIMENTAL",
+            page_name=page_name,
             )
 
         experimentaldict = locations.experimentallist

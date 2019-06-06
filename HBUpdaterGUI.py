@@ -57,7 +57,7 @@ class FrameManager(tk.Tk):
 
 		#import pages
 		import pages.injectorpage as ip
-		import pages.mainpage as mp
+		import pages.homebrewpage as hb
 		import pages.settingspage as sp
 		import pages.addrepopage as ar
 		import pages.pythonnxpage as py
@@ -67,15 +67,34 @@ class FrameManager(tk.Tk):
 		import pages.gamespage as gp
 		import pages.serialpage as cp
 		import pages.experimentalpage as xp
+		import pages.backuppage as bp
+		
+		#Add pages to list
+		pages = [
+			hb.homebrewPage,
+			ip.injectorScreen,
+			sp.settingsPage,
+			ar.addRepoScreen,
+			py.pynxPage,
+			fw.cfwPage,
+			ep.errorPage,
+			lp.homePage,
+			gp.gamesPage,
+			cp.serialPage,
+			xp.experimentalPage,
+			bp.backupPage
+		]
+
+		#Add pages as frames to dict, with keyword being the name of the frame
 		self.frames = {}
-		#Add frames to dict, with keyword being the name of the frame
-		for F in (mp.mainPage,ip.injectorScreen,sp.settingsPage,ar.addRepoScreen,py.pynxPage,fw.cfwPage,ep.errorPage,lp.homePage,gp.gamesPage,cp.serialPage,xp.experimentalPage):
+		for F in (pages):
 			page_name = F.__name__
-			frame = F(parent=container, controller=self,back_command = lambda: self.show_frame("homePage")) 
+			frame = F(parent=container, controller=self,page_name=page_name,back_command = lambda: self.show_frame("homePage")) 
 			self.frames[page_name] = frame
 
 			frame.grid(row=0, column=0, sticky="nsew")
 
+		#Set icon
 		if platform.system() == 'Windows':
 			try:
 				print("Windows detected, setting icon")
@@ -89,7 +108,11 @@ class FrameManager(tk.Tk):
 			except:
 				print("Failed to set icon")
 
+
+		#Error handling
 		self.bind("<<error>>", self.on_error)
+
+		#Show home page
 		self.show_frame("homePage") #Show the main page frame
 
 	def on_error(self,event):

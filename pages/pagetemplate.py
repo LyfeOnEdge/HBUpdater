@@ -65,9 +65,10 @@ class page(cw.themedframe,):
 		version_function=None,				#Set this to override the default callback used to populate the status columm (usually this checks to see if the software has been installed on the selected sd card)
 		status_column="INSTALLED",			#Set this to override the status column title
 		page_title=None,					#Set this to apply a page title by the buttons and search box, leave blank to exclude it
-		softwaregroup=None 					#Set this to the keyword section of the tracking file to log installed software to
+		page_name=None,
+		softwaregroup=None, 				#Set this to the keyword section of the tracking file to log installed software to
 		):
-		
+		self.page_name = page_name
 		self.controller = controller		#Controller (most toplevel parent)
 		self.softwaregroup = softwaregroup	#Make group available
 		self.softwarelist = []				#list to hold software data to populate table and more
@@ -216,6 +217,7 @@ class page(cw.themedframe,):
 			pbt = "INSTALL"
 		else:
 			pbt = primary_button_text
+
 		self.list_buttons_frame = cw.navbox(self.main_right_column,
 			primary_button_command = pbc,
 			primary_button_text = pbt,
@@ -239,6 +241,11 @@ class page(cw.themedframe,):
 		chosensdpath = tk.filedialog.askdirectory(initialdir="/",  title='Please select your SD card')
 		HBUpdater.setSDpath(chosensdpath)
 		if HBUpdater.sdpathset:
+			status = HBUpdater.checktrackingfile()
+			if not status:
+				self.controller.show_frame("errorPage")
+				self.controller.frames["errorPage"].getanswer(self.page_name,"Could not find tracking file, would you like to initialize this as a new SD root?\n{}".format(chosensdpath),HBUpdater.maketrackingfile)
+		else:
 			self.updatetable(None)
 
 	#Installs selected software, brings up sd card selection if it hasn't been selected yet

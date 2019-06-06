@@ -13,6 +13,8 @@ payloadsfolder =  os.path.join(wd, "payloads")
 folders_to_init.append(payloadsfolder)
 cachefolder =  os.path.join(wd, "cache")
 folders_to_init.append(cachefolder)
+backupfolder = os.path.join(wd, "backups")
+folders_to_init.append(backupfolder)
 jsoncachefolder = os.path.join(cachefolder,"json")
 folders_to_init.append(jsoncachefolder)
 imagecachefolder = os.path.join(cachefolder,"images")
@@ -27,6 +29,7 @@ injectorfolder = os.path.join(toolsfolder, "fusee")
 folders_to_init.append(injectorfolder)
 ssncfolder = os.path.join(toolsfolder, "ssnc")
 folders_to_init.append(ssncfolder)
+
 
 for folder in folders_to_init:
 	if not os.path.isdir(folder):
@@ -404,7 +407,7 @@ When it asks for input move the left joystick to select a number.
 Compiling
 Just install devkitPro using this guide, replace the source folder in your new project with the source folder here, and run make build in the same folder as the Makefile.""",
 	"group" : TOOL,
-	"install_subfolder": "switch\\PyNX",
+	"install_subfolder": "switch",
 	"zip_items": None,
 	"pattern" : [["Brainfuck_Interpreter"], ".nro"],
 	},

@@ -12,13 +12,14 @@ from tkinter.constants import *
 details_guide_text = """This menu will allow you to install older versions of apps, uninstall software, and go to the software's project page. Project pages are not currently supported for user-added content. 
 """ 
 
-class mainPage(pt.page):
-    def __init__(self, parent, controller,back_command):
+class homebrewPage(pt.page):
+    def __init__(self, parent, controller,page_name,back_command):
         pt.page.__init__(self,parent=parent, 
             controller=controller,
             back_command=back_command,
             softwaregroup = "homebrew",
             page_title="HOMEBREW APPS",
+            page_name=page_name,
             )
 
         hblist = locations.softwarelist

@@ -18,7 +18,7 @@ serialboxwidth = 500
 page_name = "serialPage"
 
 class serialPage(cw.themedframe):
-	def __init__(self, parent, controller,back_command):
+	def __init__(self, parent, controller,page_name,back_command):
 		self.back_command = back_command
 		self.controller = controller
 		self.activestatus = False

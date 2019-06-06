@@ -25,7 +25,7 @@ One of the big goals here is to allow easy updates or downgrades to custom firmw
 """ 
 
 class cfwPage(pt.page):
-	def __init__(self, parent, controller,back_command):
+	def __init__(self, parent, controller,page_name,back_command):
 		pt.page.__init__(self,
 			parent=parent, 
 			controller=controller,
@@ -34,7 +34,8 @@ class cfwPage(pt.page):
 			secondary_button_command=self.selfinstallcfw,
 			status_column="INSTALLED",
 			page_title="CFW MANAGER",
-			softwaregroup="cfw"
+			softwaregroup="cfw",
+			page_name=page_name
 			)
 
 		cfwlist = self.populatesoftwarelist(locations.customfirmwarelist)

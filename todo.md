@@ -21,6 +21,7 @@ Priority:
         features:
             improve repo management and addition [MEDIUM]
             github 304 rate limiting avoidance [HARD]
+            ask if user wants to initialize json
         Add pattern-based file finding in HBUpdater install function
 
     Medium:
@@ -40,6 +41,7 @@ Priority:
             use yes/no screen when new update is available (diable screen in settings)
     Code clean-up:
     move cfw install code to core
+
 
 
 
@@ -101,6 +103,7 @@ todone:
     app now works offline
     app size now set in guisettings_user.json
     homepage scales better
+    App now ask if user wants to init tracking file
 
 
 
@@ -156,3 +159,11 @@ https://gbatemp.net/threads/switchguide-updater.522136/
 
 huh
 https://github.com/Povstalez/Kefir-Updater/releases
+
+
+
+
+
+#useful code bits for later
+for child in frame2.winfo_children():
+    child.configure(state='disable')

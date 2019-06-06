@@ -14,12 +14,13 @@ pynxsubfolder = "switch\\PyNX"
 import pages.pagetemplate as pt
 
 class pynxPage(pt.page):
-	def __init__(self, parent, controller,back_command):
+	def __init__(self, parent,controller,page_name,back_command):
 		pt.page.__init__(self,parent=parent, 
 			controller=controller,
 			back_command=back_command,
 			page_title="PYTHON SCRIPTS",
-			softwaregroup="pyscripts"
+			softwaregroup="pyscripts",
+			page_name=page_name
 			)
 
 
