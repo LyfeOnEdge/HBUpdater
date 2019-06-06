@@ -40,11 +40,10 @@ class FrameManager(tk.Tk):
 	def __init__(self, *args, **kwargs):
 		tk.Tk.__init__(self, *args, **kwargs)
 		# self.resizable(False,False)
-		geometry = guicore.checkguisetting("guisettings","dimensions")
-		width = geometry["guiwidth"]
-		height = geometry["guiheight"]
-		minwidth = geometry["minguiwidth"]
-		minheight = geometry["minguiheight"]
+		width = guicore.checkguisetting("dimensions","guiwidth")
+		height = guicore.checkguisetting("dimensions","guiheight")
+		minwidth = guicore.checkguisetting("dimensions","minguiwidth")
+		minheight = guicore.checkguisetting("dimensions","minguiheight")
 		self.geometry("{}x{}".format(width,height)) 
 		self.minsize(width=minwidth, height=minheight) #minimum size currently supported
 		# the container is where we'll stack a bunch of frames

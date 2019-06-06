@@ -15,6 +15,8 @@ import pages.errorpage as errorpage
 homebuttonwidth = 120
 homebuttonspacing = 5
 
+
+
 class homePage(cw.themedframe):
 	def buildbuttonrow(self,title,buttonlist,frame):
 		iconspacer = homebuttonspacing
@@ -36,9 +38,8 @@ class homePage(cw.themedframe):
 		self.back_command = back_command
 		self.controller = controller
 
-		geometry = guicore.checkguisetting("guisettings","dimensions")
-		width = geometry["guiwidth"]
-		height = geometry["guiheight"]
+		width = guicore.checkguisetting("dimensions","guiwidth")
+		height = guicore.checkguisetting("dimensions","guiheight")
 
 		cw.themedframe.__init__(self,parent,background_color= light_color)
 		self.outerframe = cw.themedframe(self)
