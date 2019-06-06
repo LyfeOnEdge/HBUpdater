@@ -122,16 +122,17 @@ class homePage(cw.themedframe):
 			"shorttip" : "Serial Checker"
 			},
 
+		]
+
+
+		otherbuttonlist = [
 			# {
 			# "image" : self.betaimage,
 			# "callback" : lambda: self.controller.show_frame("backupPage"),
 			# "tooltip" : "Beta version SD card backup manager",
 			# "shorttip" : "Backup Manager"
-			# },
-		]
+			# },		
 
-
-		otherbuttonlist = [
 			{
 			"image" : self.githubimage,
 			"callback" : lambda: webhandler.opentab(),

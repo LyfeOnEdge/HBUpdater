@@ -121,61 +121,63 @@ class injectorScreen(pt.page):
 		softwarename = self.softwarelist[self.currentselection]["software"]
 		if guicore.checkguisetting(softwarename,"version") == None or guicore.checkguisetting(softwarename,"version") =="not installed":
 			self.printtoboth("payload not yet downloaded, downloading...")
-
+			print("payload3")
 			try:
 				with open(self.softwarelist[self.currentselection]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
 					jfile = json.load(json_file)
 					version = jfile[self.currenttagselection]["tag_name"]
 			except:
 				print("Failed to find repo json file, can't install.")
-				#default asset number
-				assetnumber = 0
+				return
+				
+			#default asset number
+			assetnumber = 0
+			if not self.softwarelist[self.currentselection]["github_asset"] == None:
+				#if the asset we are going for is not the default (eg it is set in locations.py under github_asset) update the assetnumber
+				assetnumber = self.softwarelist[self.currentselection]["github_asset"]
 
-				if not self.softwarelist[self.currentselection]["github_asset"] == None:
-					#if the asset we are going for is not the default (eg it is set in locations.py under github_asset) update the assetnumber
-					assetnumber = self.softwarelist[self.currentselection]["github_asset"]
+			#get the download url for the payload we are going for
+			downloadurl = jfile[self.currenttagselection]["assets"][assetnumber]["browser_download_url"]
+			self.printtoboth("downloading payload from {}".format(downloadurl))
 
-				#get the download url for the payload we are going for
-				downloadurl = jfile[self.currenttagselection]["assets"][assetnumber]["browser_download_url"]
-				self.printtoboth("downloading payload from {}".format(downloadurl))
+			#file yielded by the download
+			file = webhandler.download(downloadurl)
+			file = os.path.join(locations.downloadsfolder, file) #get absolute path to it
+				
+			#if downloaded file is already .bin, set the payload path to it.
+			print("payload6")
+			if file.endswith(".bin"):
+				payload = file
+				
+			elif file.endswith(".zip"):
+				#if file is zip, unzip it and find the payload based on the pattern set in its entry in #locations
+				with ZipFile(file, 'r') as zipObj:
+					zipObj.extractall(locations.payloadsfolder)
+					self.printtoboth("Sucessfully extracted {} to payloads folder\n\n".format(file))
+					files = zipObj.namelist()
+					payload = None
+					for possiblepayloadfile in files:
+						if possiblepayloadfile.startswith(self.softwarelist[self.currentselection]["zip_items"]):
+							payload = possiblepayloadfile
+					if payload == None:
+						self.printtoboth("Could not find payload in extracted files")
+						return 
+				print("payload2")
+				payload = os.path.join(locations.payloadsfolder,payload)
 
-				#file yielded by the download
-				file = webhandler.download(downloadurl)
-				file = os.path.join(locations.downloadsfolder, file) #get absolute path to it
-					
-				#if downloaded file is already .bin, set the payload path to it.
-				if file.endswith(".bin"):
-					payload = file
-					
-				elif file.endswith(".zip"):
-					#if file is zip, unzip it and find the payload based on the pattern set in its entry in #locations
-					with ZipFile(file, 'r') as zipObj:
-						zipObj.extractall(locations.payloadsfolder)
-						self.printtoboth("Sucessfully extracted {} to payloads folder\n\n".format(file))
-						files = zipObj.namelist()
-						payload = None
-						for possiblepayloadfile in files:
-							if possiblepayloadfile.startswith(self.softwarelist[self.currentselection]["zip_items"]):
-								payload = possiblepayloadfile
-						if payload == None:
-							self.printtoboth("Could not find payload in extracted files")
-							return 
+			else:
+				self.printtoboth("file handling method not found")
+				return
 
-					payload = os.path.join(locations.payloadsfolder,payload)
-
-				else:
-					self.printtoboth("file handling method not found")
-					return
-
-				#prep new entry to the gui log
-				newentry = {
-							softwarename: {
-								"version": version,
-								"location": payload,
-							}
+			#prep new entry to the gui log
+			newentry = {
+						softwarename: {
+							"version": version,
+							"location": payload,
 						}
-				guicore.setguisetting(newentry)
-				self.updatetable(None)
+					}
+			guicore.setguisetting(newentry)
+			self.updatetable(None)
 
 		#If payload is already downloaded and up-to-date
 		else:
