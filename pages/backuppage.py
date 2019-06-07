@@ -281,7 +281,7 @@ def parse_date(date):
         date = remove_prefix(date, backup_prefix)
         date = date.strip(".zip")
         dates = date.split("-")
-        ddmmyyyy = "{}/{}/{}".format(dates[2],dates[1],dates[0])
+        ddmmyyyy = "{}/{}/{}".format(dates[1],dates[2],dates[0])
         return ddmmyyyy
     except Exception as e:
         self.printtoboth("dateparsing error - {}".format(e))
