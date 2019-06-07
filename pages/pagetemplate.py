@@ -245,8 +245,7 @@ class page(cw.themedframe,):
 			if not status:
 				self.controller.show_frame("errorPage")
 				self.controller.frames["errorPage"].getanswer(self.page_name,"Could not find tracking file, would you like to initialize this as a new SD root?\n{}".format(chosensdpath),HBUpdater.maketrackingfile)
-		else:
-			self.updatetable(None)
+		self.updatetable(None)
 
 	#Installs selected software, brings up sd card selection if it hasn't been selected yet
 	def install(self):
@@ -408,6 +407,7 @@ class page(cw.themedframe,):
 		for listbox in self.listbox_list:
 			listbox.selection_clear(0,len(self.softwarelist)-1)
 			listbox.selection_set(self.currentselection)
+			listbox.activate(self.currentselection)
 			listbox.see(self.currentselection)
 
 		if not self.softwarelist == {} and not self.softwarelist == []:

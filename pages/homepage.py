@@ -118,6 +118,13 @@ class homePage(cw.themedframe):
 
 			{
 			"image" : self.betaimage,
+			"callback" : lambda: self.controller.show_frame("backupPage"),
+			"tooltip" : "Beta version SD card backup manager",
+			"shorttip" : "Backup Manager"
+			},		
+
+			{
+			"image" : self.betaimage,
 			"callback" : self.checkserialandstart,
 			"tooltip" : "Built-in Switch serial number checker GUI",
 			"shorttip" : "Serial Checker"
@@ -127,16 +134,9 @@ class homePage(cw.themedframe):
 
 
 		otherbuttonlist = [
-			# {
-			# "image" : self.betaimage,
-			# "callback" : lambda: self.controller.show_frame("backupPage"),
-			# "tooltip" : "Beta version SD card backup manager",
-			# "shorttip" : "Backup Manager"
-			# },		
-
 			{
 			"image" : self.githubimage,
-			"callback" : lambda: webhandler.opentab(),
+			"callback" : lambda: webhandler.opentab("https://www.github.com/LyfeOnEdge/HBUpdater"),
 			"tooltip" : "Open HBUpdater Github",
 			"shorttip" : "HBU Github"
 			},
@@ -190,7 +190,7 @@ class homePage(cw.themedframe):
 		status = serialpage.checkifSSNCinstalled()
 		if status == "not installed" or status == None:
 			self.controller.show_frame("errorPage")
-			self.controller.frames["errorPage"].getanswer("serialPage","Would you like to install Switch Serial Number Checker and its dependencies?",lambda: serialpage.downloadSSNCandinstalldependencies())
+			self.controller.frames["errorPage"].getanswer("homePage","Would you like to install Switch Serial Number Checker and its dependencies?",lambda: serialpage.downloadSSNCandinstalldependencies())
 		else:
 			self.controller.show_frame("serialPage")
 

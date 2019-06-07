@@ -17,7 +17,7 @@ columtitlesheight= 25
 columnoffset = 5
 
 #secondary column width
-tablecolumnwidth = 125
+tablecolumnwidth = 130
 
 #Image for when there is an author image incompatible with tkinter
 notfoundimage = "notfound.png"

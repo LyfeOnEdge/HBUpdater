@@ -121,7 +121,6 @@ class injectorScreen(pt.page):
 		softwarename = self.softwarelist[self.currentselection]["software"]
 		if guicore.checkguisetting(softwarename,"version") == None or guicore.checkguisetting(softwarename,"version") =="not installed":
 			self.printtoboth("payload not yet downloaded, downloading...")
-			print("payload3")
 			try:
 				with open(self.softwarelist[self.currentselection]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
 					jfile = json.load(json_file)
@@ -129,7 +128,7 @@ class injectorScreen(pt.page):
 			except:
 				print("Failed to find repo json file, can't install.")
 				return
-				
+
 			#default asset number
 			assetnumber = 0
 			if not self.softwarelist[self.currentselection]["github_asset"] == None:
@@ -145,7 +144,6 @@ class injectorScreen(pt.page):
 			file = os.path.join(locations.downloadsfolder, file) #get absolute path to it
 				
 			#if downloaded file is already .bin, set the payload path to it.
-			print("payload6")
 			if file.endswith(".bin"):
 				payload = file
 				
@@ -162,7 +160,6 @@ class injectorScreen(pt.page):
 					if payload == None:
 						self.printtoboth("Could not find payload in extracted files")
 						return 
-				print("payload2")
 				payload = os.path.join(locations.payloadsfolder,payload)
 
 			else:

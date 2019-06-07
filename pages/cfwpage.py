@@ -149,7 +149,6 @@ def installcfwtosd(filename,subfolder):
 					namelist.append(os.path.join(subdir,location))
 				print("files copied: \n {}".format(namelist))
 				print("Sucessfully installed custom firmware {} to SD".format(filename))
-				print(subdir)
 				return namelist
 	else:
 		print("file handling method not found, file: {}".format(filename))

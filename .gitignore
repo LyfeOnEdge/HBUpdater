@@ -6,6 +6,7 @@
 /conf/*
 /tools/*
 /titles/*
+/backups/*
 user_repos.json
 fluffy.conf
 fluffy.log

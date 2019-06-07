@@ -40,21 +40,23 @@ class errorPage(cw.themedframe):
         self.backbuttonframe.tkraise()
 
     def raiseError(self, error_string):
-        print("Error has been raised {}".format(error_string))
+        print("Error has been raised - {}".format(error_string))
         self.errortext.set(error_string)
         self.backbuttonframe.tkraise()
 
     def getanswer(self, return_screen, question, yes_command):
-        print("Question raised {}".format(question))
+        print("-------------------------------\nQuestion raised - \n{}".format(question))
         self.errortext.set(question)
         self.yesnobuttonframe.tkraise()
         self.return_frame = return_screen
         self.yes_command = yes_command
 
     def on_yes(self):
+        print("Got yes\n-------------------------------")
         self.yes_command()
         self.controller.show_frame(self.return_frame)
 
     def on_no(self):
+        print("Got no\n-------------------------------")
         self.controller.show_frame(self.return_frame)
 

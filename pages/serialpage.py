@@ -165,9 +165,6 @@ def downloadSSNCandinstalldependencies():
 				"serials" : serials
 			}
 		}
-		print(newentry)
-
-
 		guicore.setguisetting(newentry)
 
 

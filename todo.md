@@ -31,6 +31,7 @@ Priority:
                     backup and restore sd contents easily
                     Browse installed items in single screen
                     sd card no longer forgets current one if invald one is chosen
+            Buton to open backups folder
 
     Low:
         file structure:

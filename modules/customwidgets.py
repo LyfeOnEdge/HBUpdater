@@ -362,7 +362,7 @@ class navbutton(tk.Button):
 	def setcommand(self,command):
 		self.configure(command=command)
 
-	def setimage(self,image=None):
+	def setimage(self,image):
 		self.configure(image=image)
 
 
@@ -590,6 +590,9 @@ class titledlistbox(themedframe):
 		self.listbox = customlistbox(self.listbox_frame)
 		self.listbox.place(relheight=1,relwidth=1)
 
+	def activate(self,sel):
+		self.listbox.activate(sel)
+
 	def bind(self,event,callback):
 		self.listbox.bind(event,callback)
 
@@ -605,8 +608,8 @@ class titledlistbox(themedframe):
 	def curselection(self):
 		return self.listbox.curselection()
 
-	def get(self, **args):
-		return self.listbox.get(**args)
+	def get(self, arg):
+		return self.listbox.get(arg)
 
 	def selection_clear(self,index,end):
 		self.listbox.selection_clear(index,end)
@@ -623,6 +626,9 @@ class titledlistbox(themedframe):
 	def delete(self, index,end):
 		self.listbox.delete(index,end)
 
+	def size(self):
+		return self.listbox.size()
+
 
 
 class themedtable(themedframe):
@@ -632,20 +638,19 @@ class themedtable(themedframe):
 		numcolumns = len(columns)
 		curcolumn = 0
 		curx = 0
-		self.listbox = {}
 		for column in reversed(columns):
-			self.listbox[column] = titledlistbox(self, column)
+			listbox = titledlistbox(self, column)
 			
 			#if we are on last column, make it fill the rest of the available space
 			if curcolumn == numcolumns-1:
-				self.listbox[column].place(relx=0,relwidth=1,width=-curx,relheight=1)
+				listbox.place(relx=0,relwidth=1,width=-curx,relheight=1)
 			else:
-				self.listbox[column].place(relx=1,x=-(curx+tablecolumnwidth-separatorwidth/2),relheight=1,width=(tablecolumnwidth-separatorwidth/2))
-				self.separator = separator(self)
-				self.separator.place(relx=1,x=-(curx+tablecolumnwidth),relheight=1,width=separatorwidth/2)
+				listbox.place(relx=1,x=-(curx+tablecolumnwidth-separatorwidth/2),relheight=1,width=(tablecolumnwidth-separatorwidth/2))
+				lbseparator = separator(self)
+				lbseparator.place(relx=1,x=-(curx+tablecolumnwidth),relheight=1,width=separatorwidth/2)
 				curx += tablecolumnwidth
 
-			self.listboxes[column] = self.listbox[column]
+			self.listboxes[column] = listbox
 			curcolumn += 1
 
 class cwdevlabel(tk.Label):

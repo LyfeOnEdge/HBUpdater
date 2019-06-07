@@ -7,7 +7,7 @@ import json
 if __name__ == '__main__':
 	sys.exit("This script was not meant to run without a frontend. Exiting...")
 
-version = "0.9 (Beta)"
+version = "0.10 (Beta)"
 print("HBUpdater version {}".format(version))
 
 #My modules
@@ -36,12 +36,12 @@ def setSDpath(sdpath):
 		trackingfolder = os.path.join(chosensdpath, locations.trackingfolder)
 		trackingfile = os.path.join(trackingfolder, locations.trackingfile)
 
-		if checktrackingfile():
-			trackingfilefound = True
-			print("Tracking file found")
-		else:
-			trackingfilefound = False
-			print("Tracking file not found")
+		# if checktrackingfile():
+		# 	trackingfilefound = True
+		# 	print("Tracking file found")
+		# else:
+		# 	trackingfilefound = False
+		# 	print("Tracking file not found")
 
 		sdpathset = True
 
@@ -52,6 +52,11 @@ def setSDpath(sdpath):
 
 	print("sdpathset - {}".format(sdpathset))
 	return sdpathset
+
+def getSDpath():
+	global chosensdpath
+	return chosensdpath
+
 
 def maketrackingfile():
 	global trackingfile
@@ -86,14 +91,16 @@ def checktrackingfile():
 		os.mkdir(trackingfolder)
 
 	if os.path.isfile(trackingfile):
-		print("found tracking file - {}".format(trackingfile))
+		# print("found tracking file - {}".format(trackingfile))
 		trackingfilefound = True
 		return True
 
 	trackingfilefound = False
 	return False
 
-
+def checksdset():
+	global sdpathset
+	return sdpathset
 
 
 
@@ -201,7 +208,6 @@ def installfiletosd(filename,subfolder):
 				for location in sdlocation:
 					namelist.append(os.path.join(subdir,location))
 				print("files copied: \n {}".format(namelist))
-				print(subdir)
 				return namelist
 	else:
 		print("file handling method not found")
