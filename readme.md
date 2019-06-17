@@ -1,4 +1,4 @@
-This readme is a bit outdated and will be updated soon. New features have been added, check out [hbupdater releases](https://www.github.com/lyfeonedge/hbupdater/releases/) for more info.
+This readme is a bit outdated and will be updated soon. New features have been added, check out [HBUpdater releases](https://www.github.com/lyfeonedge/hbupdater/releases/) for more info.
 
 # HBUpdater
 
