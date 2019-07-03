@@ -5,7 +5,7 @@ import modules.locations as locations
 import modules.customwidgets as cw
 import pages.pagetemplate as pt
 
-import os
+import os, platform, subprocess
 
 #archive handling
 from zipfile import ZipFile
@@ -14,16 +14,13 @@ from datetime import datetime
 import tkinter as tk
 from tkinter.constants import *
 
-details_guide_text = """
-
-
-To make a backup:
+details_guide_text = """To make a backup:
     1. Select your SD card
     2. Click "Make backup"
 
 To restore a backup:
     - WARNING
-    - This cannot be undone
+    - THIS CANNOT BE UNDONE
     - Any files in the target directory that also exist in the backup will be overwritten
     1. Select your SD card
     2. Select the backup you wish to restore
@@ -52,12 +49,8 @@ class backupPage(pt.page):
         self.infobox.place_forget()
         self.details_frame.place_forget()
         self.details_right_column.place_forget()
-
-
-
-        self.sdimage = tk.PhotoImage(file=os.path.join(locations.assetfolder,"sd.png")).zoom(2).subsample(4)  
+        
         self.trashimage = tk.PhotoImage(file=os.path.join(locations.assetfolder, "trash.png")).subsample(2)
-
 
         self.list_buttons_frame.etc_button.setcommand(self.delete)
         self.list_buttons_frame.etc_button.setimage(self.trashimage)
@@ -65,6 +58,9 @@ class backupPage(pt.page):
         #Button to uninstall selected software
         self.backupbutton = cw.navbutton(self.main_right_column,command_name=self.backup,image_object= None,text_string="MAKE BACKUP")
         self.backupbutton.place(relx=0, rely=1, y=-3*(navbuttonheight+separatorwidth), height=navbuttonheight, x=+separatorwidth,relwidth=1, width=-(2*separatorwidth))
+
+        self.openfolderbutton = cw.navbutton(self.main_right_column,command_name=lambda: open_folder_in_window(locations.backupfolder),image_object= None,text_string="OPEN BACKUPS FOLDER")
+        self.openfolderbutton.place(relx=0, rely=1, y=-4*(navbuttonheight+separatorwidth), height=navbuttonheight, x=+separatorwidth,relwidth=1, width=-(2*separatorwidth))
 
         columns = ["BACKUP","DATE",]
         self.listbox_list = []
@@ -105,7 +101,7 @@ class backupPage(pt.page):
 
         #Details guide for usage details and warnings
         self.details_guide = cw.ScrolledText(self.main_right_column,borderwidth=0,highlightthickness=0,background=light_color,foreground=guidetextcolor,wrap=WORD,font=details_guide_font)
-        self.details_guide.place(relwidth=1,relheight=1,height=-(3*(navbuttonheight+separatorwidth)+separatorwidth))
+        self.details_guide.place(relwidth=1,relheight=1,height=-(4*(navbuttonheight+separatorwidth)+separatorwidth))
         
 
         self.setguidetext(details_guide_text)
@@ -154,11 +150,9 @@ class backupPage(pt.page):
             self.printtoboth("\nNothing to delete")
             return
 
-
         filename = self.backupstable.listboxes["BACKUP"].get(self.currentselection)
         zip_file = os.path.join(locations.backupfolder, filename)
 
-        self.controller.show_frame("errorPage")
         self.controller.frames["errorPage"].getanswer(self.page_name,"Are you sure you would like to delete this backup?\n\n{}".format(zip_file),lambda: self.deletebackup(zip_file))
 
         self.refreshPage()
@@ -169,14 +163,13 @@ class backupPage(pt.page):
         self.printtoboth("\nDeleted backup {}\n".format(filetodelete))
 
     def backup(self):
-        if not HBUpdater.checksdset():
+        if not HBUpdater.checkSDset():
             self.setSDpath()
-        if not HBUpdater.checksdset():
+        if not HBUpdater.checkSDset():
             self.printtoboth("\nSD path not set, can't make backup\n")
             return
 
         if not HBUpdater.checktrackingfile():
-            self.controller.show_frame("errorPage")
             self.controller.frames["errorPage"].getanswer(self.page_name,"Could not find tracking file, are you sure you would like to proceed with your backup?\n",self.makebackup)
         else:
             self.makebackup()
@@ -204,13 +197,12 @@ class backupPage(pt.page):
             self.printtoboth("\nNothing to restore\n")
             return
 
-        if not HBUpdater.checksdset():
+        if not HBUpdater.checkSDset():
             self.setSDpath()
-        if not HBUpdater.checksdset():
+        if not HBUpdater.checkSDset():
             self.printtoboth("\nSD path not set, can't restore backup\n")
             return
 
-        self.controller.show_frame("errorPage")
         self.controller.frames["errorPage"].getanswer(self.page_name,"Are you sure you want to restore this backup?\n\nFILES IN THE TARGET DIRECTORY SHARING THE SAME NAME AS AN ITEM IN THE BACKUP WILL BE OVERWRITTEN.\n\nTarget Directory - {}".format(HBUpdater.getSDpath()),self.restorebackup)
 
     def restorebackup(self):
@@ -224,12 +216,10 @@ class backupPage(pt.page):
             print("files copied: \n {}".format(namelist))
             self.printtoboth("Copied {} files".format(len(namelist)))
             self.printtoboth("\nSucessfully restored backup {} to SD\n".format(zip_file))
-            
-
-
-
+    #Whenever the frame is raised by the controller refresh it
     def on_show_frame(self,event):
         self.refreshPage()
+
     def pageup(self):
         if self.currentselection <  self.software_listbox.size()-1:
             self.currentselection += 1
@@ -240,9 +230,11 @@ class backupPage(pt.page):
             self.refreshPage()
     def refreshPage(self):
         self.updatetable(None)
+        #If the current selection exceeds the bounds of the size of the listboxes, 
+        #set it to the max value (ususally this means the cursor was set to the bottom 
+        #and the user deleted a backup, rare bug but it happens)
         if self.currentselection > self.software_listbox.size():
             self.currentselection = self.software_listbox.size()-1
-
 
         for listbox in self.listbox_list:
             listbox.selection_clear(0, self.backupstable.listboxes["BACKUP"].size()-1)
@@ -287,7 +279,10 @@ def parse_date(date):
         self.printtoboth("dateparsing error - {}".format(e))
         return "unknown"
 
-
-
-
-
+def open_folder_in_window(path):
+    if platform.system() == "Windows":
+        os.startfile(path)
+    elif platform.system() == "Darwin":
+        subprocess.Popen(["open", path])
+    else:
+        subprocess.Popen(["xdg-open", path])

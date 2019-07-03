@@ -5,7 +5,7 @@ import json
 
 #stop script if running without a frontend
 if __name__ == '__main__':
-	sys.exit("This script was not meant to run without a frontend. Exiting...")
+    sys.exit("This script was not meant to run without a frontend. Exiting...")
 
 version = "0.10 (Beta)"
 print("HBUpdater version {}".format(version))
@@ -14,300 +14,246 @@ print("HBUpdater version {}".format(version))
 from modules.format import *
 import modules.locations as locations
 import modules.webhandler as webhandler
+import modules.appstore as appstore
 
 chosensdpath = None
 sdpathset = False
-trackingfilefound = False
-#folders and files for tracking installed apps on the sd
-trackingfolder = ""
-trackingfile = ""
 
+##SD handling (or technically any path)
 #update global "chosensdpath"
 def setSDpath(sdpath):
-	global chosensdpath
-	global sdpathset
-	global trackingfile
-	global trackingfolder
-	global trackingfilefound
+    global chosensdpath
+    global sdpathset
 
-	if not(str(sdpath) == ""):
-		chosensdpath = sdpath
-		print("SD path set to: {}".format(str(chosensdpath)))
-		trackingfolder = os.path.join(chosensdpath, locations.trackingfolder)
-		trackingfile = os.path.join(trackingfolder, locations.trackingfile)
+    if not(str(sdpath) == ""):
+        chosensdpath = sdpath
+        print("SD path set to: {}".format(str(chosensdpath)))
+        trackingfolder = os.path.join(chosensdpath, locations.trackingfolder)
+        trackingfile = os.path.join(trackingfolder, locations.trackingfile)
+        sdpathset = True
+    else:
+        print("invalid path chosen")
+        sdpathset = False
 
-		# if checktrackingfile():
-		# 	trackingfilefound = True
-		# 	print("Tracking file found")
-		# else:
-		# 	trackingfilefound = False
-		# 	print("Tracking file not found")
+    print("sdpathset - {}".format(sdpathset))
+    return sdpathset
 
-		sdpathset = True
-
-	else:
-		print("invalid path chosen")
-		sdpathset = False
-		trackingfilefound = False
-
-	print("sdpathset - {}".format(sdpathset))
-	return sdpathset
-
+#Get the SD path
 def getSDpath():
-	global chosensdpath
-	return chosensdpath
+    global chosensdpath
+    if checkSDset():
+        return chosensdpath
+
+#Check if the SD card has been set
+def checkSDset():
+    global sdpathset
+    return sdpathset
+
+def parse_api_to_standard_github(url):
+    remove = [
+    "api.",
+    "/releases",
+    "/repos",
+    "/latest",
+    ]
+    try:
+        for item in remove:
+            url = url.replace(item,"")
+        return(url)
+    except:
+        return None
 
 
-def maketrackingfile():
-	global trackingfile
-	global trackingfolder
-	global sdpathset
-	if not sdpathset: return None
-
-	trackingfilestatus = checktrackingfile()
-	if not trackingfilestatus:
-		if not os.path.isdir(trackingfolder):
-			os.mkdir(trackingfolder)
-
-		#Make tracking file
-		if not os.path.isfile(trackingfile):
-			with open(trackingfile, "w+") as jfile:
-				initdata = {}
-				initdata["created_with"] = version
-				initdata["cfw"] = "not installed"
-				json.dump(initdata, jfile, indent=4,)
-	else:
-		print("Tracking file already exists")
-	
-def checktrackingfile():
-	global trackingfile
-	global trackingfolder
-	global sdpathset
-	global trackingfilefound
-
-	if not sdpathset: return None
-
-	if not os.path.isdir(trackingfolder):
-		os.mkdir(trackingfolder)
-
-	if os.path.isfile(trackingfile):
-		# print("found tracking file - {}".format(trackingfile))
-		trackingfilefound = True
-		return True
-
-	trackingfilefound = False
-	return False
-
-def checksdset():
-	global sdpathset
-	return sdpathset
+#The installer uses a "software chunk" to install
+#Here is an example based on the Homebrew appstore
+# {
+#     "software" : "Homebrew Store",
+#     "store_equivalent" : "appstore",
+#     "githubapi" : "https://api.github.com/repos/vgmoose/hb-appstore/releases", 
+#     "author" : "vgmoose", 
+#     "projectpage": "https://github.com/vgmoose/hb-appstore/releases",
+#     "description" : "A graphical frontend to the get package manager for downloading and managing homebrew on video game consoles, such as the Nintendo Switch and Wii U. This is a replacement to the older Wii U Homebrew App Store.",
+#     "group" : TOOL,
+#     "install_subfolder": "switch/appstore",
+#     "pattern" : [['appstore'],".nro"],
+#     "license" : GPL3
+#  },
 
 
+def installitem(sc, suboption):
+    global sdpathset
+    global chosensdpath
 
-def installitem(dicty, option, suboption, group):
-	print("\n")
-	if not os.path.isdir(locations.downloadsfolder):
-		of.mkdir(locations.downloadsfolder)
-	softwarename = dicty[option]["software"]
+    if not sdpathset: return
+    if not chosensdpath: return
 
-	location = getlogvalue(group, softwarename, "location")
+    name = sc["software"]
+    print("Installing {}".format(name))
 
-	with open(dicty[option]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
-		jfile = json.load(json_file)	
-		assetnumber = dicty[option]["github_asset"] 
-		if assetnumber == None:
-			assetnumber = 0
+    #parse api link to a github project releases link
+    url = parse_api_to_standard_github(sc["githubapi"])
+    url = url.strip("/") + "/releases"
 
-		downloadlink = None
+    #Create empty appstore entry and populate it
+    entry = appstore.appstore_entry()
+    entry["title"] = name
+    entry["author"] = sc["author"]
+    entry["category"] = sc["group"]
+    entry["license"] = None
+    entry["description"] = sc["description"]
+    entry["url"] = url
+    package = sc["store_equivalent"]
+ 
+    #open the repo file
+    with open(sc["githubjson"], encoding="utf-8") as repo_file: 
+        repo = json.load(repo_file)    
 
-		version = jfile[suboption]["tag_name"]
+    ver = repo[suboption]["tag_name"]
 
-		assets = jfile[suboption]["assets"]
-		if assets == None:
-			print("jfile - {}".format(assets))
-			print("Could not find asset data for selected software")
-			return
+    entry["details"] = repo[suboption]["body"]
 
-		if not dicty[option]["pattern"] == None:
-			pattern = dicty[option]["pattern"]
-			for asset in assets:
-				asseturl = asset["browser_download_url"]
-				assetname = asseturl.rsplit("/",1)[1].lower()
-				assetwithoutfiletype = assetname.split(".")[0]
-				for firstpartpattern in pattern[0]:
-					if assetwithoutfiletype.lower().startswith(firstpartpattern.lower()):
-						print("firstpartpattern")
-						if assetname.endswith(pattern[1].lower()):
-							print("found asset: {}".format(assetname))
-							downloadlink = asseturl
-							break
-			if downloadlink == None:
-				print("No asset data found, can't install\n")
-				return
-		else:
-			downloadlink = assets[assetnumber]["browser_download_url"]
+    assets = repo[suboption]["assets"]
+    if assets == None:
+        print("Could not find asset data for selected software")
+        return
 
+    downloadlink = None
+    if not sc["pattern"] == None:
+        pattern = sc["pattern"]
+        for asset in assets:
+            asseturl = asset["browser_download_url"]
+            assetname = asseturl.rsplit("/",1)[1].lower()
+            assetwithoutfiletype = assetname.split(".")[0]
+            for firstpartpattern in pattern[0]:
+                if firstpartpattern.lower() in assetwithoutfiletype.lower():
+                    if assetname.endswith(pattern[1].lower()):
+                        print("found asset: {}".format(assetname))
+                        downloadlink = asseturl
+                        break
+        if downloadlink == None:
+            print("No asset data found for pattern {}, can't install\n".format(pattern))
+            return
+    else:
+        print("failed to find asset pattern")
 
+    downloadedfile = webhandler.download(downloadlink)
 
-	print("installing {} version {}".format(softwarename,version))
-	downloadedfile = webhandler.download(downloadlink)
+    #If download failed return
+    if downloadedfile == None:
+        print("Asset download failed, not installing")
+        return
 
-	if not downloadedfile == None:
+    print("Download successful, proceeding...")
 
-		if type(location) is list:
-			for loc in location:
-				if os.path.isfile(loc):
-					os.remove(loc)
-					print("removed old file {}".format(loc))
-		elif type(location) is str:
-			if os.path.isfile(location):
-				os.remove(location)
-				print("removed {}".format(location))
+    filestoremove = appstore.get_package_manifest(chosensdpath, package)
+    if filestoremove:
+        if 'str' in str(type(filestoremove)):
+            file = os.path.join(chosensdpath,filestoremove)
+            if os.path.isfile(file):  
+                os.remove(file)
+                print("removed {}".format(file))
+        else:
+            #Go through the previous ziplist in reverse, this way folders get cleaned up
+            for path in reversed(filestoremove):
+                file = os.path.join(chosensdpath,path) 
+                if os.path.isfile(file):  
+                    os.remove(file)
+                    print("removed {}".format(file))
+                elif os.path.isdir(file):
+                    if not os.listdir(file):
+                        os.rmdir(file)
+                        print("removed empty directory {}".format(file))
 
-		installlocation = installfiletosd(downloadedfile, dicty[option]["install_subfolder"])
-		
-		if not (installlocation) == None:
-			newentry = {
-				"software": dicty[option]["software"],
-				"version": version,
-				"location": installlocation,
-			}
-			updatelog(group, newentry)
+    #Move software to sd card
+    #Handles data differently depending on file type
+    installlocation = installfiletosd(downloadedfile, sc["install_subfolder"])
+
+    #Convert github version to store version
+    entry["version"] = appstore.parse_version_to_store_equivalent(ver, package)
+    appstore.create_store_entry(chosensdpath,entry,installlocation,package)
+
 
 def installfiletosd(filename,subfolder):
-	global chosensdpath
+    global chosensdpath
 
-	file = os.path.join(locations.downloadsfolder, filename)
+    file = os.path.join(locations.downloadsfolder, filename)
 
-	if not subfolder == None:
-		subdir = os.path.join(chosensdpath,subfolder)
-	else: 
-		subdir = chosensdpath
+    if not subfolder == None:
+        subdir = os.path.join(chosensdpath,subfolder)
+    else: 
+        subdir = chosensdpath
 
-	sdlocation = os.path.join(subdir, filename)
+    sdlocation = os.path.join(subdir, filename)
 
-	if not os.path.isdir(subdir):
-		os.mkdir(subdir)
+    if not os.path.exists(subdir):
+        os.makedirs(subdir)
 
-	if filename.endswith(".nro") or filename.endswith(".py"):
-		try:
-			shutil.move(file, sdlocation)
-			print("Successfully copied {} to SD".format(filename))
-			return sdlocation
-		except: 
-		 	print("Failed to copy {} to SD".format(filename) )
-		 	return None
+    if filename.endswith(".nro") or filename.endswith(".py"):
+        try:
+            shutil.move(file, sdlocation)
+            print("Successfully copied {} to SD".format(filename))
 
-	elif filename.endswith(".zip"):
-		with ZipFile(file, 'r') as zipObj:
-			# try:
-				zipObj.extractall(subdir)
-				print("Sucessfully extracted {} to SD".format(filename))
-				sdlocation = zipObj.namelist()
-				namelist = []
-				for location in sdlocation:
-					namelist.append(os.path.join(subdir,location))
-				print("files copied: \n {}".format(namelist))
-				return namelist
-	else:
-		print("file handling method not found")
-		return None
+            if subfolder:
+                return [os.path.join(subfolder,filename)]
+            else:
+                return [filename]
+        except: 
+            print("Failed to copy {} to SD".format(filename) )
+            return None
 
+    elif filename.endswith(".zip"):
+        with ZipFile(file, 'r') as zipObj:
+            # try:
+                zipObj.extractall(subdir)
+                print("Sucessfully extracted {} to SD".format(filename))
+                sdlocation = zipObj.namelist()
+                namelist = []
+                for location in sdlocation:
+                    if subfolder:
+                        namelist.append(os.path.join(subfolder,location))
+                    else:
+                        namelist.append(location)
+                print("files copied: \n {}".format(namelist))
+                return namelist
+    else:
+        print("file handling method not found")
+        return None
 
-def uninstallsoftware(group, softwarename):
-	if not sdpathset:
-		print("SD path not set, can't uninstall")
-		return
-	if getlogstatus(group,softwarename) == "not installed":
-		print("Not installed.")
-		return
+def uninstallsoftware(package):
+    global sdpathset
+    global chosensdpath
+    if not sdpathset:
+        print("SD path not set, can't uninstall")
+        return
+    if not chosensdpath:
+        print("SD path is invalid, can't uninstall")
+    
+    filestoremove = appstore.get_package_manifest(chosensdpath, package)
+    if 'str' in str(type(filestoremove)):
+        file = os.path.join(chosensdpath,filestoremove)
+        if os.path.isfile(file):  
+            os.remove(file)
+            print("removed {}".format(file))
+    else:
+        #Go through the previous ziplist in reverse, this way folders get cleaned up
+        for path in reversed(filestoremove):
+            file = os.path.join(chosensdpath,path) 
+            if os.path.isfile(file):  
+                os.remove(file)
+                print("removed {}".format(file))
+            elif os.path.isdir(file):
+                if not os.listdir(file):
+                    os.rmdir(file)
+                    print("removed empty directory {}".format(file))
 
+        appstore.remove_store_entry(chosensdpath, package)
 
-	filestoremove = getlogvalue(group, softwarename,"location")
-	print("removing {}".format(filestoremove))
-	if 'str' in str(type(filestoremove)):
-		os.remove(filestoremove)
-		print("removed {}".format(filestoremove))
-	else:
-		for path in filestoremove: 
-			if os.path.isfile(path):  
-			    os.remove(path)
-			    print("removed {}".format(path))
-		# for file in filestoremove:
-		# 	if os.path.isdir(file):
-		# 		shutil.rmtree(file)
-		# 		print("removed folder {}".format(file))
+        print("removed {}".format(package))
 
-	newentry = {
-				"software": softwarename,
-				"version": "not installed",
-				"location": None,
-			}
-
-	updatelog(group, newentry)
-	print("uninstalled {}".format(softwarename))
-
-
-
-
-
-def updatelog(group, newentry):
-	if not os.path.isdir(trackingfolder):
-		os.mkdir(trackingfolder)
-
-	#create log is it doesn't exist
-	if os.path.isfile(trackingfile):
-		pass
-		# print("Found Tracking File")
-	else:
-		open(trackingfile, "w")
-
-	#open log
-	with open(trackingfile, 'r') as json_file:  
-		originaljfile = json.load(json_file)
-
-	# print(json.dumps(originaljfile,indent=4))
-	#update value
-	try:
-		groupdict = originaljfile[group]
-		if groupdict == "not installed":
-			groupdict = {}
-	except:
-		groupdict = {}
-
-	location = newentry["location"]
-
-	entry = {	
-		"version" : newentry["version"],
-		"location" : location
-	}
-
-	softwarename = newentry["software"]
-	groupdict[softwarename] = entry
-
-	originaljfile[group] = groupdict
-
-	#write updated log
-	with open(trackingfile, 'w') as newjfile:
-		json.dump(originaljfile, newjfile, indent=4,)
-
-def getlogvalue(group, software, keyword):
-	try:
-		with open(trackingfile, 'r') as json_file:  
-			jfile = json.load(json_file)
-
-		try:
-			status = jfile[group][software][keyword]
-		except:
-			status = None
-	except:
-		status = None
-
-	return status
-
-
-def getlogstatus(group, software):
-	return getlogvalue(group, software, "version")
-
-
-
+#Check package version
+#returns "not installed" if no data found or sd path not set
+def get_app_status(package):
+    global sdpathset
+    if not sdpathset: return "not installed"
+    global chosensdpath
+    return appstore.get_package_version(chosensdpath, package)

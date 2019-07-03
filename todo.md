@@ -1,55 +1,50 @@
 THIS IS MY PERSONAL TODO LIST
 NONE OF THESE IDEAS, PIECES OF SOFTWARE, OR TODOS ARE SET IN STONE, THEY MAY NEVER MAKE THEIR WAY INTO HBUPDATER
 
-Difficulty / Time:
-[EASY]
-[MEDIUM]
-[HRNNN]
-
-mustdo:
-test pattern - based homebrew checking
-
 todo:
-    fix search bar to update every character
+    fix search bar to update every character -> only do something when sb.get() returns non-null
+
+    move more stuff to style.py
 
 Priority:
+    (Highest to lowest)
     High:
         settings:
-            window default launch size [EASY] 
-            ftp tool [HARD]
-        bugs:
+            ftp tool
         features:
-            improve repo management and addition [MEDIUM]
-            github 304 rate limiting avoidance [HARD]
-            ask if user wants to initialize json
-        Add pattern-based file finding in HBUpdater install function
-
+            warn user when no json was downloaded
     Medium:
         features:
             Home page features:
-                SD card:
-                    backup and restore sd contents easily
-                    Browse installed items in single screen
-                    sd card no longer forgets current one if invald one is chosen
             Buton to open backups folder
-
+            implement auto-injection, remember last payload selection (one kinda needs the other)
+            option to not clean-install
     Low:
+        on-the-fly toggle off infobox
+       
+        navbox moved to pagetemplate
         file structure:
             clean up imports
-            make entrybox a subclass of searchbox
+
         HBUpdater updater
             use github api (duh)
-            use yes/no screen when new update is available (diable screen in settings)
+            "skip this version" button
+            use yes/no screen when new update is available (disable screen in settings)
+        pattern-based payloads
+
+        Dangerous things:
+            settings menu button to delete userrepos.json and guisettings.json
+
     Code clean-up:
-    move cfw install code to core
-
-
-
+    move cfw install code to core (god damn this scene's releases are inconsistent)
+    move infobox class to pagetemplate
 
     Aesthetic:
         borderless window, settings on top bar with quick-access
         fix linux icon
         implement gross light theme
+
+    cleanup todo
 
 Prerelease checklist 
 Try:
@@ -60,8 +55,6 @@ Try:
     Serial Checker
     Install
     Uninstall
-
-
 
 ongoing:
 No releases (Issue created on github)
@@ -76,40 +69,50 @@ To add:
     https://github.com/Marice/ScreenTester-NX/releases <- Inconsistent release format but it will work due to flexible handling
     https://github.com/colin969/switch-reader/releases
     https://github.com/SilentFlyBy/Blobby-Volley-2-Switch/releases
-    https://github.com/rsn8887/uae4all2/releases
     https://github.com/ELY3M/Lighting-up-LED-on-right-joycon-for-Nintendo-Switch/releases
     https://github.com/Manurocker95/TIL_NX/releases/
     https://github.com/Manurocker95/Evolution-Saved-Me-NX/releases/
 
 todone:
 0.8:
-    Projects missing github links will now get one generated from the github api link to go to the github repo, this applies to user-added homebrew as well. 
-    Added titles to pages so you know what you are looking at.
-    Added CFW manager alpha
-    Payload injector page now indicates if injector is already downloaded
-    Title bar now displays app version
+    - Projects missing github links will now get one generated from the github api link to go to the github repo, this applies to user-added homebrew as well. 
+    - Added titles to pages so you know what you are looking at.
+    - Added CFW manager alpha
+    - Payload injector page now indicates if injector is already downloaded
+    - Title bar now displays app version
 0.9:
-    Improved HBUpdaterGUI.py code layout
-    software lists are now populated within the page that uses them, this is more flexible and requires far less code
-    The buttons were getting crowded on the standard homebrew page so I've added a new landing page with big icons. Gives it a metro feel
-    HBUpdater will now check for updates, setting available in setting menu to disable it
+    - Improved HBUpdaterGUI.py code layout
+    - software lists are now populated within the page that uses them, this is more flexible and requires far less code
+    - The buttons were getting crowded on the standard homebrew page so I've added a new landing page with big icons. Gives it a metro feel
+     - HBUpdater will now check for updates, setting available in setting menu to disable it
     errorpage.py now handles errors and yes/no questions, code reduction in installerhelperpage.py
-    improved folder handling, moved all folder definitions to locations.py
+    - improved folder handling, moved all folder definitions to locations.py
     removed homebrewcore.py to simplify backend
-    download - on - demand serial checker
-    nut, fluffy, serial checker, payload injector, etc download into a tools subfolder for better folder structure 
-    installerhelperpage's functions have been moved to toolhelper.py in modules, the giu code has been taken over by errorpage.py
+    - added download - on - demand serial checker
+    - nut, fluffy, serial checker, payload injector, etc download into a tools subfolder for better folder structure 
+    - installerhelperpage's functions have been moved to toolhelper.py in modules, the giu code has been taken over by errorpage.py
 0.10
-    stopped crash when initial json fails to download
-    app now works offline
-    app size now set in guisettings_user.json
-    homepage scales better
-    App now ask if user wants to init tracking file
+    - added about page, separated from settings
+    - stopped crash when initial json fails to download
+    - app now works offline
+    - app size now set in guisettings_user.json
+    - homepage scales better
+    - app now writes to .get package location for HBappstore compatibility
+    - images are now cached based on author name rather than project name, saving on bandwidth and reducing disc reads  
+    - double-click on list pages now executes the set "primary function" of the page (inject payload, install homebrew, restore backup, etc...)
+    author images now cache properly in about page
+    - install will no longer error if user has removed a file then tried to uninstall it
+    - very basic SD card backup tool added
+    - user repos now use the pattern system
+    - repo jsons now download under the name of the project, this means homebrew that share the same url don't download twice, furthur reducing bandwidth and ratelimit incursion
+    - added a session cache to the webhandler so if a repo was already downloaded this session it won't be redownloaded, this is especially useful for users adding multiple assests from the same repo (eg a repo with multiple .nros for different emulators)
+    - app now uses the HBAppstore package management system instead of mine, this was a bit annoying to implement (it took longer than I'd like to admit)
 
 
 
 
-
+    
+ 
 
 bites for official release:
 Users already using fluffy or nut will likely already have the prerequsites needed to run this app.
@@ -137,7 +140,7 @@ https://github.com/AnalogMan151/splitNSP/releases
 https://github.com/vgmoose/nro-asset-editor/releases
 
 
-
+https://gbatemp.net/threads/download-all-cheats-from-max-cheats-bash-shell-script.528893/
 
 NRO (SOME RELEASES MISSING DATA WILL NEED TO UPDATE CODE TO BE ABLE TO HANLDE REPOS WITHOUT ASSETS WITH AN ERROR WINDOW )
 https://github.com/keeganatorr/openfodder-switch/releases

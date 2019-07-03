@@ -19,7 +19,7 @@ class pynxPage(pt.page):
 			controller=controller,
 			back_command=back_command,
 			page_title="PYTHON SCRIPTS",
-			softwaregroup="pyscripts",
+			softwaregroup="python",
 			page_name=page_name
 			)
 
@@ -29,7 +29,6 @@ class pynxPage(pt.page):
 
 
 		self.pythonimage = tk.PhotoImage(file=os.path.join(locations.assetfolder, "python.png")).zoom(3).subsample(5)
-		self.sdimage = tk.PhotoImage(file=os.path.join(locations.assetfolder,"sd.png")).zoom(2).subsample(4)
 
 		buttonlist = [
 			{
@@ -37,11 +36,18 @@ class pynxPage(pt.page):
 			"callback" : back_command,
 			"tooltip" : "Back to main screen",
 			},
+
 			{
 			"image" : self.sdimage,
 			"callback" : self.setSDpath,
 			"tooltip" : "Select SD card",
 			},
+
+			{
+            "image" : self.addrepoimage,
+            "callback" : lambda: self.controller.raiseRepo(self.page_name,self.softwaregroup),
+            "tooltip" : "Add github repo",
+            },
 		]
 
 		self.setbuttons(buttonlist)

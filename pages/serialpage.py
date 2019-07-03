@@ -17,16 +17,16 @@ serialboxwidth = 500
 
 page_name = "serialPage"
 
-class serialPage(cw.themedframe):
+class serialPage(cw.ThemedFrame):
 	def __init__(self, parent, controller,page_name,back_command):
 		self.back_command = back_command
 		self.controller = controller
 		self.activestatus = False
 
-		cw.themedframe.__init__(self,parent,background_color= light_color)
+		cw.ThemedFrame.__init__(self,parent,background_color= light_color)
 		self.bind("<<ShowFrame>>", self.on_show_frame) #Bind on_show_frame to showframe event
 
-		self.outerframe = cw.themedframe(self, background_color = light_color)
+		self.outerframe = cw.ThemedFrame(self, background_color = light_color)
 		self.outerframe.place(x=0,y=0,relwidth=1,relheight=1)
 
 		self.returnimage = tk.PhotoImage(file=os.path.join(locations.assetfolder,"returnbutton.png")).zoom(3).subsample(5)
@@ -37,7 +37,7 @@ class serialPage(cw.themedframe):
 		self.serialentry.place(relx=0.5,rely=.5, x=-0.5*serialboxwidth, y=-0.5*serialboxheight, width=serialboxwidth, height=serialboxheight)
 		self.serialentry.entry.bind("<KeyRelease>", self.on_key)
 
-		self.serialstatus = cw.themedguidelabel(self,None,anchor="center",label_font=hugeboldtext)
+		self.serialstatus = cw.ThemedLabel(self,None,anchor="center",label_font=hugeboldtext)
 		self.serialstatus.place(relx=0.5,rely=.5, x=-0.5*serialboxwidth, y=+0.5*serialboxheight,width=serialboxwidth)
 
 
@@ -47,7 +47,7 @@ class serialPage(cw.themedframe):
 
 	def on_key(self,event):
 		if self.activestatus:
-			entrytext = self.serialentry.get_text()
+			entrytext = self.serialentry.get()
 			self.check(entrytext)
 
 	def check(self,serial):

@@ -45,6 +45,8 @@ light_color = "#1f1f1f"
 dark_color = "#121212"
 #White
 w = "#ffffff"
+#red
+r = "#ff0000"
 #Black
 b = "#000000"
 #ash
@@ -53,6 +55,7 @@ ash = "#c4c4c4"
 lgray = "#acadaf"
 #darker gray
 dgray = "#888888"
+
 
 listboxselectionbackground =  "#c4c4c4",
 listboxselectionforeground = b
@@ -153,7 +156,7 @@ consoletext = smalltext
 
 #width ov validity column in add repo page
 repocolumnwidth = 130
-entryheight = 29
+entryheight = 30
 
 repolistboxseparatorwidth = 2
 repo_placeholder_font = smalltext
@@ -167,3 +170,9 @@ details_guide_font = smallerboldtext
 
 
 settingsbuttonheight = 30
+
+
+
+
+
+

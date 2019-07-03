@@ -19,17 +19,12 @@ class gamesPage(pt.page):
             controller=controller,
             back_command=back_command,
             page_title="HOMEBREW GAMES",
-            softwaregroup="games",
+            softwaregroup="game",
             page_name=page_name,
             )
 
-
         gameslist = self.populatesoftwarelist(locations.gameslist)
         self.setlist(gameslist)
-
-
-        self.pythonimage = tk.PhotoImage(file=os.path.join(locations.assetfolder, "python.png")).zoom(3).subsample(5)
-        self.sdimage = tk.PhotoImage(file=os.path.join(locations.assetfolder,"sd.png")).zoom(2).subsample(4)
 
         buttonlist = [
             {
@@ -37,10 +32,17 @@ class gamesPage(pt.page):
             "callback" : back_command,
             "tooltip" : "Back to main screen",
             },
+
             {
             "image" : self.sdimage,
             "callback" : self.setSDpath,
             "tooltip" : "Select SD card",
+            },
+
+            {
+            "image" : self.addrepoimage,
+            "callback" : lambda: self.controller.raiseRepo(self.page_name, self.softwaregroup),
+            "tooltip" : "Add github repo",
             },
         ]
 

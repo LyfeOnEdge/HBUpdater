@@ -1,31 +1,26 @@
 import threading, os, sys, imp, shutil, json, subprocess
 import modules.locations as locations
+import modules.etags as etags
 
 #archive handling
 from zipfile import ZipFile
 
 #web handling
-import webbrowser
 import urllib.request 
 opener = urllib.request.build_opener()
 opener.addheaders = [('User-agent', 'Mozilla/5.0')]
 urllib.request.install_opener(opener)
 
+#Variable to map previously downloaded jsons to minimize repeated downloads
+filedict = {}
 
+
+#opens a url in a new tab
 def opentab(url):
+	import webbrowser
 	webbrowser.open_new_tab(url)
 
-#Download a file as a specfic name, returns true if successful
-def downloadFile(fileURL, filename): #Download 
-	try:
-		urllib.request.urlretrieve(fileURL, filename)
-		print("Downloaded {} as {}".format(fileURL,filename))
-		return True #Return true if download is successful
-	except Exception as e: 
-		print(e)
-		print("Failed to download {}".format(filename))
-		return False
-
+#Download a file at a url, returns file path
 def download(fileURL):
 	try:
 		downloadedfile, headers = urllib.request.urlretrieve(fileURL)
@@ -39,69 +34,64 @@ def download(fileURL):
 		print(e)
 		return None
 
-def downloadFileAs(fileURL,filename):
-	try:
-		downloadlocation = os.path.join(locations.downloadsfolder,filename)
-		urllib.request.urlretrieve(fileURL,downloadlocation)
-		print("downloaded {} from url {}".format(filename, fileURL))
-		return downloadlocation
-	except Exception as e: 
-		print(e)
-		return None
-
-
-def cacheimage(url,softwarename):
-	try:
-		with urllib.request.urlopen(url) as response:
-			info = response.info()
-			type=info.get_content_subtype()
-			file = "{}.{}".format(softwarename,type)
-			file = os.path.join(locations.imagecachefolder,file)
-			imagefile = open(file, 'wb')
-			shutil.copyfileobj(response, imagefile)
-			print("downloaded image {}".format(file))
-	except: 
-		print("failed to download file {} from url {}".format(file, url))
-		return None
-	return file
-
 def getUpdatedSoftwareLinks(dicttopopulate):
-	# print("Downloading software json files from github")
+	global filedict
+	if not os.path.isdir(locations.jsoncachefolder):
+		os.mkdir(locations.jsoncachefolder)
 	for softwarechunk in dicttopopulate:
 		githubjsonlink = softwarechunk["githubapi"]
 		softwarename = softwarechunk["software"]
-		jsonfile = os.path.join(locations.jsoncachefolder, softwarename + ".json")
+		projectname = get_project_from_github_api_link(githubjsonlink)
 
+		try:
+			file = filedict[projectname]
+			#Exit reuse path if not yet downloaded
+			if not file:
+				raise HBUError('Not yet downloaded')
+			softwarechunk["githubjson"] = file
+			print("using already downloaded file for {}".format(projectname))
+		#If not downloaded file yet
+		except:
+			jsonfile = os.path.join(locations.jsoncachefolder, projectname + ".json")
+
+			#Download it, set the chunk's json file path to it, and update the filedict in case it's a shared file
+			file = getJsonThread(githubjsonlink, jsonfile, softwarename)
+			softwarechunk["githubjson"] = file
+			filedict[projectname] = file
+
+		#If project page was not pre-defined set it to the base github project link
 		if softwarechunk["projectpage"] == None or softwarechunk["projectpage"] == "":
 			softwarechunk["projectpage"] = parse_api_to_standard_github(githubjsonlink)
-
-		getJsonThread(softwarename, githubjsonlink, jsonfile, softwarechunk)
 
 	dicttopopulate = sorted(dicttopopulate, key = lambda i: i["software"])
 	return dicttopopulate
 
-def getJsonThread(softwarename, apiurl, jsonfile, softwarechunk):
+def getJsonThread(apiurl, jsonfile, softwarename):
 	try:
-		urllib.request.urlretrieve(apiurl,jsonfile)
-		print("Downloaded new json file for {}".format(softwarename))
-		softwarechunk["githubjson"] = jsonfile
-		return jsonfile
+		jfile = etags.accessETaggedFile(apiurl,jsonfile)
+		if jfile:
+			return jfile
+		else:
+			pass
 	except Exception as e:
 		print("getJson error - {}".format(e))
-		if os.path.isfile(jsonfile):
-				print("could not get updated link, falling back on older version")
-				softwarechunk["githubjson"] = jsonfile
-		else:
-			print("No fallback available, software will be unavailable")
+
+	if os.path.isfile(jsonfile):
+		print("could not get updated link for {}, falling back on older version".format(softwarename))
+		return jsonfile
+	else:
+		print("No fallback available, software will be unavailable")
 
 def getJsonSoftwareLinks(dicttopopulate):
+
 	if not os.path.isdir(locations.jsoncachefolder):
-		of.mkdir(locations.jsoncachefolder)
+		os.mkdir(locations.jsoncachefolder)
 	for softwarechunk in dicttopopulate:
 		githubjsonlink = softwarechunk["githubapi"]
-		softwarename = softwarechunk["software"]
+		softwarename = softwarechunk["githubapi"]
+		projectname = get_project_from_github_api_link(githubjsonlink)
 
-		jsonfile = os.path.join(locations.jsoncachefolder, softwarename + ".json")
+		jsonfile = os.path.join(locations.jsoncachefolder, projectname + ".json")
 		softwarechunk["githubjson"] = jsonfile
 		print("using previously downloaded json file {}".format(jsonfile))
 
@@ -115,13 +105,19 @@ def getJsonSoftwareLinks(dicttopopulate):
 def getJson(softwarename, apiurl):
 	try:
 		jsonfile = os.path.join(locations.jsoncachefolder, softwarename + ".json")
-		urllib.request.urlretrieve(apiurl,jsonfile)
+		jfile = etags.accessETaggedFile(apiurl,jsonfile)
+
 		print("Downloaded new json file for {}".format(softwarename))
-		return jsonfile
+		return jfile
 	except:
 		print("failed to download json file for {}".format(softwarename))
 		return None
 
+
+
+
+
+###URL Parsing
 def parse_standard_github_to_api(url):
 	remove = [
 	"/pulls",
@@ -155,26 +151,101 @@ def parse_api_to_standard_github(url):
 	except:
 		return None
 
-def grabgravatar(url):
-	downloadedfile = urllib.request.urlretrieve(url)[0]
-	dljsonfile = url.rsplit("/",1)[1]
-	imagename = dljsonfile.rsplit(".",1)[0]
-	downloadlocation = os.path.join(locations.downloadsfolder,dljsonfile)
-	shutil.move(downloadedfile, downloadlocation)
-	with open(downloadlocation) as jsonfile:
-		jfile = json.load(jsonfile)
-		avatarurl = jfile["entry"][0]["thumbnailUrl"]
-	return cacheimage(avatarurl,imagename)
+def get_project_from_github_api_link(url):
+	remove = [
+		"https:",
+		"http:",
+		"github.com",
+		"releases",
+		"api",
+		"repos",
+		".",
+	]
+
+	for r in remove:
+		url = url.replace(r, "")
+
+	url=url.strip("/")
+
+	project_and_author = url.split('/')
+
+	return project_and_author[1]
+
+
+
+
+
+
+###Image handling
+def cacheimage(url,softwarename):
+	try:
+		with urllib.request.urlopen(url) as response:
+			info = response.info()
+			type=info.get_content_subtype()
+			file = "{}.{}".format(softwarename,type)
+			file = os.path.join(locations.imagecachefolder,file)
+			imagefile = open(file, 'wb')
+			shutil.copyfileobj(response, imagefile)
+			print("downloaded image {}".format(file))
+	except: 
+		print("failed to download file {} from url {}".format(file, url))
+		return None
+	return file
 
 def getcachedimage(imagename):
-		photopath = imagename + ".png"
-		photopath = os.path.join(locations.imagecachefolder, photopath)
-		photoexists = os.path.isfile(photopath)
-		if photoexists:
-			return photopath
-		else:
-			return False
+	import os
+	photopath = None
 
+	because_there_is_a_high_chance_its_png = os.path.join(locations.imagecachefolder,"{}.png".format(imagename))
+	if os.path.isfile(because_there_is_a_high_chance_its_png):
+		return because_there_is_a_high_chance_its_png
+
+	for file in os.listdir(locations.imagecachefolder):
+		strippedfile = file.strip(".jpeg").strip(".png").strip(".gif")
+		print("search {} - compare {}".format(imagename, strippedfile))
+		if imagename == strippedfile:
+			photopath = os.path.join(locations.imagecachefolder, file)
+			break
+	if photopath:
+		if os.path.isfile(photopath):
+			return photopath
+
+	# photopath = imagename + ".png"
+	# photopath = os.path.join(locations.imagecachefolder, photopath)
+	# if os.path.isfile(photopath):
+	# 	return photopath
+	return False
+
+def grabgravatar(user):
+	base_gravatar = "http://de.gravatar.com/"
+	user_json = "{}.json".format(user)
+	gravatar_url = "{}{}".format(base_gravatar,user_json)
+	tempdownloadedfile, headers = urllib.request.urlretrieve(gravatar_url)
+	downloadsfolderlocation = os.path.join(locations.downloadsfolder,user_json)
+	shutil.move(tempdownloadedfile, downloadsfolderlocation)
+	with open(downloadsfolderlocation) as jsonfile:
+		jfile = json.load(jsonfile)
+		avatarurl = jfile["entry"][0]["thumbnailUrl"]
+	return cacheimage(avatarurl,user)
+
+def guessgithubavatar(author):
+	imageurl = "https://avatars.githubusercontent.com/{}".format(author)
+	try:
+		image, headers = urllib.request.urlretrieve(imageurl)
+		filename = headers["Content-Disposition"].split("filename=",1)[1]
+		cachelocation = os.path.join(locations.imagecachefolder,filename)
+		shutil.move(image, cachelocation)
+		print("downloaded guessed avatar image {} for author {} from url {}".format(cachelocation, author, fileURL))
+		return filename
+	except Exception as e: 
+		print("failed to find github avatar for author {}".format(author))
+		return None
+
+
+
+
+
+###Pip module handling
 def installpipmodule(module):
 	try:
 		print("installing {} via pip".format(module))
@@ -193,10 +264,13 @@ def checkifmoduleinstalled(module):
 		found = False
 
 	if not found: 
-		reqs = subprocess.check_output([sys.executable, '-m', 'pip', 'list'])
-		installed_packages = [r.decode().split(' ')[0] for r in reqs.split()]
-		if module in installed_packages:
-			found = True
+		try:
+			reqs = subprocess.check_output([sys.executable, '-m', 'pip', 'list'])
+			installed_packages = [r.decode().split(' ')[0] for r in reqs.split()]
+			if module in installed_packages:
+				found = True
+		except:
+			found = False
 
 	if not found:
 		print("module {} not installed".format(module))
@@ -216,6 +290,7 @@ def installmodulelist(modules):
 		# Wait for all of them to finish
 		for thread in threads:
 			thread.join()
+
 
 
 

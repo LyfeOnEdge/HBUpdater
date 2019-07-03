@@ -3,6 +3,7 @@ import modules.HBUpdater as HBUpdater
 import os, json, shutil
 version = 0.2
 
+print("remember to delete old guicore repo list variable")
 #variable to hold repo list
 repolist = []
 #variable to track the current selected repo
@@ -34,26 +35,27 @@ def setpilstatus(status):
 	global pilstatus
 	pilstatus = status
 
-def setguisetting(newentry):
+def setguisetting(newentry, silent = False):
 	#open log
-	print("\n updating gui log with {}".format(json.dumps(newentry,indent=4)))
+	if not silent:
+		print("\n updating gui log with {}".format(json.dumps(newentry,indent=4)))
 	with open(guisettings, 'r') as jfile:  
 		originaljfile = json.load(jfile)
 
 	#update value
-	originaljfile.update(newentry)
+	originaljfile = dict(originaljfile, **newentry)
 
 	#write updated log
 	with open(guisettings, 'w') as jfile:
 		json.dump(originaljfile, jfile, indent=4,)
 
-def checkguisetting(software, key):
+def checkguisetting(key, value):
 	try:
 		with open(guisettings, 'r') as json_file:  
 			jfile = json.load(json_file)
 
 		try:
-			info = jfile[software][key]
+			info = jfile[key][value]
 		except:
 			info = None
 	except:
@@ -61,7 +63,7 @@ def checkguisetting(software, key):
 
 	return info
 
-def getrepochunkfromurl(url,description,subfolder,genre):
+def getrepochunkfromurl(url,description,):
 	apiurl = webhandler.parse_standard_github_to_api(url)
 	if apiurl == None:
 		print("error parsing link")
@@ -82,9 +84,6 @@ def getrepochunkfromurl(url,description,subfolder,genre):
 			"author" : author,
 			"projectpage" : None,
 			"description" : description,
-			"group" : genre,
-			"install_subfolder" : subfolder,
-			"zip_items" : None,
 			"githubjson" : jsonfile,
 			"photopath" : None,
 			}
@@ -96,7 +95,7 @@ def getrepochunkfromurl(url,description,subfolder,genre):
 
 def updateguirepos(newentry):
 	#open log
-	print("updating repo file with {}".format(newentry))
+	print("updating repo file with {}".format(json.dumps(newentry,indent=4)))
 	with open(repolog, 'r') as jfile:  
 		originaljfile = json.load(jfile)
 
@@ -143,6 +142,25 @@ def getrepoinfo(software):
 
 	return info
 
+def getreposbygroup(category):
+	repos = []
+	try:
+		with open(repolog, 'r') as json_file:  
+			jfile = json.load(json_file)
+			for repo in jfile:
+				if repo["category"] == category:
+					repos.append(repo)
+		return repos
+	except:
+		return None
+
+def getreposbygroupfromlist(category, listy):
+	repos = []
+	for repo in listy:
+		if repo["category"] == category:
+			repos.append(repo)
+		return repos
+
 def getrepolist():
 	try:
 		with open(repolog, 'r') as json_file:  
@@ -150,8 +168,7 @@ def getrepolist():
 	except:
 		return None
 
-def makerepodict():
-	global repolist
+def makerepolist():
 	repolist=[]
 	jsonrepolist = getrepolist()
 	if not jsonrepolist == None:

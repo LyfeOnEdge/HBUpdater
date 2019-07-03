@@ -1,13 +1,16 @@
 {
     "guisettings": {
         "automatically_check_for_repo_updates": 1,
-        "automatically_check_for_updates": 1
+        "enable_homebrew_store_compatibility" : 1
+    },
+    "last_payload" : {
+        "selection" : 0
     },
     "dimensions": {
         "minguiheight": 510,
-        "minguiwidth": 700,
+        "minguiwidth": 720,
         "guiheight": 510,
-        "guiwidth": 730
+        "guiwidth": 720
     },
 	"fusee-launcher": {
 		"version": "not installed",

@@ -44,7 +44,7 @@ def downloadNUTandinstalldependencies():
 		print("initializing nut folder")
 
 	nutjson = webhandler.getJson("nut", locations.nutserverdict["githubapi"])
-	with open(nutjson) as json_file: #jsonfile is path, json_file is file obj
+	with open(nutjson, encoding="utf-8") as json_file: #jsonfile is path, json_file is file obj
 		jfile = json.load(json_file)
 		if jfile == [] or jfile == None:
 			print("Error: empty json nut file")
@@ -99,7 +99,7 @@ def downloadFLUFFYandinstalldependencies():
 		fluffylist = webhandler.getUpdatedSoftwareLinks(fluffylist)
 
 	fluffyjson = fluffylist[0]["githubjson"]
-	with open(fluffyjson) as json_file: #jsonfile is path, json_file is file obj
+	with open(fluffyjson, encoding="utf-8") as json_file: #jsonfile is path, json_file is file obj
 		jfile = json.load(json_file)
 		if jfile == [] or jfile == None:
 			print("Error: empty json nut file")

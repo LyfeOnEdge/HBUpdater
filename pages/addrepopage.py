@@ -1,468 +1,446 @@
 from modules.format import * 
-import modules.customwidgets as cw
 import modules.guicore as guicore
 import modules.HBUpdater as HBUpdater
-import modules.webhandler as webhandler
 import modules.locations as locations
+import modules.customwidgets as cw
+import pages.pagetemplate as pt
+import json
+
+import os
+
 import tkinter as tk
 from tkinter.constants import *
 
-import sys, subprocess, os, json
+details_guide_text = """
+This page shows your custom github repos.
+"""
 
 
-sd_subfolder_placeholder = "SD subfolder (blank for root)"
-genre_placeholder = "Genre"
-repo_description_placeholder = "(Optional) Repo Description"
+assetguidetext = """Begin by chosing the asset you wish to manage from the list. Click "SELECT", and the pattern boxes will be filled out.
 
+If the asset's file name doesn't change between release versions simply selecting the
+asset should be enough since the auto-filled pattern and extension will always match.
+
+If not, HBUpdater uses a pattern-based system to select the correct asset between releases.
+The first box should contain a consistent pattern to to find the asset by.
+The second box should contain the file's extension (eg .nro, .zip, .py, etc)
+For example:
+    If a repo offers 
+        homebrew-switch_v231_0938.nro, 
+        homebrew-psp_v231_0938.tuv,
+        homebrew-xbx_v231_0938.xyz
+    You would select the switch asset, remove the version number (_v231_0938) and specify the file type.
+    You would be left with 'homebrew-switch' in the first box and '.nro' in the second.
+"""
 
 new_url_placeholder = "Repo URL in format: https://www.github.com/author/repo"
 new_subfolder_placeholder = "SD subfolder (blank for root)"
 new_genre_placeholder = "Genre"
 new_description_placeholder = "(Optional) Repo Description"
 
-REPOGUIDETEXT = """Usage Guide:
-
-Click new, fill out the various fields, and hit save to add a new repo. 
-
-To edit a repo: select the repo you wish to edit, change desired values, and click save.
-
-#REPO URL: Add your github repo link in format https://github.com/Author/Repo.
-
-#SD SUBFOLDER: The subfolder to install to on the SD card. Usually "/" or "/switch" (lower case). Check out the readme for the github repo you are adding if you don't know as it will likely tell you. Sometimes .zips contain the subfolders with in them and can be extracted to the root. In this case leave the SD subfolder field blank. 
-
-#GENRE: Makes no difference in functionality, you can set this to whatever you want.
-
-#DESCRIPTION: Not required, but nice."""
-
-#Main screen for adding repositories to the gui
-class addRepoScreen(cw.themedframe):
-	def __init__(self, parent, controller, page_name, back_command):
-		cw.themedframe.__init__(self,parent,background_color= light_color)
-
-		#Screen for viewing current repos
-		self.mainreposcreen = cw.themedframe(self,background_color=light_color)
-		self.mainreposcreen.place(x=0,y=0,relwidth=1,relheight=1)
-
-		self.listboxframe = cw.themedframe(self.mainreposcreen)
-		self.listboxframe.place(x=+repolistboxseparatorwidth,y=+repolistboxseparatorwidth,relwidth=1, width=-(infoframewidth+repolistboxseparatorwidth), relheight=1,height=-(4*entryheight+repolistboxseparatorwidth))
-
-		self.listboxlist = []
-		self.repolistboxframe = cw.titledlistboxframe(self.listboxframe,"Repo")
-		self.repolistboxframe.place(relx=0,rely=0,relwidth=1,relheight=1,)
-		self.repolistbox = cw.customlistbox(self.listboxframe)
-		self.repolistbox.place(relheight=1,relwidth=1, x=+lbcolumnoffset, width=-(lbcolumnoffset+2*repocolumnwidth), y=columtitlesheight+repolistboxseparatorwidth,height=-(columtitlesheight+injector_separator_width))
-		self.repolistbox.bind('<<ListboxSelect>>',self.CurSelet)
-
-		self.listboxlist.append(self.repolistbox)
-
-		self.authorseparator = cw.separator(self.listboxframe)
-		self.authorseparator.place(relx=1,x=-3*repocolumnwidth,rely=0,width=repolistboxseparatorwidth,relheight=1,)
-		self.authorlistboxframe = cw.titledlistboxframe(self.listboxframe,"Author")
-		self.authorlistboxframe.place(relx=1,x=-3*repocolumnwidth+repolistboxseparatorwidth,rely=0,relheight=1, width=repocolumnwidth,)
-		self.authorlistbox = cw.customlistbox(self.listboxframe)
-		self.authorlistbox.place(relx=1,x=-3*repocolumnwidth+repolistboxseparatorwidth+lbcolumnoffset,rely=0,relheight=1, width=repocolumnwidth, y=columtitlesheight+repolistboxseparatorwidth, height=-(columtitlesheight+injector_separator_width))
-		self.listboxlist.append(self.authorlistbox)
-
-		self.groupseparator = cw.separator(self.listboxframe)
-		self.groupseparator.place(relx=1,x=-2*repocolumnwidth,rely=0,width=repolistboxseparatorwidth,relheight=1,)
-		self.grouplistboxframe = cw.titledlistboxframe(self.listboxframe,"Genre")
-		self.grouplistboxframe.place(relx=1,x=-2*repocolumnwidth+repolistboxseparatorwidth,rely=0,relheight=1, width=repocolumnwidth,)
-		self.grouplistbox = cw.customlistbox(self.listboxframe)
-		self.grouplistbox.place(relx=1,x=-2*repocolumnwidth+repolistboxseparatorwidth+lbcolumnoffset,rely=0,relheight=1, width=repocolumnwidth, y=columtitlesheight+repolistboxseparatorwidth, height=-(columtitlesheight+injector_separator_width))
-		self.listboxlist.append(self.grouplistbox)
-
-		self.sdseparator = cw.separator(self.listboxframe)
-		self.sdseparator.place(relx=1,x=-repocolumnwidth,rely=0,width=repolistboxseparatorwidth,relheight=1,)
-		self.sdlistboxframe = cw.titledlistboxframe(self.listboxframe,"Subfolder")
-		self.sdlistboxframe.place(relx=1,x=-repocolumnwidth+repolistboxseparatorwidth,rely=0,relheight=1, width=repocolumnwidth,)
-		self.sdlistbox = cw.customlistbox(self.listboxframe)
-		self.sdlistbox.place(relx=1,x=-repocolumnwidth+repolistboxseparatorwidth+lbcolumnoffset,rely=0,relheight=1, width=repocolumnwidth, y=columtitlesheight+repolistboxseparatorwidth, height=-(columtitlesheight+injector_separator_width))
-		self.listboxlist.append(self.sdlistbox)
-
-		for listbox in self.listboxlist:
-			listbox.bind("<MouseWheel>", self.OnMouseWheel)
-
-		self.iconspacer = 0
-
-		self.bottomseparator = cw.separator(self.listboxframe)
-		self.bottomseparator.place(relx=0,rely=1,y=-repolistboxseparatorwidth,relwidth=1, height=repolistboxseparatorwidth)
-
-		self.horizontalseparator = cw.separator(self.listboxframe)
-		self.horizontalseparator.place(relx=0,rely=0,y=columtitlesheight,height=repolistboxseparatorwidth,relwidth=1,)
-
-		self.repoframe = cw.themedframe(self.mainreposcreen,background_color= light_color)
-		self.repoframe.place(relx=0, rely=1, y=-((4*entryheight)+separatorwidth),relwidth=1, width=-(infoframewidth), height=((4*entryheight)+separatorwidth))
-		
-		self.entryboxlist=[]
-		self.iconspacer = 0
-		self.urlbox_frame = cw.themedframe(self.repoframe,background_color=light_color,)
-		self.urlbox_frame.place(relx=0.0, rely=1, height=entryheight, relwidth=1,y=-(4*entryheight)-separatorwidth)
-		self.urlbox = cw.entrybox(self.urlbox_frame, 
-			command=lambda: self.saveedits(), 
-			placeholder="Gituhub Repo URL",
-			)
-		self.urlbox.place(relx=0,rely=.5, x=+icon_and_search_bar_spacing, relwidth=1, width=-self.iconspacer, height=entryheight-icon_and_search_bar_spacing, y=-((entryheight)/2) + icon_and_search_bar_spacing )
-
-		self.entryboxlist.append(self.urlbox)
-
-		self.iconspacer = 0
-		self.subfolderbox_frame = cw.themedframe(self.repoframe,background_color=light_color,)
-		self.subfolderbox_frame.place(relx=0.0, rely=1, height=entryheight, relwidth=1,y=-(3*entryheight)-separatorwidth)
-		self.subfolderbox = cw.entrybox(self.subfolderbox_frame, 
-			command=lambda: self.saveedits(), 
-			placeholder=sd_subfolder_placeholder,
-			)
-		self.subfolderbox.place(relx=0,rely=.5, x=+icon_and_search_bar_spacing, relwidth=1, width=-(self.iconspacer), height=entryheight-icon_and_search_bar_spacing, y=-((entryheight)/2) + icon_and_search_bar_spacing )
-
-		self.entryboxlist.append(self.subfolderbox)
-
-		self.genrebox_frame = cw.themedframe(self.repoframe,background_color=light_color,)
-		self.genrebox_frame.place(relx=0.0, rely=1, height=entryheight, relwidth=1,y=-(2*entryheight)-separatorwidth)
-		self.genrebox = cw.entrybox(self.genrebox_frame, 
-			command=lambda: self.saveedits(), 
-			placeholder=genre_placeholder,
-			)
-		self.genrebox.place(relx=0,rely=.5, x=+icon_and_search_bar_spacing, relwidth=1, width=-(self.iconspacer), height=entryheight-icon_and_search_bar_spacing, y=-((entryheight)/2) + icon_and_search_bar_spacing )
-
-		self.entryboxlist.append(self.genrebox)
-
-		self.iconspacer = 0
-		self.descriptionbox_frame = cw.themedframe(self.repoframe,background_color=light_color,)
-		self.descriptionbox_frame.place(relx=0.0, rely=1, height=entryheight, relwidth=1,y=-entryheight-separatorwidth, )
-		self.descriptionbox = cw.entrybox(self.descriptionbox_frame, 
-			command=lambda: self.saveedits(), 
-			placeholder=repo_description_placeholder,
-			)
-		self.descriptionbox.place(relx=0,rely=.5, x=+icon_and_search_bar_spacing, relwidth=1, width=-(self.iconspacer), height=entryheight-icon_and_search_bar_spacing, y=-((entryheight)/2) + icon_and_search_bar_spacing )
-
-		self.entryboxlist.append(self.descriptionbox)
-
-
-		
-
-		self.repoguide = cw.ScrolledText(self.mainreposcreen,
-			background=light_color,
-			foreground=guidetextcolor,
-			wrap="word",
-			highlightthickness=0,
-			borderwidth=0,
-			font=repoguidefont
-			)
-		self.repoguide.place(relx=1,x=-infoframewidth+2,rely=0,y=+separatorwidth,width=infoframewidth-2,relheight=1,height=-((87.5+45.75)+separatorwidth))
-		self.repoguide.configure(state=NORMAL)
-		self.repoguide.insert(END, REPOGUIDETEXT)
-		self.repoguide.configure(state=DISABLED)
-
-		self.infobox = cw.infobox(self.mainreposcreen)
-		self.infobox.place(relx=1, x=-infoframewidth, rely=1, y=-87.5, height=87.5, width=infoframewidth)
-		self.returnimage = tk.PhotoImage(file=os.path.join(locations.assetfolder,"returnbutton.png"))
-		self.returnimage = self.returnimage.zoom((3)).subsample(5)
-		#Back to list button frame, placed first so the details button covers it
-		self.repobuttons =cw.navbox(self.infobox,
-			primary_button_command = lambda: self.saveedits(), 
-			primary_button_text="SAVE",
-			etc_button_image = self.returnimage,
-			etc_button_command = lambda: controller.show_frame("mainPage"),
-			left_context_command = lambda: self.prevbuttonpress(),
-			right_context_command = lambda: self.nextbuttonpress(),
-			)
-		self.repobuttons.place(relx=.5, rely=1, x=-100, y=-87.5, height= 87.5, width=200)
-
-		self.trashimage = tk.PhotoImage(file=os.path.join(locations.assetfolder, "trash.png"))
-		self.trashimage= self.trashimage.subsample(2)
-
-		self.hackynewanddeletebuttons = cw.navbox(self.mainreposcreen,
-			primary_button_command = lambda: self.shownewreposcreen(), 
-			primary_button_text="NEW",
-			etc_button_image = self.trashimage,
-			etc_button_command = lambda: self.removerepo(),
-			left_context_command = None,
-			right_context_command = None,
-			)
-		self.hackynewanddeletebuttons.place(relx=1, rely=1, x=-200, y=-(87.5+45.75), height= 43.75, width=200)
-
-		self.reloadreopscreen()
-
-		#frame for adding new repo
-		self.addreposcreen = cw.themedframe(self,background_color=light_color)
-		self.addreposcreen.place(x=0,y=0,relwidth=1,relheight=1)
-
-		self.addrepoframe = cw.themedframe(self.addreposcreen,background_color= light_color)
-		self.addrepoframe.place(relx=0, rely=0,relwidth=1, height=4*entryheight+separatorwidth)
-		
-		self.newentryboxlist=[]
-		self.iconspacer = separatorwidth
-		self.new_urlbox_frame = cw.themedframe(self.addrepoframe,background_color=light_color,)
-		self.new_urlbox_frame.place(relx=0.0, rely=1, height=entryheight, relwidth=1,y=-(4*entryheight)-separatorwidth)
-		self.new_urlbox = cw.entrybox(self.new_urlbox_frame,  
-			placeholder=new_url_placeholder,
-			)
-		self.new_urlbox.place(relx=0,rely=.5, x=+icon_and_search_bar_spacing, relwidth=1, width=-self.iconspacer, height=entryheight-icon_and_search_bar_spacing, y=-((entryheight)/2) + icon_and_search_bar_spacing )
-		self.newentryboxlist.append(self.new_urlbox)
-
-		self.new_subfolderbox_frame = cw.themedframe(self.addrepoframe,background_color=light_color,)
-		self.new_subfolderbox_frame.place(relx=0.0, rely=1, height=entryheight, relwidth=1,y=-(3*entryheight)-separatorwidth)
-		self.new_subfolderbox = cw.entrybox(self.new_subfolderbox_frame, 
-			placeholder=new_subfolder_placeholder,
-			)
-		self.new_subfolderbox.place(relx=0,rely=.5, x=+icon_and_search_bar_spacing, relwidth=1, width=-(self.iconspacer), height=entryheight-icon_and_search_bar_spacing, y=-((entryheight)/2) + icon_and_search_bar_spacing )
-		self.newentryboxlist.append(self.new_subfolderbox)
-
-		self.new_genrebox_frame = cw.themedframe(self.addrepoframe,background_color=light_color,)
-		self.new_genrebox_frame.place(relx=0.0, rely=1, height=entryheight, relwidth=1,y=-(2*entryheight)-separatorwidth)
-		self.new_genrebox = cw.entrybox(self.new_genrebox_frame, 
-			placeholder=new_genre_placeholder,
-			)
-		self.new_genrebox.place(relx=0,rely=.5, x=+icon_and_search_bar_spacing, relwidth=1, width=-(self.iconspacer), height=entryheight-icon_and_search_bar_spacing, y=-((entryheight)/2) + icon_and_search_bar_spacing )
-		self.newentryboxlist.append(self.new_genrebox)
-
-		self.new_descriptionbox_frame = cw.themedframe(self.addrepoframe,background_color=light_color,)
-		self.new_descriptionbox_frame.place(relx=0.0, rely=1, height=entryheight, relwidth=1,y=-entryheight-separatorwidth, )
-		self.new_descriptionbox = cw.entrybox(self.new_descriptionbox_frame, 
-			placeholder=new_description_placeholder,
-			)
-		self.new_descriptionbox.place(relx=0,rely=.5, x=+icon_and_search_bar_spacing, relwidth=1, width=-(self.iconspacer), height=entryheight-icon_and_search_bar_spacing, y=-((entryheight)/2) + icon_and_search_bar_spacing )
-		self.newentryboxlist.append(self.new_descriptionbox)
-
-		self.download_github_button = cw.navbutton(self.addreposcreen,command_name = lambda: self.download_json_then_list_assets(), text_string="Get Repo Data")
-		self.download_github_button.place(relx=0,rely=0,y=+((4*entryheight)+separatorwidth),x=0,height=navbuttonheight,width=3*navbuttonheight)
-
-		self.get_repo_data_button_guide = cw.themedguidelabel(self.addreposcreen,"""^Fill out the fields above\n<-Then click this button to download the repo information from github""")
-		self.get_repo_data_button_guide.place(relx=0,rely=0,y=+((4*entryheight)+separatorwidth),relwidth=1, width=-3*navbuttonheight, x=+3*navbuttonheight,height=navbuttonheight)
-
-
-		self.assetsframe = cw.themedframe(self.addreposcreen,background_color=light_color)
-		self.assetsframe.place(relx=0,rely=0,y=((4*entryheight)+2*separatorwidth+navbuttonheight),relwidth=1,  relheight=1,height=-((4*entryheight)+2*separatorwidth+navbuttonheight))
-		self.assetslistbox = cw.ScrolledListBox(self.assetsframe,borderwidth=0,highlightthickness=0,background=dark_color,foreground=w)
-		self.assetslistbox.place(x=+separatorwidth,y=0,relwidth=1,relheight=1, width=-2*separatorwidth, height=-(2*separatorwidth+2*navbuttonheight))
-		self.assetsguide = cw.themedguidelabel(self.assetsframe, "^Select github asset you wish to manage with this repo. \n This relies on the repo's developer releasing the app with a consistent format.",)
-		self.assetsguide.place(x=0,rely=1,y=-(2*navbuttonheight+separatorwidth), relwidth=1,height=navbuttonheight)
-		self.finaladdrepobutton = cw.navbutton(self.assetsframe, text_string="ADD REPO", command_name=lambda: self.addrepo())
-		self.finaladdrepobutton.place(rely=1,relx=0,x=+separatorwidth,y=-(navbuttonheight+separatorwidth),height=navbuttonheight,width=3*navbuttonheight)
-
-		self.dummyframe = cw.themedframe(self.addreposcreen,background_color=light_color)
-		self.dummyframe.place(relx=0,rely=0,y=((4*entryheight)+2*separatorwidth+navbuttonheight),relwidth=1,  relheight=1,height=-((4*entryheight)+2*separatorwidth+navbuttonheight))
-
-		self.returnbuttonframe = cw.themedframe(self.addreposcreen)
-		self.returnbuttonframe.place(relx=1,rely=1,x=-(navbuttonspacing+navbuttonheight), y=-(navbuttonspacing+navbuttonheight),height=navbuttonheight, width=navbuttonheight)
-		self.returntoreposcreenbutton = cw.navbutton(self.returnbuttonframe,image_object=self.returnimage,command_name=lambda: self.showmainreposcreen())
-		self.returntoreposcreenbutton.place(relwidth=1,relheight=1)
-
-		self.raiseframe(self.mainreposcreen)
-		
-		#fill out info
-		#Get json
-		#fill lisbox
-		#raise listbox and submit button
-		#user selects item from listbox
-		#submitbutton becomes undisabled
-		#user submits new repo
-	def download_json_then_list_assets(self):
-		url = self.new_urlbox.get_text().strip("/")
-		if url == "" or url == None:
-			print("No url to parse")
-			return
-		desc = self.new_descriptionbox.get_text()
-		subfolder = self.new_subfolderbox.get_text()
-		genre = self.new_genrebox.get_text()
-
-		if desc == None or desc == "":
-			desc = "Added by user, you can edit this description in the repos menu."
-		if genre == None or genre == "":
-			genre = "user repo"
-
-
-		repochunk = guicore.getrepochunkfromurl(url,desc,subfolder,genre)
-		# print(json.dumps(repochunk,indent=4))
-
-		guicore.newrepotempvariable = repochunk
-
-		with open(guicore.newrepotempvariable["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
-			jfile = json.load(json_file)
-
-			if jfile == [] or jfile == None:
-				print("""No api data, it looks like the repository you are trying to add 
-	has no official releases, talk to the repo author and ask them to 
-	release it in order to use it with HBUpdater.""")
-				return
-
-			if len(jfile[0]["assets"]) == 0:
-				print("No assets")
-				return
-
-			self.assetslistbox.delete(0,END)
-			for asset in jfile[0]["assets"]:
-				self.assetslistbox.insert(END,asset["name"])
-
-			self.raiseframe(self.assetsframe)
-
-	def addrepo(self):
-		print("adding repo")
-		
-		try:
-			assetnum = self.assetslistbox.curselection()[0]
-		except:
-			print("no asset selected")
-			return
-
-		print("asset chosen: {}".format(assetnum))
-
-		guicore.newrepotempvariable["github_asset"] = assetnum
-		print(json.dumps(guicore.newrepotempvariable,indent=4))
-
-		newentry = {
-						guicore.newrepotempvariable["software"] : guicore.newrepotempvariable
-					}
-
-		guicore.hbdict.append(guicore.newrepotempvariable)
-		guicore.setDict(guicore.hbdict)
-		guicore.updateguirepos(newentry)
-		guicore.newrepotempvariable = {}
-		print("repo successfully added")
-		self.reloadreopscreen()
-
-	def saveedits(self):
-		url = self.urlbox.get_text()
-
-		desc = self.descriptionbox.get_text()
-		if desc == repo_description_placeholder:
-			desc = None
-
-		subfolder = self.subfolderbox.get_text()
-		if sd_subfolder_placeholder == subfolder:
-			subfolder = None
-
-		genre = self.genrebox.get_text()
-		if genre == genre_placeholder:
-			genre = None
-
-		repochunk = guicore.getrepochunkfromurl(url,desc,subfolder,genre)
-		print(json.dumps(repochunk,indent=4))
-
-		with open(repochunk["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
-			jfile = json.load(json_file)
-
-		if jfile == [] or jfile == None:
-			print("""No api data, it looks like the repository you are trying to add 
-has no official releases, talk to the repo author and ask them to 
-release it in order to use it with HBUpdater.""")
-			return
-
-		if len(jfile[0]["assets"]) == 0:
-			print("No assets")
-			return
-
-		newentry = {
-						repochunk["software"] : repochunk
-					}
-
-		guicore.updateguirepos(newentry)
-
-		chunk = 0
-		for softwarechunk in guicore.hbdict:
-			if softwarechunk["software"] == repochunk["software"]:
-				guicore.hbdict[chunk] = repochunk
-				guicore.setDict(guicore.hbdict)
-				self.reloadreopscreen()
-				return
-			else:
-				chunk +=1
-		print("If you are seeing this message, there is a bug in the 'add repo' screen, and your repo was not added")
-		return
-
-	def removerepo(self):
-		selectiontoremove = guicore.repolist[guicore.currepo]["software"]
-		print("removing repo {}".format(selectiontoremove))
-		guicore.removeitemfromrepo(selectiontoremove)
-
-		for softwarechunk in guicore.hbdict:
-			if softwarechunk["software"] == selectiontoremove:
-				guicore.hbdict.remove(softwarechunk)
-
-		guicore.setDict(guicore.hbdict)
-		guicore.currepo = 0
-		self.setrepostrings()
-		self.reloadreopscreen()
-
-	def OnMouseWheel(self, event):
-		for listbox in self.listboxlist:
-			listbox.yview("scroll", -event.delta,"units")
-		# this prevents default bindings from firing, which
-		# would end up scrolling the widget twice
-		return "break"
-
-	#get current selection from list box
-	def CurSelet(self, event):
-		widget = event.widget
-		selection=widget.curselection()
-		picked = widget.get(selection[0])
-		guicore.currepo = widget.get(0, END).index(picked)
-		self.reloadreopscreen()
-		
-	def reloadreopscreen(self):
-		guicore.makerepodict()
-		self.populaterepobox()
-		self.setrepostrings()
-
-	def clearboxes(self):
-		for entry in self.entryboxlist:
-			entry.clear()
-	
-	def populaterepobox(self):
-		self.authorlistbox.config(state=NORMAL)
-		self.grouplistbox.config(state=NORMAL)
-		self.sdlistbox.config(state=NORMAL)
-		for listbox in self.listboxlist:
-			listbox.delete(0,END)
-		if not guicore.repolist == None:
-			for repo in guicore.repolist:
-					softwarename = repo["software"]
-					author = repo["author"]
-					group = repo["group"]
-					subfolder = repo["install_subfolder"]
-					if subfolder == None or subfolder == "":
-						subfolder = "root"
-					self.repolistbox.insert(END, softwarename)
-					self.authorlistbox.insert(END,author)
-					self.grouplistbox.insert(END,group)
-					self.sdlistbox.insert(END,subfolder)
-			self.authorlistbox.config(state=DISABLED)
-			self.grouplistbox.config(state=DISABLED)
-			self.sdlistbox.config(state=DISABLED)
-
-	def setrepostrings(self):
-		self.repolistbox.selection_clear(0,len(guicore.repolist)-1)
-		self.repolistbox.selection_set(guicore.currepo)
-		if not guicore.repolist == []:
-			url = guicore.repolist[guicore.currepo]["githuburl"]
-			desc = guicore.repolist[guicore.currepo]["description"]
-			subfolder = guicore.repolist[guicore.currepo]["install_subfolder"]
-			genre = guicore.repolist[guicore.currepo]["group"]
-
-			self.urlbox.enable()
-			self.urlbox.set_text(url)
-			self.urlbox.disable()
-			self.descriptionbox.set_text(desc)
-			self.subfolderbox.set_text(subfolder)
-			self.genrebox.set_text(genre)
-
-	def nextbuttonpress(self):
-		if guicore.currepo < len(guicore.repolist)-1:
-			guicore.currepo += 1
-			self.setrepostrings()
-
-	def prevbuttonpress(self):
-		if guicore.currepo > 0:
-			guicore.currepo -= 1
-			self.setrepostrings()
-
-	#raises specified frame, keeps return button on top
-	def raiseframe(self,frame):
-		frame.tkraise()
-		self.returnbuttonframe.tkraise()
-
-	def shownewreposcreen(self):
-		self.addreposcreen.tkraise()
-
-	def showmainreposcreen(self):
-		self.mainreposcreen.tkraise()
+class addrepoPage(pt.page):
+    def __init__(self, parent, controller,page_name,back_command):
+        pt.page.__init__(self,parent=parent, 
+            controller=controller,
+            back_command=back_command,
+            page_title="YOUR REPOS",
+            page_name=page_name,
+            primary_button_command=self.on_new_button,
+            primary_button_text="NEW",
+            genre_function=self.get_category,
+            noimage=True,
+            nodetail=True,
+            # version_function=self.get_store_installed_version
+            )
+        self.bind("<<ShowFrame>>", self.on_show_frame)
+
+        self.repoVar = {}
+        self.return_frame = "homePage"
+        self.maintable.place_forget()
+        self.infobox.place_forget()
+        self.details_frame.place_forget()
+        self.details_right_column.place_forget()
+
+        self.trashimage = tk.PhotoImage(file=os.path.join(locations.assetfolder, "trash.png")).subsample(2)
+
+
+        self.list_buttons_frame.etc_button.setcommand(lambda: self.controller.frames["errorPage"].getanswer(self.page_name,"Are you sure you want to delete this repo?",self.delete))
+        self.list_buttons_frame.etc_button.setimage(self.trashimage)
+
+        buttonlist = [
+            {
+            "image" : self.returnimage,
+            "callback" : lambda: self.controller.show_frame(self.return_frame),
+            "tooltip" : "Back to home screen",
+            },
+        ]
+        self.setbuttons(buttonlist)
+        
+
+        #usage guide
+        self.details_guide = cw.ScrolledText(self.main_right_column,borderwidth=0,highlightthickness=0,background=light_color,foreground=guidetextcolor,wrap=WORD,font=details_guide_font)
+        self.details_guide.place(relwidth=1,relheight=1,height=-(2*(navbuttonheight+separatorwidth)+separatorwidth))
+        
+        self.setguidetext(details_guide_text)
+
+        #Make a list of user repos, populate it from the github json, set it as software list 
+        repolist = guicore.makerepolist()
+        repolist = self.populatesoftwarelist(repolist)
+        self.setlist(repolist)
+
+        #generate table with column labels from list, status column name can be set in declaration
+        columns = ["REPO", "CATEGORY", "SUBFOLDER"]
+
+        self.list_frame = cw.ThemedFrame(self.content_frame,frame_highlightthickness=0)
+        self.list_frame.place(relx=0,rely=0,y=searchboxheight, relheight=1, height=-(searchboxheight),relwidth=1)
+
+        self.listbox_list = []
+        self.maintable = cw.themedtable(self.list_frame, columns, 100)
+        self.maintable.place(relheight=1,relwidth=1)
+        #bind listboxes to move with mouse scroll
+        for column in columns:
+            self.maintable.listboxes[column].bind("<MouseWheel>", self.OnMouseWheel)
+            # self.listbox_list.append(self.maintable.listboxes[column])
+
+        #set listboxes to easy names
+        for listbox in self.maintable.listboxes:
+            self.listbox_list.append(self.maintable.listboxes[listbox])
+
+
+        # self.listboxlist = self.maintable.listboxes
+        self.genre_listbox = self.maintable.listboxes["CATEGORY"]
+
+        self.software_listbox = self.maintable.listboxes["REPO"]
+        self.software_listbox.bind('<<ListboxSelect>>',self.CurSelet)
+
+        self.latest_listbox = cw.ThemedListbox(self)
+        self.status_listbox = self.maintable.listboxes["SUBFOLDER"]
+
+
+
+#Page frame for adding new repo
+        self.addreposcreen = cw.ThemedFrame(self.outer_frame,background_color=light_color)
+        self.addreposcreen.place(x=0,y=0,relwidth=1,relheight=1)
+
+        self.new_urlbox = cw.entrybox(self.addreposcreen, placeholder=new_url_placeholder, )
+        self.new_urlbox.place(relx=0, y = separatorwidth, relwidth=1, height=entryheight, width=-2*separatorwidth,x=+separatorwidth)
+
+        self.new_descriptionbox = cw.entrybox(self.addreposcreen, placeholder=new_description_placeholder)
+        self.new_descriptionbox.place(relx=0, y = 2*(entryheight+2*separatorwidth), relwidth=1, height=entryheight, width=-2*separatorwidth,x=+separatorwidth)
+
+        self.download_github_button = cw.navbutton(self.addreposcreen,command_name = lambda: self.download_json_then_list_assets(), text_string="NEXT")
+        self.download_github_button.place(relx=0,rely=0,y=3*(entryheight+2*separatorwidth),x=+separatorwidth,height=entryheight,width=3*entryheight)
+
+        #What subfolder do you want the asset to install to?
+        "Select install subfolder (omit leading /)\nKeep in mind some .zips already contain\nthe necessary subfolders and should be\n unzipped to the SD root"
+        subfolders = [
+        "atmosphere",
+        "ReiNX",
+        "switch",
+        "switch/PyNX",
+        "sxos",
+        ]
+        self.subfolder_dropdown = cw.cbox(self.addreposcreen, subfolders, "subfolder (blank for root)")
+        self.subfolder_dropdown.place(relx=0.00,relwidth=.333,y=(entryheight+2.5*separatorwidth),height=entryheight,width=-2*separatorwidth,x=+separatorwidth)
+
+
+        #Which description do you want your app to have
+        """Select homebrew genre (optional)"""
+        genres = [
+        "app",
+        "emu",
+        "experimental",
+        "game",
+        "homebrew",
+        "interpreter",
+        "mod",
+        "other",
+        "patch",
+        "save manager",
+        "script",
+        "tool",
+        "video player",
+        "shoutouts to simpleflips",
+        "twitch.tv/simpleflips"
+        ]
+        self.genres_dropdown = cw.cbox(self.addreposcreen, genres, "genre (up to you)")
+        self.genres_dropdown.place(relx=0.334,relwidth=.333,y=(entryheight+2.5*separatorwidth),height=entryheight,width=-separatorwidth)
+
+
+        #Which page does the repo appear on?
+        """Select page to display repo on"""
+        categories = [
+        "homebrew",
+        "emulator",
+        "game",
+        "python",
+        "cfw"
+        ]
+        self.category_dropdown = cw.cbox(self.addreposcreen, categories, "display page")
+        self.category_dropdown.place(relx=0.667,relwidth=.333,y=(entryheight+2.5*separatorwidth),height=entryheight,width=-separatorwidth)
+        self.category_dropdown.disabletext()
+        # self.category_dropdown.set_text(categories[0])
+
+        self.assetsframe = cw.ThemedFrame(self.addreposcreen,background_color=light_color)   
+
+        self.titleframe = cw.ThemedFrame(self.assetsframe,background_color=light_color)
+        self.titleframe.place(relx=0.25, rely=0, x=-5*entryheight, y=0, width = 10*entryheight, height=entryheight)
+        self.title = tk.Label(self.titleframe,foreground=w,background=light_color,text="Repo Assets",font=giantboldtext)
+        self.title.place(x=0,y=0,relwidth=1,relheight=1)
+
+        self.assetslistbox = cw.ScrolledListBox(self.assetsframe)
+        self.assetslistbox.place(x=0,relwidth=0.5,relheight=1,y=+entryheight+separatorwidth, height = -2*(entryheight+separatorwidth))
+        self.assetslistbox.bind('<<ListboxSelect>>',self.AssetSelect)    
+
+        # self.assetsguide = cw.ThemedLabel(self.assetsframe, "^Select github asset you wish to manage with this repo. \n This relies on the repo's developer releasing the app with a consistent format.",)
+        # self.assetsguide.place(x=0,rely=1,y=-(2*navbuttonheight+separatorwidth), relwidth=1,height=navbuttonheight)
+        self.select_asset_button = cw.navbutton(self.assetsframe, text_string="SELECT", command_name=lambda: self.selectasset())
+        self.select_asset_button.place(rely=1,y=-(entryheight), relx=0.25,x=-(1.5*navbuttonheight),height=entryheight,width=3*navbuttonheight)
+
+        #Not placed until needed
+        self.asset_pattern_frame = cw.ThemedFrame(self.assetsframe,background_color=light_color)
+        self.asset_pattern_frame.place(relx=0.5, x=+separatorwidth, y=0, relheight=1, relwidth=0.5, width=-separatorwidth)
+
+        self.asset_guide = cw.ScrolledText(self.asset_pattern_frame,borderwidth=0,highlightthickness=0,background=light_color,foreground=guidetextcolor,wrap=WORD,font=details_guide_font)
+        self.asset_guide.place(relx=0, rely=0, relheight=1, height=-entryheight,relwidth=1)
+        self.asset_guide.insert(END,assetguidetext)
+        self.asset_guide.configure(state=DISABLED)
+
+
+        self.asset_pattern_firstpart_box = cw.entrybox(self.asset_pattern_frame,placeholder="pattern (filename)",justification='right')
+        self.asset_pattern_firstpart_box.place(relx=0,rely=1,y=-entryheight,height=entryheight,relwidth=0.5)
+
+        self.asset_pattern_lastpart_box = cw.entrybox(self.asset_pattern_frame,placeholder=".extension")
+        self.asset_pattern_lastpart_box.place(relx=0.5,x=+separatorwidth,rely=1,y=-entryheight, height=entryheight, relwidth=0.5,width=-separatorwidth)
+
+        self.returnbuttonframe = cw.ThemedFrame(self.addreposcreen)
+        self.returnbuttonframe.place(relx=1,rely=1,x=-(separatorwidth+navbuttonheight), y=-(separatorwidth+entryheight),height=entryheight, width=navbuttonheight)
+        self.returntoreposcreenbutton = cw.navbutton(self.returnbuttonframe,image_object=self.returnimage,command_name=lambda: self.showmainreposcreen())
+        self.returntoreposcreenbutton.place(relwidth=1,relheight=1)
+
+
+        self.addrepobuttonframe = cw.ThemedFrame(self.addreposcreen,background_color=light_color)
+        self.addrepobuttonframe.place(relx=0.5, rely=1, x=-5*entryheight, y=-(entryheight+separatorwidth), width = 10*entryheight, height=entryheight)
+        self.addrepobutton = cw.navbutton(self.addrepobuttonframe, text_string="ADD REPO", command_name=lambda: self.addrepo())
+        self.addrepobutton.place(x=0,y=0,relwidth=1,relheight=1)
+
+
+        self.content_frame.tkraise()
+
+    def show_assets_frame(self):
+        self.assetsframe.place(x=+separatorwidth,y=4*(entryheight+2*separatorwidth),relwidth=1, width=-2*separatorwidth,height=-5*(entryheight+2*separatorwidth),relheight=1)
+        self.selected_asset = None
+
+    def hide_assets_frame(self):
+        self.assetsframe.place_forget()
+
+    #Update page whenever it is raised
+    def on_show_frame(self,event):
+        listbox = self.software_listbox
+        listbox.selection_set(0)
+        listbox.activate(0)
+        listbox.see(0)
+
+        self.refreshwindow()
+        self.populaterepobox()
+    
+    #Function to properly raise page so the back command works
+    def raiseRepo(self, return_screen, category):
+        self.return_frame = return_screen
+        self.category_dropdown.set_text(category)
+        
+
+    #Functions to hide and show the info box when entering and leaving the add-repo screen
+    def hideinfobox(self):
+        self.rightcolumn.place_forget()
+
+    def showinfobox(self):
+        self.rightcolumn.place(relx=1, x=-infoframewidth, rely=0.0, relheight=1, width=infoframewidth)
+
+    def get_category(self,chunk):
+        return chunk["category"]
+
+    #Redefinition of updateinfobox to nullify it
+    def updateinfobox(self):
+        self.updatelistboxcursor()
+
+    #Populates listbox then calls setrepostrings()
+    def populaterepobox(self):
+        self.latest_listbox.configure(state=NORMAL)
+        self.genre_listbox.configure(state=NORMAL)
+        self.status_listbox.configure(state=NORMAL)
+
+        for listbox in self.listbox_list:
+            listbox.delete(0,END)
+        if not self.softwarelist == None:
+            for repo in self.softwarelist:
+                    softwarename = repo["software"]
+                    author = repo["author"]
+                    group = repo["group"]
+                    subfolder = repo["install_subfolder"]
+                    if subfolder == None or subfolder == "":
+                        subfolder = "root"
+                    self.software_listbox.insert(END, softwarename)
+
+                    self.latest_listbox.insert(END,author)
+
+                    self.genre_listbox.insert(END,group)
+                    self.status_listbox.insert(END,subfolder)
+            self.latest_listbox.configure(state=DISABLED)
+            self.genre_listbox.configure(state=DISABLED)
+            self.status_listbox.configure(state=DISABLED)
+
+
+    def AssetSelect(self, event):
+        try:
+            widget = event.widget
+            selection=widget.curselection()
+            picked = widget.get(selection[0])
+            self.selected_asset = picked
+        except:
+            pass
+
+    #get current selection from list box on selection, update repo strings
+    def CurSelet(self, event):
+        widget = event.widget
+        selection=widget.curselection()
+        picked = widget.get(selection[0])
+        self.currentselection = widget.get(0, END).index(picked)
+
+    def reload(self):
+        self.on_reload()
+
+    def on_reload(self, event = None):
+        self.populaterepobox()
+        
+    def delete(self):
+        self.removerepo()
+
+    def on_new_button(self):
+        self.hideinfobox()
+        self.addreposcreen.tkraise()
+        
+#Repo System (Need to move a lot of this to its own module):
+    def selectasset(self):
+        csel = self.selected_asset
+        if csel:
+            self.fillassets(csel)
+
+    def fillassets(self, string):
+        parts = string.rsplit(".",1)
+        self.asset_pattern_firstpart_box.set_text(parts[0])
+        self.asset_pattern_lastpart_box.set_text("."+parts[1])
+
+
+
+
+
+
+    def addrepo(self):
+        print("adding repo")
+        
+        #Get strings
+        fp = self.asset_pattern_firstpart_box.get()
+        lp = self.asset_pattern_lastpart_box.get()
+        
+        self.tempvar["group"] = group = self.genres_dropdown.get()
+        self.tempvar["category"] = category = self.category_dropdown.get()
+        self.tempvar["install_subfolder"] = subfolder = self.subfolder_dropdown.get()
+        
+        #Check they are populated
+        if not fp or not lp:
+            print("No asset selected, not adding")
+            return
+
+        if not category:
+            print("Category not set, not adding")
+            return
+
+        #Set values
+        self.tempvar["pattern"] = [[fp],lp]
+        self.tempvar["category"] = self.category_dropdown.get()
+        
+        # print(json.dumps(self.tempvar,indent=4))
+
+        newentry = {
+                        self.tempvar["software"] : self.tempvar
+                    }
+
+        self.softwarelist.append(self.tempvar)
+        guicore.updateguirepos(newentry)
+        self.tempvar = {}
+        print("repo successfully added")
+        self.reload()
+        self.controller.set_repos(self.softwarelist)
+        self.clearpage()
+        self.showmainreposcreen()
+
+    def removerepo(self):
+        selectiontoremove = self.softwarelist[self.currentselection]["software"]
+        print("removing repo {}".format(selectiontoremove))
+        guicore.removeitemfromrepo(selectiontoremove)
+
+        #Remove item from current list
+        del self.softwarelist[self.currentselection]
+        self.controller.set_repos(self.softwarelist)
+        self.currentselection = 0
+        self.reload()
+  
+  
+
+
+    def download_json_then_list_assets(self):
+        url = self.new_urlbox.get().strip("/")
+        if url == "" or url == None:
+            print("No url to parse")
+            return
+        desc = self.new_descriptionbox.get()
+        subfolder = self.subfolder_dropdown.get()
+        genre = self.genres_dropdown.get()
+
+        if desc == None or desc == "":
+            desc = "Added by user, you can edit this description in the repos menu."
+        if genre == None or genre == "":
+            genre = "user repo"
+
+        self.tempvar = guicore.getrepochunkfromurl(url,desc)
+
+        with open(self.tempvar["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
+            jfile = json.load(json_file)
+
+            if jfile == [] or jfile == None:
+
+                self.controller.raiseError("""No api data, it looks like the repository you are trying to add\nhas no official releases, talk to the repo author and ask them to\nrelease it in order to use it with HBUpdater.""",self.page_name)
+
+                print()
+                return
+
+            if len(jfile[0]["assets"]) == 0:
+                print("No assets")
+                return
+
+            self.assetslistbox.delete(0,END)
+            for asset in jfile[0]["assets"]:
+                self.assetslistbox.insert(END,asset["name"])
+
+            self.show_assets_frame()
+
+
+    def clearpage(self):
+        self.new_urlbox.clear()
+        self.new_descriptionbox.clear()
+        self.subfolder_dropdown.clear()
+        self.genres_dropdown.clear()
+        self.category_dropdown.clear()
+        self.hide_assets_frame()
+        self.assetslistbox.delete(0,END)
+        self.asset_pattern_firstpart_box.clear()
+        self.asset_pattern_lastpart_box.clear()
+
+
+
+    def showmainreposcreen(self):
+        self.content_frame.tkraise()
+        self.showinfobox()
+        self.on_show_frame(None)
+

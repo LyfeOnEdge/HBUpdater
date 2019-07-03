@@ -33,8 +33,6 @@ from tkinter import filedialog
 from tkinter.constants import *
 print("using tkinter version {}".format(tk.Tcl().eval('info patchlevel')))
 
-errorstate = None
-
 #Main frame handler, raises and pages in z layer
 class FrameManager(tk.Tk):
 	def __init__(self, *args, **kwargs):
@@ -49,40 +47,66 @@ class FrameManager(tk.Tk):
 		# the container is where we'll stack a bunch of frames
 		# on top of each other, then the one we want visible
 		# will be raised above the others
-		container = cw.themedframe(self)
+		container = cw.ThemedFrame(self)
 		container.pack(side="top", fill="both", expand=True)
 		container.grid_rowconfigure(0, weight=1)
 		container.grid_columnconfigure(0, weight=1)
 
-		#import pages
-		import pages.injectorpage as ip
-		import pages.homebrewpage as hb
-		import pages.settingspage as sp
+
+
+		##Import pages
+
+		#App pages
 		import pages.addrepopage as ar
-		import pages.pythonnxpage as py
 		import pages.cfwpage as fw
+		import pages.emulatorpage as eu
+		import pages.gamespage as gp
+		import pages.homebrewpage as hb
+		import pages.pythonnxpage as py
+
+		#Functional Pages:
+		import pages.backuppage as bp
+		import pages.injectorpage as ip
+		import pages.serialpage as cp
+
+		#Navigation Pages
+		import pages.aboutpage as ap
 		import pages.errorpage as ep
 		import pages.homepage as lp
-		import pages.gamespage as gp
-		import pages.serialpage as cp
-		import pages.experimentalpage as xp
-		import pages.backuppage as bp
-		
+		import pages.settingspage as sp
+
+		##Test pages, 
+		#Uncomment this to see what I'm working on sometimes, especially in source builds.
+		import pages.test_page as tp 
+
 		#Add pages to list
 		pages = [
-			hb.homebrewPage,
-			ip.injectorScreen,
-			sp.settingsPage,
-			ar.addRepoScreen,
-			py.pynxPage,
-			fw.cfwPage,
-			ep.errorPage,
-			lp.homePage,
-			gp.gamesPage,
-			cp.serialPage,
-			xp.experimentalPage,
-			bp.backupPage
+			ep.errorPage,	#<- Needs to be inited before most pages, used for error handling to the user
+			ar.addrepoPage,	#<- Needs to be inited before list pages, used for adding repos
+
+
+			ap.aboutPage,		#<- No precedence
+			bp.backupPage,		#<- List Page
+			cp.serialPage,		#<- No precedence
+			eu.emuPage,			#<- List Page
+			fw.cfwPage,			#<- List Page
+			gp.gamesPage,		#<- List Page
+			hb.homebrewPage,	#<- List Page
+			ip.injectorScreen,	#<- List Page
+			lp.homePage,		#<- No precedence
+			py.pynxPage,		#<- List Page
+			sp.settingsPage,	#<- No precedence
 		]
+
+		#Try to add test page
+		try:
+			pages.append(tp.testPage)#<- List Page
+		except:
+			pass
+
+
+
+
 
 		#Add pages as frames to dict, with keyword being the name of the frame
 		self.frames = {}
@@ -93,6 +117,22 @@ class FrameManager(tk.Tk):
 
 			frame.grid(row=0, column=0, sticky="nsew")
 
+		softwarelists = [
+			self.frames["homebrewPage"].softwarelist,
+			self.frames["gamesPage"].softwarelist,
+			self.frames["emuPage"].softwarelist,
+			self.frames["cfwPage"].softwarelist,
+			self.frames["pynxPage"].softwarelist
+		]
+
+		mastersoftwarelist = []
+		for lixlix in softwarelists:
+			for lix in lixlix:
+				mastersoftwarelist.append(lix)
+
+		self.user_repos = self.frames["addrepoPage"].softwarelist
+
+		
 		#Set icon
 		if platform.system() == 'Windows':
 			try:
@@ -108,26 +148,27 @@ class FrameManager(tk.Tk):
 				print("Failed to set icon")
 
 
-		#Error handling
-		self.bind("<<error>>", self.on_error)
-
 		#Show home page
 		self.show_frame("homePage") #Show the main page frame
 
-	def on_error(self,event):
-		global errorstate
-		self.frames["errorPage"].raiseError(errorstate)
+	def raiseError(self,errortext,pagename):
+		self.frames["errorPage"].raiseError(errortext,pagename)
 		self.show_frame("errorPage")
 
-	def seterrorstate(self,state):
-		global errorstate
-		errorstate = state
+	#Raising and lowering page with back commands
+	def raiseRepo(self, return_screen, group):
+		self.frames["addrepoPage"].raiseRepo(return_screen, group)
+		self.show_frame("addrepoPage")
 
 	def show_frame(self, page_name):
 		#Show a frame for the given page name
 		frame = self.frames[page_name]
 		frame.event_generate("<<ShowFrame>>")
 		frame.tkraise()
+
+	def set_repos(self, repos):
+		self.user_repos = repos
+
 	
 def stripversion(string):
 	characterstostrip = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz()-"

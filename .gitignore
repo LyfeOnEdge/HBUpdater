@@ -12,3 +12,8 @@ fluffy.conf
 fluffy.log
 *.pyc
 guisettings_user.json
+assets/hbappstore.png
+assets/globe.png
+for later/compatibilitypage.py
+for later/sdpage.py
+pages/oldaddrepopage.py

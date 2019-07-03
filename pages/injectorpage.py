@@ -19,6 +19,7 @@ import pages.pagetemplate as pt
 
 
 
+
 details_guide_text = """This menu will allow you to install older versions of payload, and go to the payloads's project page.
 """ 
 
@@ -58,8 +59,8 @@ class injectorScreen(pt.page):
 
 		self.console = cw.consolebox(self.content_frame)
 		self.console.place(relx=0,rely=.7,relwidth=1, relheight=.3)
-		self.printtoconsolebox("Connect Switch, select payload, and press inject.\nThe payload and injector will be downloaded from github if they haven't been already.\n")
-
+		self.printtoconsolebox("Connect switch, select payload, and press inject.\nThe payload and injector will be downloaded from github if they haven't been already.\n")
+		self.printtoconsolebox("Injector backend: fusee-primary, written by ktempkin\n")
 
 		#Check if fusee launcher is download, display status for user
 		fuseestatus = guicore.checkguisetting("fusee-launcher","version")
@@ -70,6 +71,8 @@ class injectorScreen(pt.page):
 			fuseestatus = "downloaded"
 
 		self.printtoconsolebox("Injector status: {}\n".format(fuseestatus))
+
+
 
 
 		self.updatetable(None)
@@ -84,7 +87,7 @@ class injectorScreen(pt.page):
 	def printtoconsolebox(self,stringtoprint):
 		self.console.print(stringtoprint)
 
-	def injectpayload(self,):
+	def injectpayload(self,event=None):
 		if not webhandler.checkifmoduleinstalled("pyusb"):
 			resp =  tk.messagebox.askyesno("Install PyUSB?", "PyUSB is required for fusee-launcher to work, install?")
 			if resp:
@@ -102,7 +105,7 @@ class injectorScreen(pt.page):
 
 		injectpayload(self,payload)
 
-	def checkpayloadversion(self,group,softwarename):
+	def checkpayloadversion(self,softwarename):
 		version = guicore.checkguisetting(softwarename,"version")
 		if version == None or version =="not installed":
 			return("needs download")
@@ -240,6 +243,77 @@ class injectorScreen(pt.page):
 
 
 
+
+
+
+#Redefinitions of class functions for page specific stuff
+#This is so the gui remembers the last selected payload
+	#Update page whenever it is raised
+	def on_show_frame(self,event):
+		self.currentselection = guicore.checkguisetting("guisettings", "payload")
+
+		#Update with user repos
+		if self.softwaregroup:
+			self.softwarelist = self.basesoftwarelist[:]
+			user_repos = self.controller.user_repos
+			user_repos = guicore.getreposbygroupfromlist(self.softwaregroup, user_repos)
+			#Add repos if they are found
+			if user_repos:
+				self.softwarelist.extend(user_repos)
+			
+
+		self.refreshwindow()
+		self.updateinfobox()
+
+
+
+
+	#movement button / cursor callbacks, moves up or down main list
+	#get current selection from list box
+	def CurSelet(self, event):
+		try:
+			widget = event.widget
+			selection=widget.curselection()
+			picked = widget.get(selection[0])
+			self.currentselection = widget.get(0, "end").index(picked)
+			self.currenttagselection = 0
+			self.updateinfobox()
+			self.refreshdetailwindow()
+			guicore.setguisetting({"guisettings": {"payload": self.currentselection}},silent = True)
+		except:
+			pass
+	def pageup(self):
+		if self.currentselection < len(self.softwarelist)-1:
+			self.currentselection += 1
+			self.currenttagselection = 0
+			self.updateinfobox()
+			self.refreshdetailwindow()
+			guicore.setguisetting({"guisettings": {"payload": self.currentselection}},silent = True)
+	def pagedown(self):
+		if self.currentselection > 0:
+			self.currentselection -= 1
+			self.currenttagselection = 0
+			self.updateinfobox()
+			self.refreshdetailwindow()
+			guicore.setguisetting({"guisettings": {"payload": self.currentselection}},silent = True)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def injectpayload(self,payload):
 	fuseestatus = guicore.checkguisetting("fusee-launcher", "version")
 	if fuseestatus == "not installed" or fuseestatus == "none" or fuseestatus == None:
@@ -274,9 +348,34 @@ def injectpayload(self,payload):
 	payload_file = payload
 	p = subprocess.Popen([sys.executable, '-u', script_path, payload_file],
 	          stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1)
+
+	# killstring = "setting up the appropriate backend"
+
+
 	with p.stdout:
 	    for line in iter(p.stdout.readline, b''):
 	    	self.printtoboth(line)
+	    	#OK I KNOW THIS IS A HACKY FIX BUT BASICALLY
+	    	#THERE IS A BUG WITH THE FUSEE INTEGRATION AND
+	    	#IF FUSEE ERRORS THE APP CRASES DUE TO FUSEE 
+	    	#NOT EXITING AND P.WAIT() CAUSING A HANG
+	    	#THE KILLSTRING ALWAYS GETS PRINTED BEFORE THE 
+	    	#HANG SO I CAN PREVENT THE HANG BY KILLING P BEFORE WAIT IS CALLED
+	    	if bytes(killstring, 'utf-8') in line:
+	    		return p.kill()
 	p.wait()
 
+
+
+
+
+#Returns true if switch found
+def detect_rcm():
+	import usb.core
+	dev=usb.core.find(idVendor=0x0955, idProduct=0x7321)
+	if dev:
+		return True
+
+def enable_auto_injection():
+	guicore.setguisetting({"guisettings" : settings})
 
