@@ -60,7 +60,7 @@ class injectorScreen(pt.page):
 		self.console = cw.consolebox(self.content_frame)
 		self.console.place(relx=0,rely=.7,relwidth=1, relheight=.3)
 		self.printtoconsolebox("Connect switch, select payload, and press inject.\nThe payload and injector will be downloaded from github if they haven't been already.\n")
-		self.printtoconsolebox("Injector backend: fusee-primary, written by ktempkin\n")
+		self.printtoconsolebox("Injector backend: fusee-launcher, written by ktempkin\n")
 
 		#Check if fusee launcher is download, display status for user
 		fuseestatus = guicore.checkguisetting("fusee-launcher","version")
@@ -349,20 +349,9 @@ def injectpayload(self,payload):
 	p = subprocess.Popen([sys.executable, '-u', script_path, payload_file],
 	          stdout=subprocess.PIPE, stderr=subprocess.STDOUT, bufsize=1)
 
-	# killstring = "setting up the appropriate backend"
-
-
 	with p.stdout:
 	    for line in iter(p.stdout.readline, b''):
 	    	self.printtoboth(line)
-	    	#OK I KNOW THIS IS A HACKY FIX BUT BASICALLY
-	    	#THERE IS A BUG WITH THE FUSEE INTEGRATION AND
-	    	#IF FUSEE ERRORS THE APP CRASES DUE TO FUSEE 
-	    	#NOT EXITING AND P.WAIT() CAUSING A HANG
-	    	#THE KILLSTRING ALWAYS GETS PRINTED BEFORE THE 
-	    	#HANG SO I CAN PREVENT THE HANG BY KILLING P BEFORE WAIT IS CALLED
-	    	if bytes(killstring, 'utf-8') in line:
-	    		return p.kill()
 	p.wait()
 
 
