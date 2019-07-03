@@ -196,13 +196,13 @@ def getcachedimage(imagename):
 	import os
 	photopath = None
 
+	#Optimizations >:)
 	because_there_is_a_high_chance_its_png = os.path.join(locations.imagecachefolder,"{}.png".format(imagename))
 	if os.path.isfile(because_there_is_a_high_chance_its_png):
 		return because_there_is_a_high_chance_its_png
 
 	for file in os.listdir(locations.imagecachefolder):
 		strippedfile = file.strip(".jpeg").strip(".png").strip(".gif")
-		print("search {} - compare {}".format(imagename, strippedfile))
 		if imagename == strippedfile:
 			photopath = os.path.join(locations.imagecachefolder, file)
 			break

@@ -1,14 +1,7 @@
 import modules.webhandler as webhandler
 import modules.HBUpdater as HBUpdater
 import os, json, shutil
-version = 0.2
-
-print("remember to delete old guicore repo list variable")
-#variable to hold repo list
-repolist = []
-#variable to track the current selected repo
-currepo = 0
-repolistlen = None
+version = 0.3
 
 guisettings = "guisettings_user.json"
 guisettings_default = "guisettings_default.json"
