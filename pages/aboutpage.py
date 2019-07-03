@@ -86,7 +86,7 @@ class aboutPage(tk.Frame):
 
 		pprmntimage = webhandler.getcachedimage("npprmint")
 		if not pprmntimage:
-			pprmntimage = webhandler.grabgravatar(locations.developers["pprmint"]["gravatar_url"])
+			pprmntimage = webhandler.grabgravatar(developers["pprmint"]["gravatar_url"])
 			if pprmntimage == None:
 				pprmntimage = os.path.join(locations.assetfolder,notfoundimage)
 
