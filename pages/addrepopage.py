@@ -61,7 +61,7 @@ class addrepoPage(pt.page):
         self.details_frame.place_forget()
         self.details_right_column.place_forget()
 
-        self.trashimage = tk.PhotoImage(file=os.path.join(locations.assetfolder, "trash.png")).subsample(2)
+        self.trashimage = tk.PhotoImage(file=os.path.join(guicore.assetfolder, "trash.png")).subsample(2)
 
 
         self.list_buttons_frame.etc_button.setcommand(lambda: self.controller.frames["errorPage"].getanswer(self.page_name,"Are you sure you want to delete this repo?",self.delete))
@@ -343,10 +343,11 @@ class addrepoPage(pt.page):
         fp = self.asset_pattern_firstpart_box.get()
         lp = self.asset_pattern_lastpart_box.get()
         
-        self.tempvar["group"] = group = self.genres_dropdown.get()
-        self.tempvar["category"] = category = self.category_dropdown.get()
-        self.tempvar["install_subfolder"] = subfolder = self.subfolder_dropdown.get()
-        
+        self.repoVar["group"] = group = self.genres_dropdown.get()
+        self.repoVar["category"] = category = self.category_dropdown.get()
+        self.repoVar["install_subfolder"] = subfolder = self.subfolder_dropdown.get()
+        self.repoVar["store_equivalent"] = software = self.repoVar["software"]
+
         #Check they are populated
         if not fp or not lp:
             print("No asset selected, not adding")
@@ -357,18 +358,18 @@ class addrepoPage(pt.page):
             return
 
         #Set values
-        self.tempvar["pattern"] = [[fp],lp]
-        self.tempvar["category"] = self.category_dropdown.get()
+        self.repoVar["pattern"] = [[fp],lp]
+        self.repoVar["category"] = self.category_dropdown.get()
         
-        # print(json.dumps(self.tempvar,indent=4))
+        # print(json.dumps(self.repoVar,indent=4))
 
         newentry = {
-                        self.tempvar["software"] : self.tempvar
+                        self.repoVar["software"] : self.repoVar
                     }
 
-        self.softwarelist.append(self.tempvar)
+        self.softwarelist.append(self.repoVar)
         guicore.updateguirepos(newentry)
-        self.tempvar = {}
+        self.repoVar = {}
         print("repo successfully added")
         self.reload()
         self.controller.set_repos(self.softwarelist)
@@ -403,9 +404,9 @@ class addrepoPage(pt.page):
         if genre == None or genre == "":
             genre = "user repo"
 
-        self.tempvar = guicore.getrepochunkfromurl(url,desc)
+        self.repoVar = webhandler.getrepochunkfromurl(url,desc)
 
-        with open(self.tempvar["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
+        with open(self.repoVar["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
             jfile = json.load(json_file)
 
             if jfile == [] or jfile == None:

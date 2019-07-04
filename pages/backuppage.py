@@ -50,7 +50,7 @@ class backupPage(pt.page):
         self.details_frame.place_forget()
         self.details_right_column.place_forget()
         
-        self.trashimage = tk.PhotoImage(file=os.path.join(locations.assetfolder, "trash.png")).subsample(2)
+        self.trashimage = tk.PhotoImage(file=os.path.join(guicore.assetfolder, "trash.png")).subsample(2)
 
         self.list_buttons_frame.etc_button.setcommand(self.delete)
         self.list_buttons_frame.etc_button.setimage(self.trashimage)
@@ -59,7 +59,7 @@ class backupPage(pt.page):
         self.backupbutton = cw.navbutton(self.main_right_column,command_name=self.backup,image_object= None,text_string="MAKE BACKUP")
         self.backupbutton.place(relx=0, rely=1, y=-3*(navbuttonheight+separatorwidth), height=navbuttonheight, x=+separatorwidth,relwidth=1, width=-(2*separatorwidth))
 
-        self.openfolderbutton = cw.navbutton(self.main_right_column,command_name=lambda: open_folder_in_window(locations.backupfolder),image_object= None,text_string="OPEN BACKUPS FOLDER")
+        self.openfolderbutton = cw.navbutton(self.main_right_column,command_name=lambda: open_folder_in_window(locations.backupsfolder),image_object= None,text_string="OPEN BACKUPS FOLDER")
         self.openfolderbutton.place(relx=0, rely=1, y=-4*(navbuttonheight+separatorwidth), height=navbuttonheight, x=+separatorwidth,relwidth=1, width=-(2*separatorwidth))
 
         columns = ["BACKUP","DATE",]
@@ -120,7 +120,8 @@ class backupPage(pt.page):
 
             self.cleartable()
 
-            files_in_backups = subfiles(locations.backupfolder)
+            files_in_backups = subfiles(locations.backupsfolder)
+            
             backups = []
 
             itt = 0
@@ -151,7 +152,7 @@ class backupPage(pt.page):
             return
 
         filename = self.backupstable.listboxes["BACKUP"].get(self.currentselection)
-        zip_file = os.path.join(locations.backupfolder, filename)
+        zip_file = os.path.join(locations.backupsfolder, filename)
 
         self.controller.frames["errorPage"].getanswer(self.page_name,"Are you sure you would like to delete this backup?\n\n{}".format(zip_file),lambda: self.deletebackup(zip_file))
 
@@ -169,16 +170,16 @@ class backupPage(pt.page):
             self.printtoboth("\nSD path not set, can't make backup\n")
             return
 
-        if not HBUpdater.checktrackingfile():
-            self.controller.frames["errorPage"].getanswer(self.page_name,"Could not find tracking file, are you sure you would like to proceed with your backup?\n",self.makebackup)
-        else:
-            self.makebackup()
+        self.makebackup()
 
     def makebackup(self):
         files = subfiles(HBUpdater.getSDpath())
         ziptime = date_str()
         newzipname = "{}{}.zip".format(backup_prefix,ziptime)
-        newzip = os.path.join(locations.backupfolder,newzipname)
+        newzip = os.path.join(locations.backupsfolder,newzipname)
+
+        if not os.path.isdir(locations.payloadsfolder):
+                os.mkdir(locations.backupsfolder)
 
         with ZipFile(newzip, 'x') as backup:
             itt = 0
@@ -208,7 +209,7 @@ class backupPage(pt.page):
     def restorebackup(self):
         chosensdpath = HBUpdater.getSDpath()
 
-        zip_file = os.path.join(locations.backupfolder, self.backupstable.listboxes["BACKUP"].get(self.currentselection))
+        zip_file = os.path.join(locations.backupsfolder, self.backupstable.listboxes["BACKUP"].get(self.currentselection))
 
         with ZipFile(zip_file, 'r') as zipObj:
             zipObj.extractall(chosensdpath)
@@ -266,7 +267,7 @@ def subfiles(path):
 def remove_prefix(text, prefix):
     if text.startswith(prefix):
         return text[len(prefix):]
-    return text  # or whatever
+    return text
 
 def parse_date(date):
     try:

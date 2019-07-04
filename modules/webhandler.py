@@ -114,7 +114,34 @@ def getJson(softwarename, apiurl):
 		return None
 
 
+def getrepochunkfromurl(url,description,):
+	apiurl = webhandler.parse_standard_github_to_api(url)
+	if apiurl == None:
+		print("error parsing link")
+		return
+	print(apiurl)
+	repo = apiurl.rsplit("/",2)[1]
+	author = apiurl.rsplit("/",3)[1]
 
+	jsonfile = webhandler.getJson(repo, apiurl)
+
+	#make new entry
+	chunk = {
+			"software" : repo,
+			"githuburl" : url,
+			"githubapi" : apiurl,
+			"githubjson" : jsonfile,
+			"github_asset" : None,
+			"author" : author,
+			"projectpage" : None,
+			"description" : description,
+			"githubjson" : jsonfile,
+			"photopath" : None,
+			}
+		
+	# print(json.dumps(newentry,indent=4))
+
+	return chunk
 
 
 ###URL Parsing

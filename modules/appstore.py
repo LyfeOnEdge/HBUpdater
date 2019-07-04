@@ -12,6 +12,9 @@ PACKAGE_MANIFEST = "manifest.install"
 #The prefix used to designate each line in the manifest
 MANIFEST_PREFIX = "U: "
 
+version = "1.0"
+print("appstore compat version {}".format(version))
+
 #Default appstore entry struct
 def appstore_entry():
     struct = {
@@ -120,7 +123,8 @@ def create_store_entry(basepath, store_entry, manifest, package):
     if not os.path.isdir(packagedir):
         os.makedirs(packagedir)
 
-    #Clean up the manifest lines 
+    #Clean up the manifest lines, ensures line format
+    #is consistent with 
     filemanifest = []
     if type(manifest) == str:
         path = manifest.replace("\\","/").strip("/")

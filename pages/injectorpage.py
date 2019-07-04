@@ -114,10 +114,6 @@ class injectorScreen(pt.page):
 		return version
 
 	def getordownloadpayload(self):
-		if not os.path.isdir(locations.ssncfolder):
-			os.mkdir(locations.ssncfolder)
-			print("initializing ssnc folder")
-
 		if not os.path.isdir(locations.payloadsfolder):
 				os.mkdir(locations.payloadsfolder)
 
@@ -186,6 +182,9 @@ class injectorScreen(pt.page):
 		return payload
 
 	def downloadpayload(self):
+		if not os.path.isdir(locations.payloadsfolder):
+				os.mkdir(locations.payloadsfolder)
+
 		with open(self.softwarelist[self.currentselection]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
 			jfile = json.load(json_file)
 			softwarename = self.softwarelist[self.currentselection]["software"]
@@ -250,7 +249,7 @@ class injectorScreen(pt.page):
 #This is so the gui remembers the last selected payload
 	#Update page whenever it is raised
 	def on_show_frame(self,event):
-		self.currentselection = guicore.checkguisetting("guisettings", "payload")
+		self.currentselection = guicore.checkguisetting("last_payload", "selection")
 
 		#Update with user repos
 		if self.softwaregroup:
@@ -279,7 +278,7 @@ class injectorScreen(pt.page):
 			self.currenttagselection = 0
 			self.updateinfobox()
 			self.refreshdetailwindow()
-			guicore.setguisetting({"guisettings": {"payload": self.currentselection}},silent = True)
+			guicore.setguisetting({"last_payload": {"selection": self.currentselection}},silent = True)
 		except:
 			pass
 	def pageup(self):
@@ -288,14 +287,14 @@ class injectorScreen(pt.page):
 			self.currenttagselection = 0
 			self.updateinfobox()
 			self.refreshdetailwindow()
-			guicore.setguisetting({"guisettings": {"payload": self.currentselection}},silent = True)
+			guicore.setguisetting({"last_payload": {"selection": self.currentselection}},silent = True)
 	def pagedown(self):
 		if self.currentselection > 0:
 			self.currentselection -= 1
 			self.currenttagselection = 0
 			self.updateinfobox()
 			self.refreshdetailwindow()
-			guicore.setguisetting({"guisettings": {"payload": self.currentselection}},silent = True)
+			guicore.setguisetting({"last_payload": {"selection": self.currentselection}},silent = True)
 
 
 
@@ -313,8 +312,12 @@ class injectorScreen(pt.page):
 
 
 
-
+#Payload is a file path to a switch payload
 def injectpayload(self,payload):
+	if not os.path.isdir(locations.injectorfolder):
+		print("initializing folder {}".format(locations.injectorfolder))
+		os.mkdir(locations.injectorfolder)
+
 	fuseestatus = guicore.checkguisetting("fusee-launcher", "version")
 	if fuseestatus == "not installed" or fuseestatus == "none" or fuseestatus == None:
 		# self.printtoboth("fusee-launcher not installed, downloading")
@@ -353,6 +356,7 @@ def injectpayload(self,payload):
 	    for line in iter(p.stdout.readline, b''):
 	    	self.printtoboth(line)
 	p.wait()
+
 
 
 

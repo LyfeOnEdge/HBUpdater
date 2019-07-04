@@ -8,7 +8,7 @@ print("Using Python {}.{}".format(sys.version_info[0],sys.version_info[1]))
 if sys.version_info[0] < 3 or sys.version_info[1] < 6:
 	sys.exit("Python 3.6 or greater is required to run this program.")
 
-version = "0.10 (Beta)"
+version = "1.1"
 print("HBUpdaterGUI version {}".format(version))
 
 #My modules
@@ -137,13 +137,13 @@ class FrameManager(tk.Tk):
 		if platform.system() == 'Windows':
 			try:
 				print("Windows detected, setting icon")
-				self.iconbitmap(os.path.join(locations.assetfolder, 'HBUpdater.ico'))
+				self.iconbitmap(os.path.join(guicore.assetfolder, 'HBUpdater.ico'))
 			except:
 				print("Failed to set icon")
 		elif platform.system() == "Linux":
 			try:
 				print("Linux detected, setting icon")
-				self.iconbitmap(os.path.join(locations.assetfolder, 'HBUpdater.xbm'))
+				self.iconbitmap(os.path.join(guicore.assetfolder, 'HBUpdater.xbm'))
 			except:
 				print("Failed to set icon")
 

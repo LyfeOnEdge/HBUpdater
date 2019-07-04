@@ -1,10 +1,10 @@
 {
     "guisettings": {
         "automatically_check_for_repo_updates": 1,
-        "enable_homebrew_store_compatibility" : 1
+        "display_author_image": 1
     },
-    "last_payload" : {
-        "selection" : 0
+    "last_payload": {
+        "selection": 0
     },
     "dimensions": {
         "minguiheight": 510,

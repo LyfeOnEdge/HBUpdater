@@ -1,8 +1,13 @@
-import modules.webhandler as webhandler
 import modules.HBUpdater as HBUpdater
-import os, json, shutil
-version = 0.3
+import os, sys, json, shutil
+version = 1.0
 
+#Folder and file definitions for easy access
+wd = sys.path[0]
+#Folder for local assets
+assetfolder =  os.path.join(wd, "assets")
+
+#local
 guisettings = "guisettings_user.json"
 guisettings_default = "guisettings_default.json"
 if not os.path.isfile(guisettings):
@@ -56,34 +61,6 @@ def checkguisetting(key, value):
 
 	return info
 
-def getrepochunkfromurl(url,description,):
-	apiurl = webhandler.parse_standard_github_to_api(url)
-	if apiurl == None:
-		print("error parsing link")
-		return
-	print(apiurl)
-	repo = apiurl.rsplit("/",2)[1]
-	author = apiurl.rsplit("/",3)[1]
-
-	jsonfile = webhandler.getJson(repo, apiurl)
-
-	#make new entry
-	chunk = {
-			"software" : repo,
-			"githuburl" : url,
-			"githubapi" : apiurl,
-			"githubjson" : jsonfile,
-			"github_asset" : None,
-			"author" : author,
-			"projectpage" : None,
-			"description" : description,
-			"githubjson" : jsonfile,
-			"photopath" : None,
-			}
-		
-	# print(json.dumps(newentry,indent=4))
-
-	return chunk
 
 
 def updateguirepos(newentry):

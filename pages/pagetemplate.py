@@ -121,16 +121,16 @@ class page(cw.ThemedFrame,):
 		#Default image handling, when pillow isn't installed
 		if not guicore.getpilstatus():
 			#Shared images
-			self.infoimage = tk.PhotoImage(file=os.path.join(locations.assetfolder,"info.png")).zoom(3).subsample(5)
-			self.returnimage = tk.PhotoImage(file=os.path.join(locations.assetfolder,"returnbutton.png")).zoom(3).subsample(5)
-			self.addrepoimage = tk.PhotoImage(file=os.path.join(locations.assetfolder,"plus.png")).subsample(2)
-			self.sdimage = tk.PhotoImage(file=os.path.join(locations.assetfolder,"sd.png")).zoom(2).subsample(4)
+			self.infoimage = tk.PhotoImage(file=os.path.join(guicore.assetfolder,"info.png")).zoom(3).subsample(5)
+			self.returnimage = tk.PhotoImage(file=os.path.join(guicore.assetfolder,"returnbutton.png")).zoom(3).subsample(5)
+			self.addrepoimage = tk.PhotoImage(file=os.path.join(guicore.assetfolder,"plus.png")).subsample(2)
+			self.sdimage = tk.PhotoImage(file=os.path.join(guicore.assetfolder,"sd.png")).zoom(2).subsample(4)
 		else:
 			#open, resize, and convert images to tk format using pillow
-			self.infoimage = ImageTk.PhotoImage(Image.open(os.path.join(locations.assetfolder,"info.png")).resize((base_x, base_x), Image.ANTIALIAS))
-			self.returnimage = ImageTk.PhotoImage(Image.open(os.path.join(locations.assetfolder,"returnbutton.png")).resize((base_x, base_x), Image.ANTIALIAS))
-			self.addrepoimage = ImageTk.PhotoImage(Image.open(os.path.join(locations.assetfolder,"plus.png")).resize((int(base_x*.9), int(base_x*.9)), Image.ANTIALIAS))
-			self.sdimage = ImageTk.PhotoImage(Image.open(os.path.join(locations.assetfolder,"sd.png")).resize((int(base_x*.8), int(base_x*.8)), Image.ANTIALIAS))
+			self.infoimage = ImageTk.PhotoImage(Image.open(os.path.join(guicore.assetfolder,"info.png")).resize((base_x, base_x), Image.ANTIALIAS))
+			self.returnimage = ImageTk.PhotoImage(Image.open(os.path.join(guicore.assetfolder,"returnbutton.png")).resize((base_x, base_x), Image.ANTIALIAS))
+			self.addrepoimage = ImageTk.PhotoImage(Image.open(os.path.join(guicore.assetfolder,"plus.png")).resize((int(base_x*.9), int(base_x*.9)), Image.ANTIALIAS))
+			self.sdimage = ImageTk.PhotoImage(Image.open(os.path.join(guicore.assetfolder,"sd.png")).resize((int(base_x*.8), int(base_x*.8)), Image.ANTIALIAS))
 		
 		
 
@@ -555,61 +555,62 @@ class page(cw.ThemedFrame,):
 		self.updateAuthorImage()
 
 	def updateAuthorImage(self):
-		sel = self.softwarelist[self.currentselection]
-		#Variable to track if we have found the author image yet
-		photopath = None
-		notfound = os.path.join(locations.assetfolder,notfoundimage)
-		
+		if guicore.checkguisetting("guisettings", "display_author_image"):
+			sel = self.softwarelist[self.currentselection]
+			#Variable to track if we have found the author image yet
+			photopath = None
+			notfound = os.path.join(guicore.assetfolder,notfoundimage)
+			
 
-		#Check if we have already set the photopath, if so return the file
-		if not sel["photopath"] == None:
-			photopath = sel["photopath"]
-			try:
-				self.infobox.updateimage(image_path = photopath)
-			except Exception as e:
-				#if encountered an error with given photo path (wrong type, corrupt etc)
-				if type(e) == 'TclError':
-					self.infobox.updateimage(image_path = notfound)
-					sel["photopath"] = notfound
+			#Check if we have already set the photopath, if so return the file
+			if not sel["photopath"] == None:
+				photopath = sel["photopath"]
+				try:
+					self.infobox.updateimage(image_path = photopath)
+				except Exception as e:
+					#if encountered an error with given photo path (wrong type, corrupt etc)
+					if type(e) == 'TclError':
+						self.infobox.updateimage(image_path = notfound)
+						sel["photopath"] = notfound
+						return
+
+			#If gotten this far, check and see if we have already downloaded an image for this author
+			authorname = sel["author"]
+			#If authorname isn't none 
+			if authorname:
+				photopath = self.checkphoto(locations.imagecachefolder, authorname)
+				if photopath:
+					if sel["photopath"] == None:
+						sel["photopath"] = photopath
+
+					self.infobox.updateimage(image_path = photopath)
 					return
 
-		#If gotten this far, check and see if we have already downloaded an image for this author
-		authorname = sel["author"]
-		#If authorname isn't none 
-		if authorname:
-			photopath = self.checkphoto(locations.imagecachefolder, authorname)
-			if photopath:
-				if sel["photopath"] == None:
+			#If it wasn't already set, AND it hasn't been downloaded yet
+			#Try getting it from the associated json
+			try:
+				with open(sel["githubjson"],encoding="utf-8") as json_file: #jsonfile is path, json_file is file obj
+					jfile = json.load(json_file)
+					url = jfile[0]["author"]["avatar_url"]
+
+				if url:
+					photopath = webhandler.cacheimage(url,authorname)
+					sel["photopath"] = photopath
+			except:
+			#If that failed, take a stab in the dark with their github avatar image, this is useful for data sets without github jsons
+				photopath = webhandler.guessgithubavatar(authorname)
+
+				if photopath:
 					sel["photopath"] = photopath
 
-				self.infobox.updateimage(image_path = photopath)
-				return
+			#If the photopath is still none, use the not-found image
+			if not photopath:
+				photopath = notfound
 
-		#If it wasn't already set, AND it hasn't been downloaded yet
-		#Try getting it from the associated json
-		try:
-			with open(sel["githubjson"],encoding="utf-8") as json_file: #jsonfile is path, json_file is file obj
-				jfile = json.load(json_file)
-				url = jfile[0]["author"]["avatar_url"]
-
-			if url:
-				photopath = webhandler.cacheimage(url,authorname)
-				sel["photopath"] = photopath
-		except:
-		#If that failed, take a stab in the dark with their github avatar image, this is useful for data sets without github jsons
-			photopath = webhandler.guessgithubavatar(authorname)
-
-			if photopath:
+			if sel["photopath"] == None:
 				sel["photopath"] = photopath
 
-		#If the photopath is still none, use the not-found image
-		if not photopath:
-			photopath = notfound
-
-		if sel["photopath"] == None:
-			sel["photopath"] = photopath
-
-		self.infobox.updateimage(image_path = photopath)
+			self.infobox.updateimage(image_path = photopath)
 
 	def checkphoto(self,dir, photo):
 		for s in os.listdir(dir):
@@ -718,6 +719,8 @@ class page(cw.ThemedFrame,):
 					for version in jfile:
 						tag = version["tag_name"]
 						self.tags_listbox.insert(END, tag)
+				except IndexError:
+					pass
 				except:
 					print("detailwindow refresh error - failed to load repo json - {}".format(self.softwarelist[self.currentselection]["software"]))
 
@@ -737,6 +740,9 @@ class page(cw.ThemedFrame,):
 			#Add repos if they are found
 			if user_repos:
 				self.softwarelist.extend(user_repos)
+			if self.currentselection >= len(self.softwarelist):
+				self.currentselection = len(self.softwarelist) - 1
+
 			
 
 		self.refreshwindow()
@@ -764,8 +770,6 @@ class infobox(cw.ThemedFrame):
 
 		#holds author picture
 		self.project_art_label = cw.ThemedLabel(self,label_text = "project_art",anchor="n")
-		self.project_art_label.place(relx=0.0, rely=0.0, height=infoframewidth, relwidth=1)
-
 		#Homebrew Title
 		self.titlevar = tk.StringVar()
 		self.titlevar.set("title_var")
@@ -776,9 +780,15 @@ class infobox(cw.ThemedFrame):
 			label_font=info_softwarename_font,
 			anchor="n"
 			)
-		self.project_title_label.place(relx=0.0, rely=0.0, y=infoframewidth, relwidth=1.0)
-
-
+		#Description
+		self.project_description = cw.ScrolledText(self,
+			background=light_color,
+			foreground=info_description_color,
+			font=info_description_font,
+			borderwidth=0,
+			state=NORMAL,
+			wrap="word",
+			)
 		#author name
 		self.authorvar = tk.StringVar()
 		self.authorvar.set("author_var")
@@ -789,34 +799,39 @@ class infobox(cw.ThemedFrame):
 			label_font=info_author_font,
 			anchor="n"
 			)
-		self.author_name_label.place(relx=0.0, rely=0, y=infoframewidth + 25,  relwidth=1.0)
-
+		#Separator
 		self.topsep = cw.ThemedFrame(self,
 			background_color = lgray,
 			frame_borderwidth = 2,
 		)
-		self.topsep.place(x = (infoframewidth / 2), y = infoframewidth+52, height = 4, relwidth = 0.9, anchor="center")
+		self.botsep = cw.ThemedFrame(self,
+			background_color = lgray,
+			frame_borderwidth = 2,
+		)
 
-		#Description
-		self.project_description = cw.ScrolledText(self,
-			background=light_color,
-			foreground=info_description_color,
-			font=info_description_font,
-			borderwidth=0,
-			state=NORMAL,
-			wrap="word",
-			)
-		self.project_description.place(relx=0.5, rely=0.0, y=+infoframewidth+55, relheight = 1, height=-(infoframewidth + 55 + 100), relwidth=0.85, anchor = "n")
+
+		#Check if author image is disabled
+		if guicore.checkguisetting("guisettings", "display_author_image"):
+			self.topsep.place(x = (infoframewidth / 2), y = infoframewidth+52, height = 4, relwidth = 0.9, anchor="center")
+			self.project_art_label.place(relx=0.0, rely=0.0, height=infoframewidth, relwidth=1)
+			self.project_title_label.place(relx=0.0, rely=0.0, y=infoframewidth, relwidth=1.0)
+			self.author_name_label.place(relx=0.0, rely=0, y=infoframewidth + 25,  relwidth=1.0)
+			self.project_description.place(relx=0.5, rely=0.0, y=+infoframewidth+55, relheight = 1, height=-(infoframewidth + 55 + 100), relwidth=0.85, anchor = "n")
+		else:
+			self.topsep.place(x = (infoframewidth / 2), y = separatorwidth+50, height = 4, relwidth = 0.9, anchor="center")
+			self.project_title_label.place(relx=0.0, rely=0.0, y=+separatorwidth, relwidth=1.0)
+			self.author_name_label.place(relx=0.0, rely=0, y=separatorwidth + 25,  relwidth=1.0)
+			self.project_description.place(relx=0.5, rely=0.0, y=separatorwidth+55, relheight = 1, height=-(separatorwidth + 55 + 100), relwidth=0.85, anchor = "n")
+
+		self.botsep.place(x = (infoframewidth / 2), rely = 1, y = -95, height = 4, relwidth = 0.9, anchor="center")
+
 		self.project_description.delete('1.0', END)
 		self.project_description.insert(END, "Project description")
 		self.project_description.configure(state=DISABLED)
 
 
-		self.topsep = cw.ThemedFrame(self,
-			background_color = lgray,
-			frame_borderwidth = 2,
-		)
-		self.topsep.place(x = (infoframewidth / 2), rely = 1, y = -95, height = 4, relwidth = 0.9, anchor="center")
+		
+		
 
 
 	def updatetitle(self,title):
@@ -833,7 +848,7 @@ class infobox(cw.ThemedFrame):
 			try:
 				art_image = tk.PhotoImage(file=image_path)
 			except:
-				art_image = tk.PhotoImage(file=os.path.join(locations.assetfolder, "notfound.png"))
+				art_image = tk.PhotoImage(file=os.path.join(guicore.assetfolder, "notfound.png"))
 			while not (art_image.width() > (imagemax - 80) and not (art_image.width() > imagemax)):
 				if art_image.width() > imagemax:
 					art_image = art_image.subsample(2)
@@ -844,10 +859,10 @@ class infobox(cw.ThemedFrame):
 			art_image = Image.open(image_path)
 			art_image = art_image.resize((infoframewidth, infoframewidth), Image.ANTIALIAS)
 			art_image = ImageTk.PhotoImage(art_image)
-		
+			
 
-		self.project_art_label.configure(image=art_image)
-		self.project_art_label.image = art_image
+			self.project_art_label.configure(image=art_image)
+			self.project_art_label.image = art_image
 
 	#update project description
 	def updatedescription(self, desc):

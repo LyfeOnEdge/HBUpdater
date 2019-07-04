@@ -24,7 +24,7 @@ class settingsPage(tk.Frame):
 		self.outer_frame.place(relx=0.5,rely=0.5,x=-(width/2),y=-(height/2),width=width,height=height)
 
 		#back to main page button image
-		self.returnimage = tk.PhotoImage(file=os.path.join(locations.assetfolder,"returnbutton.png"))
+		self.returnimage = tk.PhotoImage(file=os.path.join(guicore.assetfolder,"returnbutton.png"))
 		self.returnimage = self.returnimage.zoom((3)).subsample(5)
 		
 		self.settingframe = cw.ThemedFrame(self.outer_frame,background_color=light_color,frame_highlightthickness=0,frame_borderwidth=0)
@@ -83,17 +83,16 @@ automatically detected on launch.""")
 		self.save_button = cw.navbutton(self.settingframe, text_string="SAVE", command_name=self.save)
 		self.save_button.place(relx=0.5, x=-navbuttonheight, rely=1, y=-(separatorwidth+navbuttonheight), height=navbuttonheight, width=2*navbuttonheight)
 
-
+		#Max 2 lines for text
 		settinglist = [
-		{
-		"value" : "automatically_check_for_repo_updates", 
-		"text" : "Automatically check for repo updates",
-		},
-		# {
-		# "value" : "display_author_image",
-		# "text" : "Display author image in software pages"
-		# },
-		
+			{
+			"value" : "automatically_check_for_repo_updates", 
+			"text" : "Automatically check for repo updates | Requires restart",
+			},
+			{
+			"value" : "display_author_image",
+			"text" : "Display author image in software pages | Requires restart\n(Disable for more room to for software descriptions)"
+			},
 		]
 
 		v_increment = 60

@@ -29,7 +29,7 @@ class serialPage(cw.ThemedFrame):
 		self.outerframe = cw.ThemedFrame(self, background_color = light_color)
 		self.outerframe.place(x=0,y=0,relwidth=1,relheight=1)
 
-		self.returnimage = tk.PhotoImage(file=os.path.join(locations.assetfolder,"returnbutton.png")).zoom(3).subsample(5)
+		self.returnimage = tk.PhotoImage(file=os.path.join(guicore.assetfolder,"returnbutton.png")).zoom(3).subsample(5)
 		self.returnbutton = cw.navbutton(self.outerframe,command_name=self.back,image_object=self.returnimage)
 		self.returnbutton.place(relx=1,rely=1,x=-2*navbuttonheight,y=-2*navbuttonheight,width=navbuttonheight,height=navbuttonheight)
 

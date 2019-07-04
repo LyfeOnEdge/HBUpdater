@@ -76,7 +76,7 @@ class aboutPage(tk.Frame):
 		if not lyfeimage:
 			lyfeimage = webhandler.grabgravatar("lyfeonedge")
 			if not lyfeimage:
-				lyfeimage = os.path.join(locations.assetfolder,notfoundimage)
+				lyfeimage = os.path.join(guicore.assetfolder,notfoundimage)
 
 		#I get an object named after me :D
 		self.lyfeonedgeimage = tk.PhotoImage(file=lyfeimage)
@@ -88,7 +88,7 @@ class aboutPage(tk.Frame):
 		if not pprmntimage:
 			pprmntimage = webhandler.grabgravatar("npprmint")
 			if pprmntimage == None:
-				pprmntimage = os.path.join(locations.assetfolder,notfoundimage)
+				pprmntimage = os.path.join(guicore.assetfolder,notfoundimage)
 
 		self.pprmintimage = tk.PhotoImage(file=pprmntimage)
 		self.pprmint = cw.devbox(self.mintframe,"pprmint",developers["pprmint"]["dev_flavor_text"],self.pprmintimage,command_name=lambda: webbrowser.open_new_tab(locations.developers["pprmint"]["project_page_url"]))
@@ -107,7 +107,7 @@ class aboutPage(tk.Frame):
 		self.thankstext.config(state=DISABLED)
 
 		#back to main page image and button
-		self.returnimage = tk.PhotoImage(file=os.path.join(locations.assetfolder,"returnbutton.png"))
+		self.returnimage = tk.PhotoImage(file=os.path.join(guicore.assetfolder,"returnbutton.png"))
 		self.returnimage = self.returnimage.zoom((3)).subsample(5)
 
 		self.return_button = cw.navbutton(self.outer_frame, image_object=self.returnimage, command_name=back_command)

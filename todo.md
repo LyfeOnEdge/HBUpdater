@@ -9,6 +9,7 @@ todo:
 Priority:
     (Highest to lowest)
     High:
+        Create test function script
         settings:
             ftp tool
         features:
@@ -17,7 +18,7 @@ Priority:
         features:
             Home page features:
             Buton to open backups folder
-            implement auto-injection, remember last payload selection (one kinda needs the other)
+            implement auto-injection, (one kinda needs the other)
             option to not clean-install
     Low:
         on-the-fly toggle off infobox
@@ -31,6 +32,7 @@ Priority:
             "skip this version" button
             use yes/no screen when new update is available (disable screen in settings)
         pattern-based payloads
+        move folders definitions to guisettings.json
 
         Dangerous things:
             settings menu button to delete userrepos.json and guisettings.json
@@ -50,11 +52,13 @@ Prerelease checklist
 Try:
     Nut
     Fluffy
-    Injector
+    Fusee
     inject
     Serial Checker
     Install
     Uninstall
+    add repo
+    make backup
 
 ongoing:
 No releases (Issue created on github)
@@ -107,7 +111,10 @@ todone:
     - repo jsons now download under the name of the project, this means homebrew that share the same url don't download twice, furthur reducing bandwidth and ratelimit incursion
     - added a session cache to the webhandler so if a repo was already downloaded this session it won't be redownloaded, this is especially useful for users adding multiple assests from the same repo (eg a repo with multiple .nros for different emulators)
     - app now uses the HBAppstore package management system instead of mine, this was a bit annoying to implement (it took longer than I'd like to admit)
-
+1.0-1.1
+Release
+ - injector now remembers last payload
+ - many folders now init only when their corresponding software is downloaded
 
 
 

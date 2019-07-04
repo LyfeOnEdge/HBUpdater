@@ -7,7 +7,7 @@ import json
 if __name__ == '__main__':
     sys.exit("This script was not meant to run without a frontend. Exiting...")
 
-version = "0.10 (Beta)"
+version = "1.0"
 print("HBUpdater version {}".format(version))
 
 #My modules
@@ -28,8 +28,6 @@ def setSDpath(sdpath):
     if not(str(sdpath) == ""):
         chosensdpath = sdpath
         print("SD path set to: {}".format(str(chosensdpath)))
-        trackingfolder = os.path.join(chosensdpath, locations.trackingfolder)
-        trackingfile = os.path.join(trackingfolder, locations.trackingfile)
         sdpathset = True
     else:
         print("invalid path chosen")

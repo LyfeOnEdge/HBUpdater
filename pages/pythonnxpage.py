@@ -28,7 +28,7 @@ class pynxPage(pt.page):
 		self.setlist(nxpylist)
 
 
-		self.pythonimage = tk.PhotoImage(file=os.path.join(locations.assetfolder, "python.png")).zoom(3).subsample(5)
+		self.pythonimage = tk.PhotoImage(file=os.path.join(guicore.assetfolder, "python.png")).zoom(3).subsample(5)
 
 		buttonlist = [
 			{

@@ -135,11 +135,10 @@ class settingbox(ThemedFrame):
 	def __init__(self,frame,value,settingtext,anchor="w"):
 		#Value edited by setting
 		self.v = value
-
-		v = tk.IntVar()
-		ThemedFrame.__init__(self,frame)
+		checkbox_bool = tk.IntVar()
 		
-		self.c = tk.Checkbutton(self, text=settingtext, variable=v,
+		ThemedFrame.__init__(self,frame)
+		self.c = tk.Checkbutton(self, text=settingtext, variable=checkbox_bool,
 			anchor="w",
 			foreground=dgray,
 			activeforeground=dgray,
@@ -149,9 +148,10 @@ class settingbox(ThemedFrame):
 			highlightthickness=0,
 			font=smallboldtext
 			)
+		self.c.v = checkbox_bool
+		self.c.place(x=0,y=0,relwidth=1,relheight=1,)
 
-		self.c.v = v
-		self.c.place(x=0,relwidth=1,relheight=1,y=0)
+	
 
 	def set(self,bool):
 		self.c.v.set(bool)
