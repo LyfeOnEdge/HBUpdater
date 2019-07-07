@@ -21,6 +21,7 @@ Priority:
             implement auto-injection, (one kinda needs the other)
             option to not clean-install
     Low:
+        preset packs
         on-the-fly toggle off infobox
        
         navbox moved to pagetemplate

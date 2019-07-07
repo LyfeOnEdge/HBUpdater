@@ -2,6 +2,7 @@ from modules.format import *
 import modules.guicore as guicore
 import modules.HBUpdater as HBUpdater
 import modules.locations as locations
+import modules.webhandler as webhandler
 import modules.customwidgets as cw
 import pages.pagetemplate as pt
 import json

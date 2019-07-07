@@ -32,6 +32,8 @@ Contributors / testers:
     Guts - Testing, ideas
     ELY_M - Testing, ideas
     Goffrier - Icon ideas
+    sudot0ph - Testing, ideas
+
 
 Jian Addelle - Comic Relief
 loli hunter-san - uwu ~ owo 
