@@ -115,7 +115,7 @@ def getJson(softwarename, apiurl):
 
 
 def getrepochunkfromurl(url,description,):
-	apiurl = webhandler.parse_standard_github_to_api(url)
+	apiurl = parse_standard_github_to_api(url)
 	if apiurl == None:
 		print("error parsing link")
 		return
@@ -123,7 +123,7 @@ def getrepochunkfromurl(url,description,):
 	repo = apiurl.rsplit("/",2)[1]
 	author = apiurl.rsplit("/",3)[1]
 
-	jsonfile = webhandler.getJson(repo, apiurl)
+	jsonfile = getJson(repo, apiurl)
 
 	#make new entry
 	chunk = {
