@@ -211,23 +211,15 @@ def installfiletosd(filename,subfolder):
             print("files copied: \n {}".format(namelist))
             return namelist
 
-    #Useless, 7z must be compiled
-    # def handle7Z():
-    #     import libarchive.public
-
-    #     with libarchive.public.file_reader(file) as e:
-    #         for entry in e:
-    #             with open('/tmp/' + str(entry), 'wb') as f:
-    #                 for block in entry.get_blocks():
-    #                     f.write(block)
-    #         return None
-
+    def handle7Z():
+        print(".7z archives are not supported yet")
+        return None
 
     handlerMAP = {
         ".nro" : handleNRO,
         ".py" : handlePY,
         ".zip" : handleZIP,
-        # ".7z" : handle7Z,
+        ".7z" : handle7Z,
     }
 
     for ending in handlerMAP:
@@ -235,7 +227,6 @@ def installfiletosd(filename,subfolder):
             return handlerMAP[ending]()   #<- We should return here
 
     print("file handling method not found")
-
     raise
 
 def uninstallsoftware(package):
