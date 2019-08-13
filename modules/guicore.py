@@ -129,7 +129,7 @@ def getreposbygroupfromlist(category, listy):
 	for repo in listy:
 		if repo["category"] == category:
 			repos.append(repo)
-		return repos
+	return repos
 
 def getrepolist():
 	try:

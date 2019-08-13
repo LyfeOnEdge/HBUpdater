@@ -1,8 +1,6 @@
 import tkinter as tk
 from tkinter.constants import *
 from modules.format import *
-import modules.guicore as guicore
-import modules.locations as locations
 import platform, os
 
 #Basic Widgets
@@ -17,6 +15,7 @@ class ThemedFrame(tk.Frame):
 			highlightbackground=light_color,
 			borderwidth = frame_borderwidth,
 			)
+
 
 #listbox themed properly from format.py
 class ThemedListbox(tk.Listbox):
@@ -279,7 +278,15 @@ class cbox(ThemedFrame):
 	def clear(self):
 		self.textbox.clear()
 
+class ProgressBar(tk.Frame):
+	def __init__(self, parent, progress = None, foreground = dark_color, background = light_color):
+		ThemedFrame.__init__(self, parent,
+			background = background)
+		self.progressframe = ThemedFrame(self, background=foreground)
+		self.setValue(progress)
 
+		def setValue(self, val):
+			self.progressframe.place(x=0,relheight=1,relwidth=val)
 
 
 
@@ -418,13 +425,17 @@ class themedtable(ThemedFrame):
 			if curcolumn == numcolumns-1:
 				listbox.place(relx=0,relwidth=1,width=-curx,relheight=1)
 			else:
-				listbox.place(relx=1,x=-(curx+tablecolumnwidth-separatorwidth/2),relheight=1,width=(tablecolumnwidth-separatorwidth/2))
+				listbox.place(relx=1,x=-(curx+columnwidth-separatorwidth/2),relheight=1,width=(columnwidth-separatorwidth/2))
 				lbseparator = Separator(self)
-				lbseparator.place(relx=1,x=-(curx+tablecolumnwidth),relheight=1,width=separatorwidth/2)
-				curx += tablecolumnwidth
+				lbseparator.place(relx=1,x=-(curx+columnwidth),relheight=1,width=separatorwidth/2)
+				curx += columnwidth
 
 			self.listboxes[column] = listbox
 			curcolumn += 1
+
+	def clear(self):
+		for lb in self.listboxes:
+			self.listboxes[lb].delete(0,END)
 
 class cwdevlabel(tk.Label):
 	def __init__(self,frame,label_text,anchor="w"):
@@ -601,9 +612,23 @@ def add_placeholder_to(entry, placeholder, color="grey", font=None):
 
 #Search box, use enter to exec bound callback
 class SearchBox(tk.Frame):
-	def __init__(self, master, entry_width=30, entry_font=search_font, entry_background=dark_color, entry_foreground=search_font_color, button_text="Search", button_ipadx=10, button_background=dark_color, button_foreground="white", button_font=None, placeholder=place_holder_text, placeholder_font=place_holder_font, placeholder_color=place_holder_color, spacing=3, command=None):
+	def __init__(self, master, entry_width=30, 
+		entry_font=search_font, 
+		entry_background=dark_color, 
+		entry_foreground=search_font_color, 
+		button_text="Search", button_ipadx=10, 
+		button_background=dark_color, 
+		button_foreground="white", button_font=None, 
+		placeholder=place_holder_text, 
+		placeholder_font=place_holder_font, 
+		placeholder_color=place_holder_color, 
+		spacing=3, 
+		command=None,
+		command_on_keystroke = False,
+		):
+
 		tk.Frame.__init__(self, master, borderwidth=0, highlightthickness=0,background=entry_background)
-		
+
 		self._command = command
 
 		self.entry = tk.Entry(self, width=entry_width, background=entry_background, highlightcolor=button_background, highlightthickness=0, foreground = entry_foreground,borderwidth=0)
@@ -614,6 +639,9 @@ class SearchBox(tk.Frame):
 
 		if placeholder:
 			add_placeholder_to(self.entry, placeholder, color=placeholder_color, font=placeholder_font)
+
+		if command_on_keystroke:
+			self.entry.bind("<KeyRelease>", self._on_execute_command)
 
 		self.entry.bind("<Escape>", lambda event: self.entry.nametowidget(".").focus())
 		self.entry.bind("<Return>", self._on_execute_command)
@@ -641,7 +669,8 @@ class SearchBox(tk.Frame):
 
 	def _on_execute_command(self, event):
 		text = self.get_text()
-		self._command(text)
+		if self._command:
+			self._command(text)
 
 #Smaller version of the search box (above)
 class entrybox(tk.Frame):
@@ -686,6 +715,8 @@ class entrybox(tk.Frame):
 		self.focus()
 		self.on_focusout()
 
+		self.last = None
+
 	def get(self):
 		entry = self.entry
 		if hasattr(entry, "placeholder_state"):
@@ -699,6 +730,7 @@ class entrybox(tk.Frame):
 
 	def set_text(self, text):
 		if not text == None and not text == "":
+			self.last = self.get()
 			self.on_focusin()
 			self.entry.insert(0, text)
 			self.on_focusout()

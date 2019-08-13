@@ -42,22 +42,25 @@ def getUpdatedSoftwareLinks(dicttopopulate):
 		githubjsonlink = softwarechunk["githubapi"]
 		softwarename = softwarechunk["software"]
 		projectname = get_project_from_github_api_link(githubjsonlink)
+		author = get_author_from_github_api_link(githubjsonlink)
+
+		json_name = "{}_{}".format(projectname, author)
 
 		try:
-			file = filedict[projectname]
+			file = filedict[json_name]
 			#Exit reuse path if not yet downloaded
 			if not file:
 				raise HBUError('Not yet downloaded')
 			softwarechunk["githubjson"] = file
-			print("using already downloaded file for {}".format(projectname))
+			print("using already downloaded file for {}".format(json_name))
 		#If not downloaded file yet
 		except:
-			jsonfile = os.path.join(locations.jsoncachefolder, projectname + ".json")
+			jsonfile = os.path.join(locations.jsoncachefolder, "{}.json".format(json_name))
 
 			#Download it, set the chunk's json file path to it, and update the filedict in case it's a shared file
 			file = getJsonThread(githubjsonlink, jsonfile, softwarename)
 			softwarechunk["githubjson"] = file
-			filedict[projectname] = file
+			filedict[json_name] = file
 
 		#If project page was not pre-defined set it to the base github project link
 		if softwarechunk["projectpage"] == None or softwarechunk["projectpage"] == "":
@@ -178,7 +181,7 @@ def parse_api_to_standard_github(url):
 	except:
 		return None
 
-def get_project_from_github_api_link(url):
+def get_project_and_author_from_github_api_link(url):
 	remove = [
 		"https:",
 		"http:",
@@ -195,12 +198,11 @@ def get_project_from_github_api_link(url):
 	url=url.strip("/")
 
 	project_and_author = url.split('/')
-
-	return project_and_author[1]
-
-
-
-
+	return project_and_author
+def get_project_from_github_api_link(url):
+	return get_project_and_author_from_github_api_link(url)[1]
+def get_author_from_github_api_link(url):
+	return get_project_and_author_from_github_api_link(url)[0]
 
 
 ###Image handling
@@ -223,7 +225,7 @@ def getcachedimage(imagename):
 	import os
 	photopath = None
 
-	#Optimizations >:)
+	#Optimizations >:) because looking through the whole cache gets slow eventually
 	because_there_is_a_high_chance_its_png = os.path.join(locations.imagecachefolder,"{}.png".format(imagename))
 	if os.path.isfile(because_there_is_a_high_chance_its_png):
 		return because_there_is_a_high_chance_its_png

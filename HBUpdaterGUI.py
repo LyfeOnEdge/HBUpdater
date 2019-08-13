@@ -77,8 +77,10 @@ class FrameManager(tk.Tk):
 
 		##Test pages, 
 		#Uncomment this to see what I'm working on sometimes, especially in source builds.
-		import pages.test_page as tp 
-
+		# import pages.test_page as tp 
+		# import pages.dbviewer as db
+		# import pages.usbhelper as ub
+		# import pages.nut_tk.nut_tk as nk 
 		#Add pages to list
 		pages = [
 			ep.errorPage,	#<- Needs to be inited before most pages, used for error handling to the user
@@ -96,6 +98,9 @@ class FrameManager(tk.Tk):
 			lp.homePage,		#<- No precedence
 			py.pynxPage,		#<- List Page
 			sp.settingsPage,	#<- No precedence
+
+			# db.dbPage,			#No precedence
+			# ub.usbPage,
 		]
 
 		#Try to add test page

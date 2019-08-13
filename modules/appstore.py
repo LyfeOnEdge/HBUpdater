@@ -77,10 +77,7 @@ def get_package_value(basepath, package, value):
 def get_package_version(basepath, package):
     #Get the package json data
     ver = get_package_value(basepath, package, "version")
-    if ver:
-        return ver
-    else:
-        return "not installed"
+    return ver or "not installed"
 
 #Returns a package's manifest as a list
 def get_package_manifest(basepath, package):

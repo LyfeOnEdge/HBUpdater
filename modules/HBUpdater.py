@@ -7,7 +7,7 @@ import json
 if __name__ == '__main__':
     sys.exit("This script was not meant to run without a frontend. Exiting...")
 
-version = "1.0"
+version = "1.1"
 print("HBUpdater version {}".format(version))
 
 #My modules
@@ -115,24 +115,16 @@ def installitem(sc, suboption):
         print("Could not find asset data for selected software")
         return
 
-    downloadlink = None
-    if not sc["pattern"] == None:
-        pattern = sc["pattern"]
-        for asset in assets:
-            asseturl = asset["browser_download_url"]
-            assetname = asseturl.rsplit("/",1)[1].lower()
-            assetwithoutfiletype = assetname.split(".")[0]
-            for firstpartpattern in pattern[0]:
-                if firstpartpattern.lower() in assetwithoutfiletype.lower():
-                    if assetname.endswith(pattern[1].lower()):
-                        print("found asset: {}".format(assetname))
-                        downloadlink = asseturl
-                        break
-        if downloadlink == None:
-            print("No asset data found for pattern {}, can't install\n".format(pattern))
-            return
-    else:
-        print("failed to find asset pattern")
+
+    if sc["pattern"] == None:
+        print("no asset pattern specified for repo")
+        return
+
+    #Find the correct asset in the list of assets pulled from the repo json
+    downloadlink = findasset(sc["pattern"], assets)
+
+    if not downloadlink:
+        return
 
     downloadedfile = webhandler.download(downloadlink)
 
@@ -171,6 +163,7 @@ def installitem(sc, suboption):
     appstore.create_store_entry(chosensdpath,entry,installlocation,package)
 
 
+
 def installfiletosd(filename,subfolder):
     global chosensdpath
 
@@ -186,7 +179,8 @@ def installfiletosd(filename,subfolder):
     if not os.path.exists(subdir):
         os.makedirs(subdir)
 
-    if filename.endswith(".nro") or filename.endswith(".py"):
+
+    def handleMove():
         try:
             shutil.move(file, sdlocation)
             print("Successfully copied {} to SD".format(filename))
@@ -198,24 +192,50 @@ def installfiletosd(filename,subfolder):
         except: 
             print("Failed to copy {} to SD".format(filename) )
             return None
+    def handleNRO():
+        return handleMove()
+    def handlePY():
+        return handleMove()
 
-    elif filename.endswith(".zip"):
+    def handleZIP():
         with ZipFile(file, 'r') as zipObj:
-            # try:
-                zipObj.extractall(subdir)
-                print("Sucessfully extracted {} to SD".format(filename))
-                sdlocation = zipObj.namelist()
-                namelist = []
-                for location in sdlocation:
-                    if subfolder:
-                        namelist.append(os.path.join(subfolder,location))
-                    else:
-                        namelist.append(location)
-                print("files copied: \n {}".format(namelist))
-                return namelist
-    else:
-        print("file handling method not found")
-        return None
+            zipObj.extractall(subdir)
+            print("Sucessfully extracted {} to SD".format(filename))
+            sdlocation = zipObj.namelist()
+            namelist = []
+            for location in sdlocation:
+                if subfolder:
+                    namelist.append(os.path.join(subfolder,location))
+                else:
+                    namelist.append(location)
+            print("files copied: \n {}".format(namelist))
+            return namelist
+
+    def handle7Z():
+        import libarchive.public
+
+        with libarchive.public.file_reader(file) as e:
+            for entry in e:
+                with open('/tmp/' + str(entry), 'wb') as f:
+                    for block in entry.get_blocks():
+                        f.write(block)
+            return None
+
+
+    handlerMAP = {
+        ".nro" : handleNRO,
+        ".py" : handlePY,
+        ".zip" : handleZIP,
+        ".7z" : handle7Z,
+    }
+
+    for ending in handlerMAP:
+        if filename.endswith(ending):
+            return handlerMAP[ending]()   #<- We should return here
+
+    print("file handling method not found")
+
+    raise
 
 def uninstallsoftware(package):
     global sdpathset
@@ -247,6 +267,36 @@ def uninstallsoftware(package):
         appstore.remove_store_entry(chosensdpath, package)
 
         print("removed {}".format(package))
+
+#takes a pattern in form [[fp1, fp2, fp2], .extention] and an assets list 
+#from a specific version from a repo object, returns the url of the asset
+#matching the pattern or none found
+def findasset(pattern, assets):
+    if not pattern:
+        print("No pattern specified")
+        return
+
+    if not assets:
+        print("no repo json specified")
+        return
+
+    downloadlink = None
+
+    for asset in assets:
+        asseturl = asset["browser_download_url"]
+        assetname = asseturl.rsplit("/",1)[1].lower()
+        assetwithoutfiletype = assetname.split(".")[0]
+        for firstpartpattern in pattern[0]:
+            if firstpartpattern.lower() in assetwithoutfiletype.lower():
+                if assetname.endswith(pattern[1].lower()):
+                    print("found asset: {}".format(assetname))
+                    downloadlink = asseturl
+                    break
+    if downloadlink == None:
+        print("No asset data found for pattern {}, can't install\n".format(pattern))
+
+    return downloadlink
+
 
 #Check package version
 #returns "not installed" if no data found or sd path not set

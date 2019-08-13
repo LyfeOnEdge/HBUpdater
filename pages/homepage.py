@@ -21,10 +21,7 @@ home_page_button_text_highlight_color = "black"
 
 class homePage(cw.ThemedFrame):
 	def buildbuttonrow(self,title,buttonlist,frame):
-
-
 		global home_page_button_text_highlight_color
-
 
 		iconspacer = homebuttonspacing
 		for button in buttonlist:
@@ -136,7 +133,7 @@ class homePage(cw.ThemedFrame):
 			},		
 			{
 			"image" : self.serialimage,
-			"callback" : self.checkserialandstart,
+			"callback" : lambda: self.controller.show_frame("serialPage"),
 			"tooltip" : "Built-in Switch serial number checker GUI",
 			"shorttip" : "Serial Checker"
 			},
@@ -170,9 +167,15 @@ class homePage(cw.ThemedFrame):
 			# },
 			# {
 			# "image" : self.betaimage,
-			# "callback" : lambda: self.controller.show_frame("testPage"),
+			# "callback" : lambda: self.controller.show_frame("dbPage"),
 			# "tooltip" : "delete me",
-			# "shorttip" : "test page"
+			# "shorttip" : "titledb"
+			# },
+			# {
+			# "image" : self.betaimage,
+			# "callback" : lambda: self.controller.show_frame("usbPage"),
+			# "tooltip" : "delete me",
+			# "shorttip" : "nutpage"
 			# },
 		]
 
@@ -203,12 +206,3 @@ class homePage(cw.ThemedFrame):
 			return
 		else:
 			toolhelper.starthelper("fluffy")
-
-
-	def checkserialandstart(self):
-		status = serialpage.checkifSSNCinstalled()
-		if status == "not installed" or status == None:
-			self.controller.frames["errorPage"].getanswer("homePage","Would you like to install Switch Serial Number Checker and its dependencies?",lambda: serialpage.downloadSSNCandinstalldependencies())
-		else:
-			self.controller.show_frame("serialPage")
-

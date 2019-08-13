@@ -10,13 +10,12 @@ from zipfile import ZipFile
 fluffylist = []
 
 def getnut():
-		downloadNUTandinstalldependencies()
-		starthelper("nut")
+	downloadNUTandinstalldependencies()
+	starthelper("nut")
 
 def getfluffy():
 	downloadFLUFFYandinstalldependencies()
 	starthelper("fluffy")
-
 
 def checkifhelperdownloaded(helper):
 	if guicore.checkguisetting(helper, "version") == "not installed" or guicore.checkguisetting(helper, "version") == None:
@@ -31,12 +30,14 @@ def starthelper(helper):
 		nutnotdownloadedwarningframe.tkraise()
 		print("not installed")
 		return
-	script_path = guicore.checkguisetting(helper, "location")
-	print("starting {} server at {}".format(helper,script_path))
-	if script_path == None:
+	script_file = guicore.checkguisetting(helper, "location")
+	# script_path = os.path.dirname(os.path.realpath(script_file))
+	print("starting {} server at {}".format(helper,script_file))
+	if script_file == None:
 		print("invalid path")
 		return
-	subprocess.Popen([sys.executable,script_path])
+	#Starts the script in the config folder so config files aren't lost when the helpers get updated
+	subprocess.Popen([sys.executable,script_file], cwd=locations.configfolder)
 
 def downloadNUTandinstalldependencies():
 	if not os.path.isdir(locations.nutfolder):
@@ -138,6 +139,3 @@ def downloadFLUFFYandinstalldependencies():
 	threads = []
 	dependencies = locations.fluffydict["dependencies"]
 	webhandler.installmodulelist(dependencies)
-
-
-

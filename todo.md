@@ -2,9 +2,10 @@ THIS IS MY PERSONAL TODO LIST
 NONE OF THESE IDEAS, PIECES OF SOFTWARE, OR TODOS ARE SET IN STONE, THEY MAY NEVER MAKE THEIR WAY INTO HBUPDATER
 
 todo:
-    fix search bar to update every character -> only do something when sb.get() returns non-null
-
-    move more stuff to style.py
+    make auto-zip building script utilizing .gitignore
+    build stand-alone with pyinstaller
+    warn when repos collide (multiple heketes etc)
+    move more stuff to style.py instead of format.py
 
 Priority:
     (Highest to lowest)
@@ -17,10 +18,10 @@ Priority:
     Medium:
         features:
             Home page features:
-            Buton to open backups folder
-            implement auto-injection, (one kinda needs the other)
+            implement auto-injection
             option to not clean-install
     Low:
+        break json handling in to a function called get_repo_object()
         preset packs
         on-the-fly toggle off infobox
        
@@ -38,10 +39,9 @@ Priority:
         Dangerous things:
             settings menu button to delete userrepos.json and guisettings.json
 
+    game randomizer: pick a random game from list of installed
     Code clean-up:
-    move cfw install code to core (god damn this scene's releases are inconsistent)
-    move infobox class to pagetemplate
-
+   
     Aesthetic:
         borderless window, settings on top bar with quick-access
         fix linux icon
@@ -89,7 +89,7 @@ todone:
     - Improved HBUpdaterGUI.py code layout
     - software lists are now populated within the page that uses them, this is more flexible and requires far less code
     - The buttons were getting crowded on the standard homebrew page so I've added a new landing page with big icons. Gives it a metro feel
-     - HBUpdater will now check for updates, setting available in setting menu to disable it
+    - HBUpdater will now check for updates, setting available in setting menu to disable it
     errorpage.py now handles errors and yes/no questions, code reduction in installerhelperpage.py
     - improved folder handling, moved all folder definitions to locations.py
     removed homebrewcore.py to simplify backend
@@ -116,6 +116,29 @@ todone:
 Release
  - injector now remembers last payload
  - many folders now init only when their corresponding software is downloaded
+1.2
+ - Injector now uses pattern system for standardization reasons
+ - Broke pattern-based asset finding out into a function
+ - Fixed injector page listbox continuing under console
+ - added blawar's modded memloader
+ - cleaned up some messy copy-pasted app descriptions
+ - tools like nut are now Popen() in a config folder so config files aren't at risk, this is for the future addition of proper version managing for nut and fluffy
+ - Serial checker no longer needs download as it has been re-written as a single file
+ - Fixed bug with adding forked repos
+ - Search now updates with every charater typed
+ - Users can now set the name of an added repo
+ - Content
+     + Added ComicNX
+     + Removed sdsetup-switch (for now) per authors recommendation
+
+
+
+
+
+
+
+
+
 
 
 
@@ -144,7 +167,6 @@ https://github.com/Destiny1984/XCI-Cutter/releases
 
 AGNOSTIC
 https://github.com/AnalogMan151/splitNSP/releases
-
 https://github.com/vgmoose/nro-asset-editor/releases
 
 
@@ -177,5 +199,16 @@ https://github.com/Povstalez/Kefir-Updater/releases
 
 
 #useful code bits for later
+winfo exists window: Returns 1 if there exists a window named window, 0 if no such window exists.
 for child in frame2.winfo_children():
     child.configure(state='disable')
+
+
+#Other ideas
+Python homebrew to clear user's screenshot directory
+
+
+Ideas for the future:
+https://github.com/bodyXY/Ultimate-Material-Hactool-GUI
+https://github.com/bodyXY/NES-ONLINE-Game-Injector
+

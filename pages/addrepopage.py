@@ -34,10 +34,12 @@ For example:
     You would be left with 'homebrew-switch' in the first box and '.nro' in the second.
 """
 
+softwarename_placeholder = "Repo Name"
 new_url_placeholder = "Repo URL in format: https://www.github.com/author/repo"
 new_subfolder_placeholder = "SD subfolder (blank for root)"
 new_genre_placeholder = "Genre"
 new_description_placeholder = "(Optional) Repo Description"
+
 
 class addrepoPage(pt.page):
     def __init__(self, parent, controller,page_name,back_command):
@@ -107,7 +109,6 @@ class addrepoPage(pt.page):
         for listbox in self.maintable.listboxes:
             self.listbox_list.append(self.maintable.listboxes[listbox])
 
-
         # self.listboxlist = self.maintable.listboxes
         self.genre_listbox = self.maintable.listboxes["CATEGORY"]
 
@@ -118,13 +119,15 @@ class addrepoPage(pt.page):
         self.status_listbox = self.maintable.listboxes["SUBFOLDER"]
 
 
-
 #Page frame for adding new repo
         self.addreposcreen = cw.ThemedFrame(self.outer_frame,background_color=light_color)
         self.addreposcreen.place(x=0,y=0,relwidth=1,relheight=1)
 
+        self.softwarename_box = cw.entrybox(self.addreposcreen, placeholder=softwarename_placeholder,)
+        self.softwarename_box.place(relx=0.00,relwidth=.333,y=separatorwidth,height=entryheight,width=-2*separatorwidth,x=+separatorwidth)
+
         self.new_urlbox = cw.entrybox(self.addreposcreen, placeholder=new_url_placeholder, )
-        self.new_urlbox.place(relx=0, y = separatorwidth, relwidth=1, height=entryheight, width=-2*separatorwidth,x=+separatorwidth)
+        self.new_urlbox.place(relx=0.334, y = separatorwidth, relwidth=.666, height=entryheight, width=-separatorwidth)
 
         self.new_descriptionbox = cw.entrybox(self.addreposcreen, placeholder=new_description_placeholder)
         self.new_descriptionbox.place(relx=0, y = 2*(entryheight+2*separatorwidth), relwidth=1, height=entryheight, width=-2*separatorwidth,x=+separatorwidth)
@@ -219,12 +222,10 @@ class addrepoPage(pt.page):
         self.returntoreposcreenbutton = cw.navbutton(self.returnbuttonframe,image_object=self.returnimage,command_name=lambda: self.showmainreposcreen())
         self.returntoreposcreenbutton.place(relwidth=1,relheight=1)
 
-
         self.addrepobuttonframe = cw.ThemedFrame(self.addreposcreen,background_color=light_color)
         self.addrepobuttonframe.place(relx=0.5, rely=1, x=-5*entryheight, y=-(entryheight+separatorwidth), width = 10*entryheight, height=entryheight)
         self.addrepobutton = cw.navbutton(self.addrepobuttonframe, text_string="ADD REPO", command_name=lambda: self.addrepo())
         self.addrepobutton.place(x=0,y=0,relwidth=1,relheight=1)
-
 
         self.content_frame.tkraise()
 
@@ -333,36 +334,24 @@ class addrepoPage(pt.page):
         self.asset_pattern_lastpart_box.set_text("."+parts[1])
 
 
-
-
-
-
     def addrepo(self):
         print("adding repo")
         
         #Get strings
         fp = self.asset_pattern_firstpart_box.get()
         lp = self.asset_pattern_lastpart_box.get()
-        
-        self.repoVar["group"] = group = self.genres_dropdown.get()
-        self.repoVar["category"] = category = self.category_dropdown.get()
-        self.repoVar["install_subfolder"] = subfolder = self.subfolder_dropdown.get()
-        self.repoVar["store_equivalent"] = software = self.repoVar["software"]
-
         #Check they are populated
         if not fp or not lp:
             print("No asset selected, not adding")
             return
-
-        if not category:
-            print("Category not set, not adding")
-            return
-
-        #Set values
         self.repoVar["pattern"] = [[fp],lp]
-        self.repoVar["category"] = self.category_dropdown.get()
-        
-        # print(json.dumps(self.repoVar,indent=4))
+
+        self.repoVar["software"] = self.softwarename_box.get()
+        self.repoVar["group"] = self.genres_dropdown.get() or "used-added"
+        self.repoVar["category"] = self.category_dropdown.get() or "homebrew"
+        self.repoVar["install_subfolder"] = self.subfolder_dropdown.get() or None
+        self.repoVar["store_equivalent"] = self.repoVar["software"]
+        self.repoVar["description"] = self.new_descriptionbox.get() or "added by user"
 
         newentry = {
                         self.repoVar["software"] : self.repoVar
@@ -388,8 +377,6 @@ class addrepoPage(pt.page):
         self.currentselection = 0
         self.reload()
   
-  
-
 
     def download_json_then_list_assets(self):
         url = self.new_urlbox.get().strip("/")
@@ -438,6 +425,7 @@ class addrepoPage(pt.page):
         self.assetslistbox.delete(0,END)
         self.asset_pattern_firstpart_box.clear()
         self.asset_pattern_lastpart_box.clear()
+        self.softwarename_box.clear()
 
 
 

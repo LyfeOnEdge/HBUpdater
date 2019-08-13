@@ -18,8 +18,9 @@ import os, json
 class page(cw.ThemedFrame,):
 	#Call this with an appropriately formatted list to populate the table with
 	def setlist(self,listy):
-		self.basesoftwarelist = listy
-		self.softwarelist = self.basesoftwarelist[:]
+		if listy:
+			self.basesoftwarelist = listy
+			self.softwarelist = self.basesoftwarelist[:]
 
 	def populatesoftwarelist(self,list):
 		if guicore.checkguisetting("guisettings","automatically_check_for_repo_updates"):
@@ -62,7 +63,7 @@ class page(cw.ThemedFrame,):
 
 		#add search box with remaining space
 		self.iconspacer += icon_and_search_bar_spacing
-		self.sb = cw.SearchBox(self.searchbox_frame, command=self.search, placeholder="Search")
+		self.sb = cw.SearchBox(self.searchbox_frame, command=self.search, placeholder="Search", command_on_keystroke = True)
 		self.sb.place(relx=0,rely=.5, x=+icon_and_search_bar_spacing, relwidth=1, width=-(self.iconspacer), height=searchboxheight-2*icon_and_search_bar_spacing, y=-((searchboxheight)/2) + icon_and_search_bar_spacing ) 
 
 	#Call this to set the guide text for the details window
@@ -84,6 +85,7 @@ class page(cw.ThemedFrame,):
 		softwaregroup=None, 				#Set this to the keyword section of the tracking file to log installed software to
 		noimage = None,						#Set this to true to disable the info box
 		nodetail = None,
+		nocheck = None,
 		):
 
 		self.page_name = page_name
@@ -95,6 +97,7 @@ class page(cw.ThemedFrame,):
 		self.pagetitle = page_title
 		self.noimage = noimage
 		self.nodetail = nodetail
+		self.nocheck = nocheck
 
 		if latest_function:
 			self.latest_function = latest_function
@@ -351,7 +354,38 @@ class page(cw.ThemedFrame,):
 
 	#called when enter is pressed in searchbox
 	def search(self, searchstring):
-		self.updatetable(searchstring)
+		ss = searchstring
+		self.softwarelist = []
+
+		fields  = [
+			"software",
+			"group",
+			"version"
+		]
+
+		bsl = self.basesoftwarelist[:]
+
+		if self.softwaregroup:
+			user_repos = self.controller.user_repos
+			user_repos = guicore.getreposbygroupfromlist(self.softwaregroup, user_repos)
+			if user_repos:
+				bsl.extend(user_repos)
+
+		if ss:
+			for sc in bsl: 
+				for f in fields: 
+					try:
+						if ss.lower() in sc[f].lower(): 
+							self.softwarelist.append(sc)
+							break
+					except:
+						pass
+
+		else:
+			self.softwarelist = bsl
+			self.on_show_frame(None)
+
+		self.updatetable()
 
 	#raises the details frame
 	def showdetails(self):
@@ -385,7 +419,7 @@ class page(cw.ThemedFrame,):
 			listbox.delete(0,END)
 
 	#Fills table with data
-	def updatetable(self,searchterm):
+	def updatetable(self,Filler=None):
 		#Set all listboxes to be enabled
 		for listbox in self.listbox_list:
 			listbox.configure(state=NORMAL)
@@ -401,31 +435,29 @@ class page(cw.ThemedFrame,):
 			self.latest_listbox.insert(END, version)
 
 			#Check to see if and which version is installed 
-			installedversion = self.version_function(softwarechunk["store_equivalent"])
+			installedversion = self.version_function(softwarechunk)
 			#If the installed version is up-to-date print a check mark, else insert not installed or the installed version
-			if installedversion == version:
-				self.status_listbox.insert(END, checkmark)
-				self.status_listbox.itemconfig(END, foreground="white")
-			elif installedversion == None:
-				installedversion = "not installed"
+			if not self.nocheck:
+				if installedversion == version:
+					self.status_listbox.insert(END, checkmark)
+					self.status_listbox.itemconfig(END, foreground="white")
+				elif installedversion == None:
+					installedversion = "not installed"
+					self.status_listbox.insert(END, installedversion)
+				else: 
+					self.status_listbox.insert(END, installedversion)
+			else:
+				#If version comparison is disabled
 				self.status_listbox.insert(END, installedversion)
 
-			else: 
-				self.status_listbox.insert(END, installedversion)
 
 			#Get the genre of the software item and insert it
 
 			group = self.genre_function(softwarechunk)
 			self.genre_listbox.insert(END, group)
 
-			#If a search term has been specified with the table update, hilight items that match the search term
-			if searchterm == None:
-				self.software_listbox.itemconfig(END,foreground=listbox_font_color)
-			else:
-				if searchterm.lower() in softwarename.lower() or searchterm.lower() in group.lower() or version.lower().startswith(searchterm.lower()):
-					self.software_listbox.itemconfig(END,foreground=listbox_font_color)
-				else:
-					self.software_listbox.itemconfig(END,foreground=dark_listbox_font_color)
+			self.software_listbox.itemconfig(END,foreground=listbox_font_color)
+
 		for listbox in self.listbox_list:
 			listbox.configure(state=DISABLED)      
 		self.software_listbox.configure(state=NORMAL)
@@ -468,7 +500,8 @@ class page(cw.ThemedFrame,):
 				version = "unknown"
 		return version
 
-	def get_installed_version(self, package):
+	def get_installed_version(self, chunk):
+		package = chunk["store_equivalent"]
 		return HBUpdater.get_app_status(package)
 
 	#Not default but can be called with version_function
@@ -555,62 +588,63 @@ class page(cw.ThemedFrame,):
 		self.updateAuthorImage()
 
 	def updateAuthorImage(self):
-		if guicore.checkguisetting("guisettings", "display_author_image"):
-			sel = self.softwarelist[self.currentselection]
-			#Variable to track if we have found the author image yet
-			photopath = None
-			notfound = os.path.join(guicore.assetfolder,notfoundimage)
-			
+		if not self.noimage:
+			if guicore.checkguisetting("guisettings", "display_author_image"):
+				sel = self.softwarelist[self.currentselection]
+				#Variable to track if we have found the author image yet
+				photopath = None
+				notfound = os.path.join(guicore.assetfolder,notfoundimage)
+				
 
-			#Check if we have already set the photopath, if so return the file
-			if not sel["photopath"] == None:
-				photopath = sel["photopath"]
-				try:
-					self.infobox.updateimage(image_path = photopath)
-				except Exception as e:
-					#if encountered an error with given photo path (wrong type, corrupt etc)
-					if type(e) == 'TclError':
-						self.infobox.updateimage(image_path = notfound)
-						sel["photopath"] = notfound
+				#Check if we have already set the photopath, if so return the file
+				if not sel["photopath"] == None:
+					photopath = sel["photopath"]
+					try:
+						self.infobox.updateimage(image_path = photopath)
+					except Exception as e:
+						#if encountered an error with given photo path (wrong type, corrupt etc)
+						if type(e) == 'TclError':
+							self.infobox.updateimage(image_path = notfound)
+							sel["photopath"] = notfound
+							return
+
+				#If gotten this far, check and see if we have already downloaded an image for this author
+				authorname = sel["author"]
+				#If authorname isn't none 
+				if authorname:
+					photopath = self.checkphoto(locations.imagecachefolder, authorname)
+					if photopath:
+						if sel["photopath"] == None:
+							sel["photopath"] = photopath
+
+						self.infobox.updateimage(image_path = photopath)
 						return
 
-			#If gotten this far, check and see if we have already downloaded an image for this author
-			authorname = sel["author"]
-			#If authorname isn't none 
-			if authorname:
-				photopath = self.checkphoto(locations.imagecachefolder, authorname)
-				if photopath:
-					if sel["photopath"] == None:
+				#If it wasn't already set, AND it hasn't been downloaded yet
+				#Try getting it from the associated json
+				try:
+					with open(sel["githubjson"],encoding="utf-8") as json_file: #jsonfile is path, json_file is file obj
+						jfile = json.load(json_file)
+						url = jfile[0]["author"]["avatar_url"]
+
+					if url:
+						photopath = webhandler.cacheimage(url,authorname)
+						sel["photopath"] = photopath
+				except:
+				#If that failed, take a stab in the dark with their github avatar image, this is useful for data sets without github jsons
+					photopath = webhandler.guessgithubavatar(authorname)
+
+					if photopath:
 						sel["photopath"] = photopath
 
-					self.infobox.updateimage(image_path = photopath)
-					return
+				#If the photopath is still none, use the not-found image
+				if not photopath:
+					photopath = notfound
 
-			#If it wasn't already set, AND it hasn't been downloaded yet
-			#Try getting it from the associated json
-			try:
-				with open(sel["githubjson"],encoding="utf-8") as json_file: #jsonfile is path, json_file is file obj
-					jfile = json.load(json_file)
-					url = jfile[0]["author"]["avatar_url"]
-
-				if url:
-					photopath = webhandler.cacheimage(url,authorname)
-					sel["photopath"] = photopath
-			except:
-			#If that failed, take a stab in the dark with their github avatar image, this is useful for data sets without github jsons
-				photopath = webhandler.guessgithubavatar(authorname)
-
-				if photopath:
+				if sel["photopath"] == None:
 					sel["photopath"] = photopath
 
-			#If the photopath is still none, use the not-found image
-			if not photopath:
-				photopath = notfound
-
-			if sel["photopath"] == None:
-				sel["photopath"] = photopath
-
-			self.infobox.updateimage(image_path = photopath)
+				self.infobox.updateimage(image_path = photopath)
 
 	def checkphoto(self,dir, photo):
 		for s in os.listdir(dir):
@@ -709,39 +743,42 @@ class page(cw.ThemedFrame,):
 		self.currenttagselection = 0
 		self.tags_listbox.delete(0,END)
 
-		if not self.nodetail:
+		if self.softwarelist:
+			if not self.nodetail:
 
-			if not self.softwarelist == []:
-				try:
-					with open(self.softwarelist[self.currentselection]["githubjson"],encoding="utf-8") as json_file: #jsonfile is path, json_file is file obj
-						jfile = json.load(json_file)
+				if not self.softwarelist == []:
+					try:
+						with open(self.softwarelist[self.currentselection]["githubjson"],encoding="utf-8") as json_file: #jsonfile is path, json_file is file obj
+							jfile = json.load(json_file)
 
-					for version in jfile:
-						tag = version["tag_name"]
-						self.tags_listbox.insert(END, tag)
-				except IndexError:
+						for version in jfile:
+							tag = version["tag_name"]
+							self.tags_listbox.insert(END, tag)
+					except IndexError:
+						pass
+					except:
+						print("detailwindow refresh error - failed to load repo json - {}".format(self.softwarelist[self.currentselection]["software"]))
+
+					self.updatetagsbox()
+					self.updatetagnotes()
+
+				else:
 					pass
-				except:
-					print("detailwindow refresh error - failed to load repo json - {}".format(self.softwarelist[self.currentselection]["software"]))
-
-				self.updatetagsbox()
-				self.updatetagnotes()
-
-			else:
-				pass
 
 	#Update page whenever it is raised
 	def on_show_frame(self,event):
 		#Update with user repos
 		if self.softwaregroup:
-			self.softwarelist = self.basesoftwarelist[:]
-			user_repos = self.controller.user_repos
-			user_repos = guicore.getreposbygroupfromlist(self.softwaregroup, user_repos)
-			#Add repos if they are found
-			if user_repos:
-				self.softwarelist.extend(user_repos)
-			if self.currentselection >= len(self.softwarelist):
-				self.currentselection = len(self.softwarelist) - 1
+			if self.softwarelist:
+				#Make a copy of the base softwarelist
+				self.softwarelist = self.basesoftwarelist[:]
+				user_repos = self.controller.user_repos
+				user_repos = guicore.getreposbygroupfromlist(self.softwaregroup, user_repos)
+				#Add repos if they are found
+				if user_repos:
+					self.softwarelist.extend(user_repos)
+				if self.currentselection >= len(self.softwarelist):
+					self.currentselection = len(self.softwarelist) - 1
 
 			
 
@@ -760,6 +797,23 @@ class page(cw.ThemedFrame,):
 			url = webhandler.parse_api_to_standard_github(self.softwarelist[self.currentselection]["githubapi"])
 		print("Opening {}".format(url))
 		webhandler.opentab(url)
+
+	#Make bytes sizes print friendly
+	def format_bytes(self, size):
+		power = 2**10
+		n = 0
+		power_labels = {0 : '', 1: 'k', 2: 'm', 3: 'g', 4: 't'}
+		while size > power:
+			size /= power
+			n += 1
+		size = round(size,2)
+		size = str(size)
+		if size.endswith(".0"):
+			size = size.replace(".0","")
+		size = size + " " + power_labels[n]+'b'
+		if size == "1024 kb":
+			size = "1 mb"
+		return size
 
 
 
@@ -822,16 +876,13 @@ class infobox(cw.ThemedFrame):
 			self.project_title_label.place(relx=0.0, rely=0.0, y=+separatorwidth, relwidth=1.0)
 			self.author_name_label.place(relx=0.0, rely=0, y=separatorwidth + 25,  relwidth=1.0)
 			self.project_description.place(relx=0.5, rely=0.0, y=separatorwidth+55, relheight = 1, height=-(separatorwidth + 55 + 100), relwidth=0.85, anchor = "n")
+			self.project_art_label.place_forget()
 
 		self.botsep.place(x = (infoframewidth / 2), rely = 1, y = -95, height = 4, relwidth = 0.9, anchor="center")
 
 		self.project_description.delete('1.0', END)
 		self.project_description.insert(END, "Project description")
 		self.project_description.configure(state=DISABLED)
-
-
-		
-		
 
 
 	def updatetitle(self,title):
@@ -870,4 +921,3 @@ class infobox(cw.ThemedFrame):
 		self.project_description.delete('1.0', END)
 		self.project_description.insert(END, desc)
 		self.project_description.configure(state=DISABLED)
-

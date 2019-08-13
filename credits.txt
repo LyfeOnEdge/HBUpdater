@@ -1,5 +1,0 @@
-Pprmint: GUI Concept, GUI assets, icon design, 
-Qyriad: RCM Injector Backend, made fusee-launcher avaialable via the github api on request
-
-Special Thanks:
-Goffrier, IAMTHELAW, Guts, 

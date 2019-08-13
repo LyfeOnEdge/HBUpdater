@@ -5,6 +5,7 @@ import modules.HBUpdater as HBUpdater
 import modules.locations as locations
 import modules.webhandler as webhandler
 
+
 import os
 
 import tkinter as tk
@@ -18,7 +19,7 @@ developers = {
 
 	"pprmint" : {
 		"gravatar_url" : "http://de.gravatar.com/npprmint.json",
-		"project_page_url" : "npprmint.github.io",
+		"project_page_url" : "http://pprmint.de/",
 		"dev_flavor_text" : "UI concept and asset designer.\n\n←Click here to visit his website"
 	}
 }
@@ -26,7 +27,7 @@ developers = {
 thankyoutext = """vgmoose, crc32, pwsincd on the 4TU Discord server for cooperating with me so I could make my app compatible with the HB appstore.
 
 Contributors / testers:
-    pprmint - Original UI concept and asset designer, tester, Find out more about him at npprmint.github.io
+    pprmint - Original UI concept and asset designer, tester, Find out more about him at http://pprmint.de/start
     Kabiigon - MacOS testing, Gui tweaks, tried to make my app look like team-x wrote it. 
     IAMTHELAW - Testing, ideas
     Guts - Testing, ideas
@@ -73,27 +74,17 @@ class aboutPage(tk.Frame):
 		self.mintframe = cw.ThemedFrame(self.devframe, background_color=light_color)
 		self.mintframe.place(relx=0.5,rely=0,relwidth=0.5,relheight=1)
 
-
-		lyfeimage = webhandler.getcachedimage("lyfeonedge")
-		if not lyfeimage:
-			lyfeimage = webhandler.grabgravatar("lyfeonedge")
-			if not lyfeimage:
-				lyfeimage = os.path.join(guicore.assetfolder,notfoundimage)
+		lyfeimage = webhandler.getcachedimage("lyfeonedge") or webhandler.grabgravatar("lyfeonedge") or os.path.join(guicore.assetfolder,notfoundimage)
 
 		#I get an object named after me :D
 		self.lyfeonedgeimage = tk.PhotoImage(file=lyfeimage)
 		self.lyfeonedge = cw.devbox(self.lyfeframe,"LyfeOnEdge",developers["LyfeOnEdge"]["dev_flavor_text"],self.lyfeonedgeimage,command_name=lambda: webhandler.opentab(developers["LyfeOnEdge"]["project_page_url"]))
 		self.lyfeonedge.place(relx=0.125, relheight=1,relwidth=0.875)
 
-
-		pprmntimage = webhandler.getcachedimage("npprmint")
-		if not pprmntimage:
-			pprmntimage = webhandler.grabgravatar("npprmint")
-			if pprmntimage == None:
-				pprmntimage = os.path.join(guicore.assetfolder,notfoundimage)
+		pprmntimage = webhandler.getcachedimage("npprmint") or webhandler.grabgravatar("npprmint") or os.path.join(guicore.assetfolder,notfoundimage)
 
 		self.pprmintimage = tk.PhotoImage(file=pprmntimage)
-		self.pprmint = cw.devbox(self.mintframe,"pprmint",developers["pprmint"]["dev_flavor_text"],self.pprmintimage,command_name=lambda: webbrowser.open_new_tab(locations.developers["pprmint"]["project_page_url"]))
+		self.pprmint = cw.devbox(self.mintframe,"pprmint",developers["pprmint"]["dev_flavor_text"],self.pprmintimage,command_name=lambda: webhandler.opentab(developers["pprmint"]["project_page_url"]))
 		self.pprmint.place(relx=0.125, relheight=1,relwidth=0.875)
 
 

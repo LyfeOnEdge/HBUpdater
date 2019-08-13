@@ -1,7 +1,7 @@
 from modules.format import * 
 import modules.customwidgets as cw
 import modules.guicore as guicore
-# import modules.HBUpdater as HBUpdater
+import modules.serial_checker as sc
 import modules.webhandler as webhandler
 import modules.locations as locations
 import os, shutil, sys, subprocess, json
@@ -52,7 +52,6 @@ class serialPage(cw.ThemedFrame):
 
 	def check(self,serial):
 		status = checkserial(serial)
-		status = ssnc_output_to_friendly(status)
 		self.serialstatus.set("Serial Status - {}".format(status))
 
 	def back(self):
@@ -61,113 +60,6 @@ class serialPage(cw.ThemedFrame):
 		self.back_command()
 
 def checkserial(serial):
-	if len(serial) < 5:
-		status =  "Too short"
-		return status
-
-	if len(serial) > 5 and len(serial) < 14:
-		status = "Error"
-
-	if len(serial) > 14:
-		status =  "Too long"
-		return status
-
-	with open(guicore.checkguisetting("ssnc","serials")) as f:
-		serials = json.load(f)
-
-	import tools.ssnc.serial_checker as sc
-
-	status = sc.check(serials, serial)
+	status = sc.checkserial(serial)
 	print(status)
 	return status
-
-def ssnc_output_to_friendly(ssncoutput):
-	outputmap = {
-		None : "Unknown",
-		"safe" : "Not Patched :D",
-		"warning" : "Possibly Patched :|",
-		"patched" : "Patched :(",
-		"incorrect" : "incorrect / incomplete",
-		"Too long" : "Too long",
-		"Too short" : "Too short",
-	}
-	return outputmap.get(ssncoutput, "Error")
-
-def checkifSSNCinstalled():
-	return guicore.checkguisetting("ssnc", "version")
-
-def downloadSSNCandinstalldependencies():
-	if not os.path.isdir(locations.ssncfolder):
-		os.mkdir(locations.ssncfolder)
-		print("initializing ssnc folder")
-	
-	jsonfile = webhandler.getJson("ssnc", locations.serialcheckerdict["githubapi"])
-	with open(jsonfile, encoding="utf-8") as json_file: #jsonfile is path, json_file is file obj
-		jfile = json.load(json_file)
-		if jfile == [] or jfile == None:
-			print("Error: empty json nut file")
-			return
-
-		zipurl = jfile[0]["zipball_url"]
-		version = jfile[0]["tag_name"]
-		if zipurl == None:
-			print("zip file url invalid, can't download nut assets")
-
-		zip = webhandler.download(zipurl)
-		zip = os.path.join(locations.downloadsfolder, zip)
-
-		extractedfiles = []
-		with ZipFile(zip) as zip_file:
-		    for member in zip_file.namelist():
-		        filename = os.path.basename(member)
-		        if not filename:
-		            continue
-
-		        source = zip_file.open(member)
-		        targetfile = os.path.join(locations.ssncfolder, filename)
-		        target = open(targetfile, "wb")
-		        with source, target:
-		            shutil.copyfileobj(source, target)
-		        extractedfiles.append(targetfile)
-		print("Sucessfully extracted {} to {} folder\n".format(zip,locations.ssncfolder))
-
-		try:
-			dependencies = locations.serialcheckerdict["dependencies"]
-			webhandler.installmodulelist(dependencies)
-		except Exception as e:
-			print("failed to download dependencies, error: {}".format(e))
-
-		print("downloading serials.json for Switch Serial Number Checker")
-
-		try:
-			import configparser
-			config = configparser.ConfigParser()
-
-			try:
-				configfile = os.path.join(locations.ssncfolder,"config.ini")
-				config.read(configfile)
-				serials_url = config.get("SSNC", "SerialsURL")
-				serials = webhandler.getJson("serials", serials_url)
-
-			except Exception as e:
-				print("error: {}".format(e))
-				print("failed to obtain serials json") 
-				serials = None
-		except:
-			self.controller.seterrorstate("some required modules failed to install, software will be unavailable")
-			self.controller.event_generate("<<error>>")
-			return
-
-		newentry = {
-			"ssnc" : {
-				"version": version,
-				"location": extractedfiles,
-				"serials" : serials
-			}
-		}
-		guicore.setguisetting(newentry)
-
-
-	
-
-

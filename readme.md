@@ -11,28 +11,31 @@ This readme is a bit outdated and will be updated soon. New features have been a
 
 # About
 HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Homebrew!
-  - Includes a lot of popular homebrew
-  - Tracks which homebrew version you have installed
+# Features
+  - Tracks which homebrew and vhat versions you have installed, compatible with the Homebrew Appstore 
+  - Easily install a lot of popular homebrew, emulators, chainloaders, and custom firmwares.
+  - Download, update, and inject payloads
   - Downloads directly from github
-  - Add your own github repos 
+  - Add your own github repos to manage.
   - No longer visit 17.53 different places to make sure you have the latest version of everything
-  - Blawar NUT server integration
-  - Easily install past versions of homebrew
+  - Blawar NUT, and fourminute fluffy integration (only downloaded when requested)
+  - SD backup and restore tool
 
-# Planned Features:
-  - Firmware Manager (I want to be really careful with this one)
-  - Default SD Location
-  - Version 1.0 will hopefully be compatible with vgamoose's Homebrew Store
+# Planned Features
+  - Mod manager
+  - NES Rom injector
+  - Titledb viewer
 
 # Requirements:
     Works on: Mac, Window, Linux
-    Python 3.6 or greater (If you already use nut.py or fluffy you're good)
+    Python 3.6 or greater (If you already use nut.py or fluffy you're probably good)
+    Python Modules: tkinter (optional: pillow)
 
 # How to use:
 ##### Windows:
 - Extract HBUpdater.zip
 - Install [python](https://www.python.org/downloads/release/python-373/)
-- Double-click startHPUpdater.bat
+- Double-click startHBUpdater.bat
 
 ##### Macintosh:
 - Extract HBUpdater.zip
@@ -47,6 +50,7 @@ HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Home
   - If you are missing dependencies do the following:
   - sudo apt-get install python3 python3-pip python3-tk
 - If you don't know how to do this you should probably be using Windows.
+- For access to USB functions you must run the python with elevated privledges (sudo)
 
 ##### Want to contribute? Have ideas? Questions? Great!
 You can find me here: 
