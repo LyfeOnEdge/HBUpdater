@@ -211,22 +211,23 @@ def installfiletosd(filename,subfolder):
             print("files copied: \n {}".format(namelist))
             return namelist
 
-    def handle7Z():
-        import libarchive.public
+    #Useless, 7z must be compiled
+    # def handle7Z():
+    #     import libarchive.public
 
-        with libarchive.public.file_reader(file) as e:
-            for entry in e:
-                with open('/tmp/' + str(entry), 'wb') as f:
-                    for block in entry.get_blocks():
-                        f.write(block)
-            return None
+    #     with libarchive.public.file_reader(file) as e:
+    #         for entry in e:
+    #             with open('/tmp/' + str(entry), 'wb') as f:
+    #                 for block in entry.get_blocks():
+    #                     f.write(block)
+    #         return None
 
 
     handlerMAP = {
         ".nro" : handleNRO,
         ".py" : handlePY,
         ".zip" : handleZIP,
-        ".7z" : handle7Z,
+        # ".7z" : handle7Z,
     }
 
     for ending in handlerMAP:

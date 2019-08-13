@@ -92,9 +92,13 @@ def getJsonSoftwareLinks(dicttopopulate):
 	for softwarechunk in dicttopopulate:
 		githubjsonlink = softwarechunk["githubapi"]
 		softwarename = softwarechunk["githubapi"]
-		projectname = get_project_from_github_api_link(githubjsonlink)
 
-		jsonfile = os.path.join(locations.jsoncachefolder, projectname + ".json")
+		projectname = get_project_from_github_api_link(githubjsonlink)
+		author = get_author_from_github_api_link(githubjsonlink)
+
+		json_name = "{}_{}".format(projectname, author)
+
+		jsonfile = os.path.join(locations.jsoncachefolder, json_name + ".json")
 		softwarechunk["githubjson"] = jsonfile
 		print("using previously downloaded json file {}".format(jsonfile))
 
