@@ -410,9 +410,9 @@ This application aims to circumvent that last problem by launching it's own Wifi
 Limitations
 Desktop mode only (TV mode is inaccessible, Mobile doesn't play videos properly).
 Works only from APPLICATION mode (it will display a warning and instructions how to do this if you're still running from APPLET).""",
-	"group": "video player",
+	"group": "video play",
 	"install_subfolder": None,
-	"pattern" : [["hekate_ctcaer"], ".zip"]
+	"pattern" : [["lennytube"], ".nro"]
 	},
 ]
 
