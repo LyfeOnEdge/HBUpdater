@@ -56,6 +56,20 @@ GPL2 = "GPL2"
 BSD2 = "BSD v2"
 NA = "n/a"
 
+
+template = {
+	"software" : None,
+	"store_equivalent" : None,
+	"githubapi" : None,
+	"author" : None,
+	"projectpage": None,
+	"description" : None,
+	"group" : None,
+	"install_subfolder": None,
+	"pattern" : [[],],
+	"license" : None
+}
+
 homebrewlist = [
 	{
 	"software" : "Homebrew Store",
@@ -414,6 +428,23 @@ Works only from APPLICATION mode (it will display a warning and instructions how
 	"install_subfolder": "switch",
 	"pattern" : [["lennytube"], ".nro"]
 	},
+
+	{
+	"software" : "fakenews-injector",
+	"store_equivalent" : "fakenews-injector",
+	"githubapi" : "https://api.github.com/repos/noahc3/fakenews-injector/releases",
+	"author" : "noahc3",
+	"projectpage": "https://switch.homebrew.guide/hacking/nereba/pegascape",
+	"description" : """Simple homebrew to inject the "Fake News" save data for an easy browser entry point on Switch.
+
+Kills BCAT, so reboot is required after use.
+
+Tested on 1.0.0, 3.0.0, 4.0.1 and 4.1.0, works both in CFW and with hbl launched via PegaSwitch/PegaScape.""",
+	"group" : TOOL,
+	"install_subfolder": "switch",
+	"pattern" : [["fakenews-injector"],".nro"],
+	"license" : GPL3
+	}
 ]
 
 emulist = [
