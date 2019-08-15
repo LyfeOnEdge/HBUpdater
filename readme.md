@@ -15,17 +15,17 @@ HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Home
 ## Noob-friendly GUI
 ![Noob-friendly GUI](https://imgur.com/PeVlbuv.png)
 
+## Install all the Homebrew!
+![Install all the Homebrew](https://i.imgur.com/BSYbFwQ.png)
+
+## View update notes and install old/legacy versions
+![View update notes and install old/legacy versions](https://i.imgur.com/pXgkElL.png)
+
 ## SD backup tool
 ![SD backup tool](https://i.imgur.com/meNfUHB.png)
 
 ## Check switch serials for RCM vulnerability
 ![Switch Serial Number Checker](https://i.imgur.com/o3PRcvs.png)
-
-## Install all the Homebrew!
-![Install all the Homebrew](https://i.imgur.com/0wta2kd.png)
-
-## View update notes and install old/legacy versions
-![View update notes and install old/legacy versions](https://i.imgur.com/pXgkElL.png)
 
 # Planned Features
   - Mod manager
