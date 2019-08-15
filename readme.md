@@ -1,7 +1,7 @@
 # HBUpdater
 ![](https://imgur.com/PeVlbuv.png)
 
-![License](https://img.shields.io/badge/License-GPLv3-blue.svg)[![Releases](https://img.shields.io/github/downloads/LyfeOnEdge/HBUpdater/total.svg)]() [![LatestVer](https://img.shields.io/github/release-pre/LyfeOnEdge/HBUpdater.svg)]()
+![License](https://img.shields.io/badge/License-GPLv3-blue.svg) [![Releases](https://img.shields.io/github/downloads/LyfeOnEdge/HBUpdater/total.svg)]() [![LatestVer](https://img.shields.io/github/release-pre/LyfeOnEdge/HBUpdater.svg)]()
 
 # About
 HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Homebrew, everything downloads directly from github!
