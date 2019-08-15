@@ -1,3 +1,7 @@
+![](https://imgur.com/PeVlbuv.png)
+
+[![License](https://img.shields.io/badge/License-GPLv3-blue.svg)] [ ![Releases](https://img.shields.io/github/downloads/LyfeOnEdge/HBUpdater/total.svg)]() [![LatestVer](https://img.shields.io/github/release-pre/LyfeOnEdge/HBUpdater.svg)]()
+
 # About
 HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Homebrew, everything downloads directly from github!
 
@@ -16,10 +20,10 @@ HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Home
 ![Noob-friendly GUI](https://imgur.com/PeVlbuv.png)
 
 ## Install all the Homebrew!
-![Install all the Homebrew](https://i.imgur.com/BSYbFwQ.png)
+![Install all the Homebrew](https://i.imgur.com/jakOndp.png)
 
 ## View update notes and install old/legacy versions
-![View update notes and install old/legacy versions](https://i.imgur.com/pXgkElL.png)
+![View update notes and install old/legacy versions](https://i.imgur.com/n6kfG3g.png)
 
 ## SD backup tool
 ![SD backup tool](https://i.imgur.com/meNfUHB.png)
