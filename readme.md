@@ -1,4 +1,4 @@
-#HBUpdater
+# HBUpdater
 ![](https://imgur.com/PeVlbuv.png)
 
 ![License](https://img.shields.io/badge/License-GPLv3-blue.svg)[![Releases](https://img.shields.io/github/downloads/LyfeOnEdge/HBUpdater/total.svg)]() [![LatestVer](https://img.shields.io/github/release-pre/LyfeOnEdge/HBUpdater.svg)]()
