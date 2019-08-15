@@ -1,30 +1,35 @@
-This readme is a bit outdated and will be updated soon. New features have been added, check out [HBUpdater releases](https://www.github.com/lyfeonedge/hbupdater/releases/) for more info.
+# About
+HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Homebrew, everything downloads directly from github!
+
+# Features
+  - Easily install lots of popular Homebrew
+  - Add your own github repos to manage.
+  - RCM injector (payloads and injector both downloaded from github)
+  - SD backup and restore tool
+  - Tracks which homebrew and what versions you have installed, compatible with the Homebrew Appstore 
+  - Content includes tools, emulators, media viewers, chainloaders, and custom firmwares.
+  - No longer visit 17.53 different places to make sure you have the latest version of everything
+  - Blawar NUT, and fourminute fluffy integration (only downloaded when requested)
 
 # HBUpdater
+## Noob-friendly GUI
+![Noob-friendly GUI](https://imgur.com/PeVlbuv.png)
+
+## SD backup tool
+![SD backup tool](https://i.imgur.com/meNfUHB.png)
+
+## Check switch serials for RCM vulnerability
+![Switch Serial Number Checker](https://i.imgur.com/o3PRcvs.png)
 
 ## Install all the Homebrew!
 ![Install all the Homebrew](https://i.imgur.com/0wta2kd.png)
 
-
 ## View update notes and install old/legacy versions
 ![View update notes and install old/legacy versions](https://i.imgur.com/pXgkElL.png)
-
-# About
-HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Homebrew!
-# Features
-  - Tracks which homebrew and vhat versions you have installed, compatible with the Homebrew Appstore 
-  - Easily install a lot of popular homebrew, emulators, chainloaders, and custom firmwares.
-  - Download, update, and inject payloads
-  - Downloads directly from github
-  - Add your own github repos to manage.
-  - No longer visit 17.53 different places to make sure you have the latest version of everything
-  - Blawar NUT, and fourminute fluffy integration (only downloaded when requested)
-  - SD backup and restore tool
 
 # Planned Features
   - Mod manager
   - NES Rom injector
-  - Titledb viewer
 
 # Requirements:
     Works on: Mac, Window, Linux
@@ -50,7 +55,7 @@ HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Home
   - If you are missing dependencies do the following:
   - sudo apt-get install python3 python3-pip python3-tk
 - If you don't know how to do this you should probably be using Windows.
-- For access to USB functions you must run the python with elevated privledges (sudo)
+- For access to USB functions you must run python with elevated privledges (sudo)
 
 ##### Want to contribute? Have ideas? Questions? Great!
 You can find me here: 

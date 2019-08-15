@@ -112,11 +112,11 @@ todone:
     - repo jsons now download under the name of the project, this means homebrew that share the same url don't download twice, furthur reducing bandwidth and ratelimit incursion
     - added a session cache to the webhandler so if a repo was already downloaded this session it won't be redownloaded, this is especially useful for users adding multiple assests from the same repo (eg a repo with multiple .nros for different emulators)
     - app now uses the HBAppstore package management system instead of mine, this was a bit annoying to implement (it took longer than I'd like to admit)
-1.0-1.1
+1.0-1
 Release
  - injector now remembers last payload
  - many folders now init only when their corresponding software is downloaded
-1.2
+1.1
  - Injector now uses pattern system for standardization reasons
  - Broke pattern-based asset finding out into a function
  - Fixed injector page listbox continuing under console
@@ -127,8 +127,11 @@ Release
  - Fixed bug with adding forked repos
  - Search now updates with every charater typed
  - Users can now set the name of an added repo
+ - Improved per-file-type-handling
  - Content
      + Added ComicNX
+     + Added Apollo
+     + Added hbmenu
      + Removed sdsetup-switch (for now) per authors recommendation
 
 
