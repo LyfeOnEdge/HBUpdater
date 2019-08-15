@@ -1,9 +1,11 @@
-from modules.format import * 
 import modules.customwidgets as cw
 import modules.guicore as guicore
 import modules.HBUpdater as HBUpdater
 import modules.locations as locations
 import modules.webhandler as webhandler
+
+from modules.format import * 
+import modules.style as style
 
 import os
 
@@ -19,16 +21,24 @@ class settingsPage(tk.Frame):
 		width = guicore.checkguisetting("dimensions","guiwidth")
 		height = guicore.checkguisetting("dimensions","guiheight")
 
-		cw.ThemedFrame.__init__(self,parent,background_color= light_color)
-		self.outer_frame = cw.ThemedFrame(self, background_color = light_color)
+		cw.ThemedFrame.__init__(self,parent,background_color= style.settings_page_background_color)
+		
+		# #Frame to add dark backdrop so zoomed out page doesn't look bad
+		# self.border_frame = cw.ThemedFrame(self, background_color = dark_color)
+		# self.border_frame.place(relx=0.5,rely=0.5,x=-(width/2) - separatorwidth, y=-(height/2) - separatorwidth, width=width + 2 * separatorwidth,height=height + 2 * separatorwidth)
+
+		self.outer_frame = cw.ThemedFrame(self, background_color = style.settings_page_background_color)
 		self.outer_frame.place(relx=0.5,rely=0.5,x=-(width/2),y=-(height/2),width=width,height=height)
 
 		#back to main page button image
 		self.returnimage = tk.PhotoImage(file=os.path.join(guicore.assetfolder,"returnbutton.png"))
 		self.returnimage = self.returnimage.zoom((3)).subsample(5)
 		
-		self.settingframe = cw.ThemedFrame(self.outer_frame,background_color=light_color,frame_highlightthickness=0,frame_borderwidth=0)
+		self.settingframe = cw.ThemedFrame(self.outer_frame,background_color=style.settings_page_background_color,frame_highlightthickness=0,frame_borderwidth=0)
 		self.settingframe.place(relwidth=1,relheight=1,width=-1.5*infoframewidth)
+
+		self.separator = cw.Separator(self.outer_frame, color = style.settings_page_separator_color)
+		self.separator.place(relx=1, x=-(1.5*infoframewidth + separatorwidth), y=0, relheight=1, width=separatorwidth)
 
 
 		self.modulesframe = cw.ThemedFrame(self.outer_frame,background_color=dark_color,frame_highlightthickness=0,frame_borderwidth=0)

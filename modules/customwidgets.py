@@ -131,7 +131,7 @@ class consolebox(ThemedFrame):
 
 #easily loop-generated setting widget
 class settingbox(ThemedFrame):
-	def __init__(self,frame,value,settingtext,anchor="w"):
+	def __init__(self,frame,value,settingtext,anchor="w",background = dark_color):
 		#Value edited by setting
 		self.v = value
 		checkbox_bool = tk.IntVar()
@@ -141,7 +141,7 @@ class settingbox(ThemedFrame):
 			anchor="w",
 			foreground=dgray,
 			activeforeground=dgray,
-			background=light_color,
+			background=background,
 			activebackground=light_color,
 			borderwidth=0,
 			highlightthickness=0,
@@ -438,9 +438,9 @@ class themedtable(ThemedFrame):
 			self.listboxes[lb].delete(0,END)
 
 class cwdevlabel(tk.Label):
-	def __init__(self,frame,label_text,anchor="w"):
+	def __init__(self,frame,label_text,anchor="w",background=dark_color):
 		tk.Label.__init__(self,frame,
-			background = light_color, 
+			background = background, 
 			foreground = lgray,
 			borderwidth = 0,
 			highlightthickness = 0,
@@ -451,7 +451,7 @@ class cwdevlabel(tk.Label):
 
 
 class cwdevtext(tk.Text):
-	def __init__(self,frame,background=light_color):
+	def __init__(self,frame,background=dark_color):
 		tk.Text.__init__(self,frame,
 			background=background,
 			foreground=lgray,
@@ -461,16 +461,16 @@ class cwdevtext(tk.Text):
 			)
 
 class devbox(ThemedFrame):
-	def __init__(self,frame,devname,devtext,devimage,command_name=None):
-		ThemedFrame.__init__(self,frame,background_color=light_color)
+	def __init__(self,frame,devname,devtext,devimage,command_name=None,background=dark_color):
+		ThemedFrame.__init__(self,frame,background_color=background)
 
-		self.devimage = navbutton(self,image_object=devimage,command_name=command_name,background=light_color)
+		self.devimage = navbutton(self,image_object=devimage,command_name=command_name,background=background)
 		self.devimage.place(x=0,y=0,width=2*navbuttonheight,height=2*navbuttonheight)
 
-		self.devname = cwdevlabel(self,devname)
+		self.devname = cwdevlabel(self,devname,background=background)
 		self.devname.place(x=2*navbuttonheight+separatorwidth,y=0,relwidth=1)
 
-		self.devtext = cwdevtext(self)
+		self.devtext = cwdevtext(self,background=background)
 		self.devtext.place(x=2*navbuttonheight+separatorwidth,y=0.5*navbuttonheight+separatorwidth,relwidth=1,width=-(2*navbuttonheight+separatorwidth))
 		self.devtext.insert(END,devtext)
 

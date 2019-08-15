@@ -77,7 +77,6 @@ def parse_api_to_standard_github(url):
 #     "license" : GPL3
 #  },
 
-
 def installitem(sc, suboption):
     global sdpathset
     global chosensdpath
@@ -162,24 +161,7 @@ def installitem(sc, suboption):
     entry["version"] = appstore.parse_version_to_store_equivalent(ver, package)
     appstore.create_store_entry(chosensdpath,entry,installlocation,package)
 
-
-
 def installfiletosd(filename,subfolder):
-    global chosensdpath
-
-    file = os.path.join(locations.downloadsfolder, filename)
-
-    if not subfolder == None:
-        subdir = os.path.join(chosensdpath,subfolder)
-    else: 
-        subdir = chosensdpath
-
-    sdlocation = os.path.join(subdir, filename)
-
-    if not os.path.exists(subdir):
-        os.makedirs(subdir)
-
-
     def handleMove():
         try:
             shutil.move(file, sdlocation)
@@ -214,6 +196,20 @@ def installfiletosd(filename,subfolder):
     def handle7Z():
         print(".7z archives are not supported yet")
         return None
+
+    global chosensdpath
+
+    file = os.path.join(locations.downloadsfolder, filename)
+
+    if not subfolder == None:
+        subdir = os.path.join(chosensdpath,subfolder)
+    else: 
+        subdir = chosensdpath
+
+    sdlocation = os.path.join(subdir, filename)
+
+    if not os.path.exists(subdir):
+        os.makedirs(subdir)
 
     handlerMAP = {
         ".nro" : handleNRO,

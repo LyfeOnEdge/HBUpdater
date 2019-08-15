@@ -1,10 +1,11 @@
-from modules.format import * 
 import modules.customwidgets as cw
 import modules.guicore as guicore
 import modules.HBUpdater as HBUpdater
 import modules.locations as locations
 import modules.webhandler as webhandler
 
+import modules.style as style
+from modules.format import * 
 
 import os
 
@@ -56,45 +57,45 @@ class aboutPage(tk.Frame):
 		width = guicore.checkguisetting("dimensions","guiwidth")
 		height = guicore.checkguisetting("dimensions","guiheight")
 
-		cw.ThemedFrame.__init__(self,parent,background_color= light_color)
-		self.outer_frame = cw.ThemedFrame(self,background_color=light_color)
+		cw.ThemedFrame.__init__(self,parent,background_color= style.about_page_background_color)
+		self.outer_frame = cw.ThemedFrame(self,background_color=style.about_page_background_color)
 		self.outer_frame.place(relx=0.5,rely=0.5,x=-(width/2),y=-(height/2),width=width,height=height)
 		
 
 		#Credits and stuff 
-		self.devlabel = cw.ThemedLabel(self.outer_frame, "DEVELOPERS", label_font = columnlabelfont, background = light_color, foreground = columnlabelcolor, anchor="center")
+		self.devlabel = cw.ThemedLabel(self.outer_frame, "DEVELOPERS", label_font = columnlabelfont, background = style.about_page_background_color, foreground = columnlabelcolor, anchor="center")
 		self.devlabel.place(y=+separatorwidth,x=(2*separatorwidth+0.5*navbuttonheight),relwidth=1,width=-2*(2*separatorwidth+0.5*navbuttonheight))
 
-		self.devframe = cw.ThemedFrame(self.outer_frame, background_color=light_color)
+		self.devframe = cw.ThemedFrame(self.outer_frame, background_color=style.about_page_background_color)
 		self.devframe.place(y=+4*separatorwidth+0.5*navbuttonheight,x=separatorwidth,relwidth=1,width=-2*separatorwidth,height=3*navbuttonheight)
 
-		self.lyfeframe = cw.ThemedFrame(self.devframe, background_color=light_color)
+		self.lyfeframe = cw.ThemedFrame(self.devframe, background_color=style.about_page_background_color)
 		self.lyfeframe.place(relx=0,rely=0,relwidth=0.5,relheight=1)
 
-		self.mintframe = cw.ThemedFrame(self.devframe, background_color=light_color)
+		self.mintframe = cw.ThemedFrame(self.devframe, background_color=style.about_page_background_color)
 		self.mintframe.place(relx=0.5,rely=0,relwidth=0.5,relheight=1)
 
 		lyfeimage = webhandler.getcachedimage("lyfeonedge") or webhandler.grabgravatar("lyfeonedge") or os.path.join(guicore.assetfolder,notfoundimage)
 
 		#I get an object named after me :D
 		self.lyfeonedgeimage = tk.PhotoImage(file=lyfeimage)
-		self.lyfeonedge = cw.devbox(self.lyfeframe,"LyfeOnEdge",developers["LyfeOnEdge"]["dev_flavor_text"],self.lyfeonedgeimage,command_name=lambda: webhandler.opentab(developers["LyfeOnEdge"]["project_page_url"]))
+		self.lyfeonedge = cw.devbox(self.lyfeframe,"LyfeOnEdge",developers["LyfeOnEdge"]["dev_flavor_text"],self.lyfeonedgeimage,command_name=lambda: webhandler.opentab(developers["LyfeOnEdge"]["project_page_url"]),background=dark_color)
 		self.lyfeonedge.place(relx=0.125, relheight=1,relwidth=0.875)
 
 		pprmntimage = webhandler.getcachedimage("npprmint") or webhandler.grabgravatar("npprmint") or os.path.join(guicore.assetfolder,notfoundimage)
 
 		self.pprmintimage = tk.PhotoImage(file=pprmntimage)
-		self.pprmint = cw.devbox(self.mintframe,"pprmint",developers["pprmint"]["dev_flavor_text"],self.pprmintimage,command_name=lambda: webhandler.opentab(developers["pprmint"]["project_page_url"]))
+		self.pprmint = cw.devbox(self.mintframe,"pprmint",developers["pprmint"]["dev_flavor_text"],self.pprmintimage,command_name=lambda: webhandler.opentab(developers["pprmint"]["project_page_url"]),background=dark_color)
 		self.pprmint.place(relx=0.125, relheight=1,relwidth=0.875)
 
 
-		self.creditsseparator = cw.Separator(self.outer_frame,color=dark_color)
+		self.creditsseparator = cw.Separator(self.outer_frame,color=style.about_page_separator_color)
 		self.creditsseparator.place(y=+1*separatorwidth+3*navbuttonheight,x=+separatorwidth,relwidth=1,width=-2*separatorwidth,height=separatorwidth)
 
-		self.thankslabel = cw.ThemedLabel(self.outer_frame,"SPECIAL THANKS", label_font = columnlabelfont, background = light_color, foreground = columnlabelcolor,anchor="center")
-		self.thankslabel.place(y=+2*separatorwidth+3*navbuttonheight,x=(2*separatorwidth+0.5*navbuttonheight),relwidth=1,width=-2*(2*separatorwidth+0.5*navbuttonheight),height=navbuttonheight)
+		self.thankslabel = cw.ThemedLabel(self.outer_frame,"SPECIAL THANKS", label_font = columnlabelfont, background = style.about_page_background_color, foreground = columnlabelcolor,anchor="center")
+		self.thankslabel.place(y=+2*separatorwidth+3*navbuttonheight,x=(2*separatorwidth+0.5*navbuttonheight),relwidth=1,width=-(2*separatorwidth+0.5*navbuttonheight),height=navbuttonheight)
 
-		self.thankstext = cw.ScrolledText(self.outer_frame,background=light_color,borderwidth=0,highlightthickness=0,foreground=lgray,font=smallboldtext,wrap="word")
+		self.thankstext = cw.ScrolledText(self.outer_frame,background=style.about_page_background_color,borderwidth=0,highlightthickness=0,foreground=lgray,font=smallboldtext,wrap="word")
 		self.thankstext.place(y=+0*separatorwidth+4*navbuttonheight,x=separatorwidth,relwidth=1,width=-(2*separatorwidth),relheight=1,height=-(+0*separatorwidth+4*navbuttonheight))
 		self.thankstext.insert(END, thankyoutext)
 		self.thankstext.config(state=DISABLED)

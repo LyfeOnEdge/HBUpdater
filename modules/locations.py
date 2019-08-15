@@ -404,9 +404,51 @@ Credits
 	""",
 	"group": TOOL,
 	"install_subfolder": "switch",
-	"pattern" : [["comic-browser"], ".nro"],
+	"pattern" : [["comic-browser", "ComicNX"], ".nro"],
 	"license" : GPL2,
 	},
+
+	{
+	"software": "Homebrew Menu",
+	"githubapi": "https://api.github.com/repos/switchbrew/nx-hbmenu/releases",
+	"store_equivalent" : "hbmenu",
+	"author" : "yellows8, plutoo", 
+	"projectpage": "https://github.com/switchbrew/nx-hbmenu/",
+	"description": """Allows you to launch homebrew apps, hold 'r' and open the photo album to launch""",
+	"group": TOOL,
+	"install_subfolder": "",
+	"pattern" : [["nx-hbmenu"], ".zip"]
+	},
+
+	{
+	"software": "Apollo",
+	"githubapi": "https://api.github.com/repos/evo-brut3/Apollo/releases",
+	"store_equivalent" : "Apollo",
+	"author" : "evo-brut3", 
+	"projectpage": "https://gbatemp.net/threads/apollo-file-explorer-for-nintendo-switch.543080/",
+	"description": """Apollo is a File Explorer Homebrew for the Nintendo Switch. Its goal is to be the most convenient and reliable method to manage console's files.
+
+Apollo's current features are:
+-Graphical User Interface: Minimalist design which is based on default hbmenu and official home menu esthetic.
+-Selecting items: A simple but mandatory feature.
+-Copying files and directories: Before doing so, application checks whether user is trying to overwrite currently existing files or directories and then asks about overwriting them.
+-Recursive directory deletion: It allows for complete deletion of directories' content and obviously for file deletion.
+-Renaming files and directories: Speaks for itself.
+-Sorting items: Alphabetically or reversed.
+
+Credits:
+devkitPro for providing toolchain.
+XorTroll for the amazing Plutonium which allowed Apollo to look like this and the Goldleaf which is a mine of knowledge.
+GilFerraz for his beautiful Miiverse UI concept which inspired me to create sidebar.
+Lucas Lacerda for his Nintendo Switch UI Concept.
+jaames for the nx-hbmenu mockup which helped me with the design.
+Nintendo for security <3.
+""",
+	"group": TOOL,
+	"install_subfolder": "switch/Apollo",
+	"pattern" : [["Apollo"], ".nro"]
+	},
+
 
 	{
 	"software": "lennytube",
@@ -1081,3 +1123,17 @@ fluffydict = {
 # "app_dls": 383, 
 # "description": "Memory Game"
 # }, 
+
+
+
+# {
+# "software": "nx-hbloader",
+# "githubapi": "https://api.github.com/repos/switchbrew/nx-hbloader/releases",
+# "store_equivalent" : 
+# "author" : "switchbrew", 
+# "projectpage": "",
+# "description": """Switchbrew has released a major update to nx-hbloader, a host process for loading NRO files for Switch homebrew applications. This new version makes some improvements such as now allowing for applications to run with the full amount of 3.2GB RAM, as opposed to the past, where it could only use ~400MB of RAM. Library applets are still usable, and older homebrew NRO files will still work, but they are limited to using 442MB of RAM max, this also counts when running it through the album app. Other changes were made, including making the program less prone to issues by disabling core3 access, and more.""",
+# "group": "tool",
+# "install_subfolder": "switch",
+# "pattern" : [["hbl"], ".nsp"]
+# },

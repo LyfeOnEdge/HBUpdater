@@ -92,6 +92,7 @@ class page(cw.ThemedFrame,):
 		self.controller = controller		#Controller (most toplevel parent)
 		self.softwaregroup = softwaregroup	#Make group available
 		self.softwarelist = []				#list to hold software data to populate table and more
+		self.tagslist = []
 		self.currentselection = 0			#Variable to track currently selected software
 		self.currenttagselection = 0		#Variable to track currently selected sub-version
 		self.pagetitle = page_title
@@ -692,7 +693,7 @@ class page(cw.ThemedFrame,):
 		except:
 			pass
 	def versioncursorup(self):
-		if self.currenttagselection < len(self.softwarelist)-1:
+		if self.currenttagselection < len(self.tagslist)-1:
 			self.currenttagselection += 1
 			self.updatetagsbox()
 			self.updatetagnotes()
@@ -742,7 +743,7 @@ class page(cw.ThemedFrame,):
 	def refreshdetailwindow(self,):
 		self.currenttagselection = 0
 		self.tags_listbox.delete(0,END)
-
+		self.tagslist = []
 		if self.softwarelist:
 			if not self.nodetail:
 
@@ -754,6 +755,7 @@ class page(cw.ThemedFrame,):
 						for version in jfile:
 							tag = version["tag_name"]
 							self.tags_listbox.insert(END, tag)
+							self.tagslist.append(tag)
 					except IndexError:
 						pass
 					except:
