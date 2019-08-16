@@ -26,6 +26,9 @@ HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Home
 ## View update notes and install old/legacy versions
 ![View update notes and install old/legacy versions](https://i.imgur.com/n6kfG3g.png)
 
+## Built-in RCM injector 
+![Built-in RCM injector (backend only downloaded when requested)](https://i.imgur.com/m0LQVfk.png)
+
 ## SD backup tool
 ![SD backup tool](https://i.imgur.com/meNfUHB.png)
 
