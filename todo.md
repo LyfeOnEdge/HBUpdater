@@ -6,6 +6,7 @@ todo:
     build stand-alone with pyinstaller
     warn when repos collide (multiple heketes etc)
     move more stuff to style.py instead of format.py
+    getanswer called from controller rather than import
 
 Priority:
     (Highest to lowest)
@@ -133,13 +134,9 @@ Release
      + Added Apollo
      + Added hbmenu
      + Removed sdsetup-switch (for now) per authors recommendation
-
-
-
-
-
-
-
+1.2
+ - App is now self-aware of updates
+ - Added setting to not check for updates
 
 
 

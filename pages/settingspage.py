@@ -101,8 +101,13 @@ automatically detected on launch.""")
 			},
 			{
 			"value" : "display_author_image",
-			"text" : "Display author image in software pages | Requires restart\n(Disable for more room to for software descriptions)"
+			"text" : "Display author image in software pages | Requires restart\n(Disable for more room for software descriptions)"
 			},
+			{
+			"value" : "check_for_app_updates",
+			"text" : "Check for updates to HBUpdater | Requires restart"
+			},
+
 		]
 
 		v_increment = 60

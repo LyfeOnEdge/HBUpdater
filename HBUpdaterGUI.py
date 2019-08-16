@@ -8,7 +8,7 @@ print("Using Python {}.{}".format(sys.version_info[0],sys.version_info[1]))
 if sys.version_info[0] < 3 or sys.version_info[1] < 6:
 	sys.exit("Python 3.6 or greater is required to run this program.")
 
-version = "1.1"
+version = "1.2"
 print("HBUpdaterGUI version {}".format(version))
 
 #My modules
@@ -52,8 +52,6 @@ class FrameManager(tk.Tk):
 		container.grid_rowconfigure(0, weight=1)
 		container.grid_columnconfigure(0, weight=1)
 
-
-
 		##Import pages
 
 		#App pages
@@ -86,7 +84,6 @@ class FrameManager(tk.Tk):
 			ep.errorPage,	#<- Needs to be inited before most pages, used for error handling to the user
 			ar.addrepoPage,	#<- Needs to be inited before list pages, used for adding repos
 
-
 			ap.aboutPage,		#<- No precedence
 			bp.backupPage,		#<- List Page
 			cp.serialPage,		#<- No precedence
@@ -99,18 +96,14 @@ class FrameManager(tk.Tk):
 			py.pynxPage,		#<- List Page
 			sp.settingsPage,	#<- No precedence
 
-			# db.dbPage,			#No precedence
-			# ub.usbPage,
 		]
 
 		#Try to add test page
 		try:
 			pages.append(tp.testPage)#<- List Page
+			print("Test page added")
 		except:
 			pass
-
-
-
 
 
 		#Add pages as frames to dict, with keyword being the name of the frame
@@ -136,7 +129,6 @@ class FrameManager(tk.Tk):
 				mastersoftwarelist.append(lix)
 
 		self.user_repos = self.frames["addrepoPage"].softwarelist
-
 		
 		#Set icon
 		if platform.system() == 'Windows':
@@ -151,10 +143,12 @@ class FrameManager(tk.Tk):
 				self.iconbitmap(os.path.join(guicore.assetfolder, 'HBUpdater.xbm'))
 			except:
 				print("Failed to set icon")
-
-
-		#Show home page
-		self.show_frame("homePage") #Show the main page frame
+		
+		latest_version = CheckForUpdates()
+		if latest_version:
+			self.frames["errorPage"].getanswer("homePage", "New update {}. Would you like to open the HBUpdater github?".format(latest_version), lambda: webhandler.opentab("https://github.com/LyfeOnEdge/HBUpdater/releases"))
+		else: 
+			self.show_frame("homePage") #Show the main page frame
 
 	def raiseError(self,errortext,pagename):
 		self.frames["errorPage"].raiseError(errortext,pagename)
@@ -176,35 +170,34 @@ class FrameManager(tk.Tk):
 
 	
 def stripversion(string):
-	characterstostrip = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz()-"
+	characterstostrip = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz()[]|-_/\\"
 	for character in characterstostrip:
 		string = string.replace(character,"")
 	return string
 
 def CheckForUpdates():
-	try:
-		updatefile = webhandler.getJson("HBUpdater", locations.updateapi)
-		if updatefile == None:
-			print("Failed to download HBU update file. A new version may be avaialable.")
-		else:
-			with open(updatefile,encoding="utf-8") as json_file: #jsonfile is path, json_file is file obj
-				jfile = json.load(json_file)
-				newestversion = jfile[0]["tag_name"]
-			if float(stripversion(newestversion)) > float(stripversion(version)):
-				print("A new update to HBUpdater is avaialable, go to https://www.github.com/LyfeOnEdge/HBUpdater/releases to download it.")
+	if guicore.checkguisetting("guisettings","check_for_app_updates"):
+		try:
+			updatefile = webhandler.getJson("HBUpdater", locations.updateapi)
+			if not updatefile:
+				print("Failed to download HBU update file. A new version may be avaialable.")
+				return
 			else:
-				print("HBUpdater is up to date")
-	except Exception as e:
-		print("checkforupdateserror - {}".format(e))
+				with open(updatefile,encoding="utf-8") as json_file: #jsonfile is path, json_file is file obj
+					jfile = json.load(json_file)
+					newestversion = jfile[0]["tag_name"]
+				if float(stripversion(newestversion)) > float(stripversion(version)):
+					# print("A new update to HBUpdater is avaialable, go to https://www.github.com/LyfeOnEdge/HBUpdater/releases to download it.")
+					return newestversion
+				else:
+					print("HBUpdater is up to date")
+		except Exception as e:
+			print("checkforupdateserror - {}".format(e))
+	else:
+		"update checking disabled"
 
 # def HandleUserAddedRepos():
 if __name__ == '__main__':  
-	if guicore.checkguisetting("guisettings","automatically_check_for_updates"):
-		# CheckForUpdates()
-		print("Update checking disabled in beta")
-	else:
-		print("Update checking disabled")
-
 	gui = FrameManager()
 	gui.title("HBUpdater {}".format(version))
 	gui.mainloop()

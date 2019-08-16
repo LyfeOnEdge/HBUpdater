@@ -113,8 +113,6 @@ def getJson(softwarename, apiurl):
 	try:
 		jsonfile = os.path.join(locations.jsoncachefolder, softwarename + ".json")
 		jfile = etags.accessETaggedFile(apiurl,jsonfile)
-
-		print("Downloaded new json file for {}".format(softwarename))
 		return jfile
 	except:
 		print("failed to download json file for {}".format(softwarename))

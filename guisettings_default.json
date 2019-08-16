@@ -1,6 +1,7 @@
 {
     "guisettings": {
         "automatically_check_for_repo_updates": 1,
+        "check_for_app_updates": 1,
         "display_author_image": 1
     },
     "last_payload": {

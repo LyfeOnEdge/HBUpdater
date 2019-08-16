@@ -45,7 +45,6 @@ etagfile = os.path.join(jsoncachefolder, "etags.json")
 
 updateapi = "https://api.github.com/repos/LyfeOnEdge/HBUpdater/releases"
 
-
 GAME = "game"
 TOOL = "tool"
 RECOMMENDED = "recommended"
@@ -466,7 +465,7 @@ This application aims to circumvent that last problem by launching it's own Wifi
 Limitations
 Desktop mode only (TV mode is inaccessible, Mobile doesn't play videos properly).
 Works only from APPLICATION mode (it will display a warning and instructions how to do this if you're still running from APPLET).""",
-	"group": "video play",
+	"group": "video player",
 	"install_subfolder": "switch",
 	"pattern" : [["lennytube"], ".nro"]
 	},

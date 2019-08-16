@@ -36,7 +36,7 @@ def setpilstatus(status):
 def setguisetting(newentry, silent = False):
 	#open log
 	if not silent:
-		print("\n updating gui log with {}".format(json.dumps(newentry,indent=4)))
+		print("\nUpdating gui log with - {}".format(json.dumps(newentry,indent=4)))
 	with open(guisettings, 'r') as jfile:  
 		originaljfile = json.load(jfile)
 
