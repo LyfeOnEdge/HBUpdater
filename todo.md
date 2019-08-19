@@ -7,6 +7,7 @@ todo:
     warn when repos collide (multiple heketes etc)
     move more stuff to style.py instead of format.py
     getanswer called from controller rather than import
+    rename errorpage to messagepage, errors and messags should come from the controller
 
 Priority:
     (Highest to lowest)
@@ -137,6 +138,10 @@ Release
 1.2
  - App is now self-aware of updates
  - Added setting to not check for updates
+1.3
+ - App now updates itself
+ - Failing to download gravatars for Lyfe/npprmint no longer results in crash
+ - Added more room to the error / message fram
 
 
 
