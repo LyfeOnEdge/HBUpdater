@@ -8,7 +8,7 @@ print("Using Python {}.{}".format(sys.version_info[0],sys.version_info[1]))
 if sys.version_info[0] < 3 or sys.version_info[1] < 6:
 	sys.exit("Python 3.6 or greater is required to run this program.")
 
-version = "1.1"
+version = "1.3"
 print("HBUpdaterGUI version {}".format(version))
 
 #My modules
