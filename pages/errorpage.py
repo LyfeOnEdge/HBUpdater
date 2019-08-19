@@ -19,17 +19,17 @@ class errorPage(cw.ThemedFrame):
 
         self.errortext = cw.ThemedLabel(self,"Welcome to the error page.\n\nIf you are seeing this, there was an error with the error page.\n\nFML",anchor="center",wraplength=500)
 
-        errorframeheight = 2*navbuttonheight
-        self.errortext.place(relx=0.5,rely=0.5,x=-250, width=500,height=2*errorframeheight,y=-(errorframeheight))
+        errorframeheight = 100
+        self.errortext.place(relx=0.5,rely=0.3,x=-250, width=500,height=4*errorframeheight,y=-(errorframeheight))
 
         self.backbuttonframe = cw.ThemedFrame(self,background_color=dark_color)
-        self.backbuttonframe.place(relx=0.5,rely=0.5,y=+(3*navbuttonheight + separatorwidth),width=300,x=-150,height=navbuttonheight)
+        self.backbuttonframe.place(relx=0.5,rely=1,y=-(navbuttonheight + 2 * separatorwidth),width=300,x=-150,height=navbuttonheight)
 
         self.backbutton = cw.navbutton(self.backbuttonframe, command_name=self.on_back,text_string="RIP. Take me back.",background=light_color)
         self.backbutton.place(relwidth=1,relheight=1)
 
         self.yesnobuttonframe = cw.ThemedFrame(self,background_color=dark_color)
-        self.yesnobuttonframe.place(relx=0.5,rely=0.5,y=+(3*navbuttonheight + separatorwidth),width=300,x=-150,height=navbuttonheight)
+        self.yesnobuttonframe.place(relx=0.5,rely=1,y=-(navbuttonheight + 2 * separatorwidth),width=300,x=-150,height=navbuttonheight)
 
         self.yesbutton = cw.navbutton(self.yesnobuttonframe, command_name=self.on_yes,text_string="Yes",background=light_color)
         self.yesbutton.place(relx=0,relwidth=0.33,relheight=1)

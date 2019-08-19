@@ -321,6 +321,6 @@ def detect_rcm():
 	if dev:
 		return True
 
-def enable_auto_injection():
-	guicore.setguisetting({"guisettings" : settings})
+# def enable_auto_injection():
+# 	guicore.setguisetting({"guisettings" : settings})
 

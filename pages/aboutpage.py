@@ -75,19 +75,24 @@ class aboutPage(tk.Frame):
 		self.mintframe = cw.ThemedFrame(self.devframe, background_color=style.about_page_background_color)
 		self.mintframe.place(relx=0.5,rely=0,relwidth=0.5,relheight=1)
 
-		lyfeimage = webhandler.getcachedimage("lyfeonedge") or webhandler.grabgravatar("lyfeonedge") or os.path.join(guicore.assetfolder,notfoundimage)
+		try:
+			lyfeimage = webhandler.getcachedimage("lyfeonedge") or webhandler.grabgravatar("lyfeonedge") or os.path.join(guicore.assetfolder,notfoundimage)
+		except:
+			lyfeimage = os.path.join(guicore.assetfolder,notfoundimage)
 
 		#I get an object named after me :D
 		self.lyfeonedgeimage = tk.PhotoImage(file=lyfeimage)
 		self.lyfeonedge = cw.devbox(self.lyfeframe,"LyfeOnEdge",developers["LyfeOnEdge"]["dev_flavor_text"],self.lyfeonedgeimage,command_name=lambda: webhandler.opentab(developers["LyfeOnEdge"]["project_page_url"]),background=dark_color)
 		self.lyfeonedge.place(relx=0.125, relheight=1,relwidth=0.875)
 
-		pprmntimage = webhandler.getcachedimage("npprmint") or webhandler.grabgravatar("npprmint") or os.path.join(guicore.assetfolder,notfoundimage)
+		try:
+			pprmntimage = webhandler.getcachedimage("npprmint") or webhandler.grabgravatar("npprmint") or os.path.join(guicore.assetfolder,notfoundimage)
+		except:
+			pprmntimage = os.path.join(guicore.assetfolder,notfoundimage)
 
 		self.pprmintimage = tk.PhotoImage(file=pprmntimage)
 		self.pprmint = cw.devbox(self.mintframe,"pprmint",developers["pprmint"]["dev_flavor_text"],self.pprmintimage,command_name=lambda: webhandler.opentab(developers["pprmint"]["project_page_url"]),background=dark_color)
 		self.pprmint.place(relx=0.125, relheight=1,relwidth=0.875)
-
 
 		self.creditsseparator = cw.Separator(self.outer_frame,color=style.about_page_separator_color)
 		self.creditsseparator.place(y=+1*separatorwidth+3*navbuttonheight,x=+separatorwidth,relwidth=1,width=-2*separatorwidth,height=separatorwidth)

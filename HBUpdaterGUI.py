@@ -8,7 +8,7 @@ print("Using Python {}.{}".format(sys.version_info[0],sys.version_info[1]))
 if sys.version_info[0] < 3 or sys.version_info[1] < 6:
 	sys.exit("Python 3.6 or greater is required to run this program.")
 
-version = "1.2"
+version = "1.1"
 print("HBUpdaterGUI version {}".format(version))
 
 #My modules
@@ -144,9 +144,9 @@ class FrameManager(tk.Tk):
 			except:
 				print("Failed to set icon")
 		
-		latest_version = CheckForUpdates()
+		latest_version, latest_notes = CheckForUpdates()
 		if latest_version:
-			self.frames["errorPage"].getanswer("homePage", "New update {}. Would you like to open the HBUpdater github?".format(latest_version), lambda: webhandler.opentab("https://github.com/LyfeOnEdge/HBUpdater/releases"))
+			self.frames["errorPage"].getanswer("homePage", "New release version {}\n\n{}\n Would you like to update?".format(latest_version, latest_notes), update)
 		else: 
 			self.show_frame("homePage") #Show the main page frame
 
@@ -185,16 +185,24 @@ def CheckForUpdates():
 			else:
 				with open(updatefile,encoding="utf-8") as json_file: #jsonfile is path, json_file is file obj
 					jfile = json.load(json_file)
-					newestversion = jfile[0]["tag_name"]
+				newestversion = jfile[0]["tag_name"]
+				description = jfile[0]["body"]
 				if float(stripversion(newestversion)) > float(stripversion(version)):
 					# print("A new update to HBUpdater is avaialable, go to https://www.github.com/LyfeOnEdge/HBUpdater/releases to download it.")
-					return newestversion
+					return newestversion, description
 				else:
 					print("HBUpdater is up to date")
 		except Exception as e:
 			print("checkforupdateserror - {}".format(e))
 	else:
 		"update checking disabled"
+	return None, None
+
+
+def update():
+	import modules.HBUUpdater as HBUU
+	HBUU.update()
+	sys.exit("Update complete, please re-start HBUpdater")
 
 # def HandleUserAddedRepos():
 if __name__ == '__main__':  

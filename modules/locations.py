@@ -485,7 +485,44 @@ Tested on 1.0.0, 3.0.0, 4.0.1 and 4.1.0, works both in CFW and with hbl launched
 	"install_subfolder": "switch",
 	"pattern" : [["fakenews-injector"],".nro"],
 	"license" : GPL3
-	}
+	},
+
+	{
+	"software" : "nxdumptool",
+	"store_equivalent" : "gcdumptool",
+	"githubapi" : "https://api.github.com/repos/DarkMatterCore/nxdumptool/releases",
+	"author" : "DarkMatterCore",
+	"projectpage": "https://gbatemp.net/threads/nxdumptool-nintendo-switch-dump-tool.508343/",
+	"description" : """Nintendo Switch Game Card Dump Tool
+Main features:
+- Generates full Cartridge Image dumps (XCI) with optional certificate removal and optional trimming.
+- Generates installable Nintendo Submission Packages (NSP) from base applications, updates and DLCs stored in the inserted game card.
+- Compatible with multigame carts.
+- CRC32 checksum calculation for XCI/NSP dumps.
+- Full XCI dump verification using XML database from NSWDB.COM (NSWreleases.xml).XML database and in-app update via libcurl.
+- Precise HFS0 raw partition dumping, using the root HFS0 header from the game card.
+- HFS0 partition file data dumping.
+- HFS0 partition file browser with manual file dump support.
+- RomFS section file data dumping.
+- RomFS section file browser with manual file dump support.
+- Manual game card certificate dump.
+- Free SD card space checks in place.
+- File splitting support for all operations.
+- Game card metadata retrieval using NCM and NS services.
+- Dump speed calculation, ETA calculation and progress bar.
+Compatibility:
+- Doesn't work under 1.0.0, and probably never will. The application needs some IPC calls that are only available from 2.0.0 onwards.
+- Doesn't work under FW > 1.0.0 and < 4.0.0 if the application is launched using PegaSwitch. This is because PegaSwitch doesn't give full access permissions to the application. This is a known bug that's being looked into.
+- Works under SX OS v1.2 and later, but only is your Switch is on FW > 1.0.0.
+- When used with the inserted gamecard, the NSP dumping, ExeFS dumping/browsing and RomFS dumping/browsing capabilities depend entirely on the FW version the console is on. This is because the SPL services are used to decrypt the NCA key area directly without deriving for key area encryption keys. If the console is not updated to a FW version that supports the crypto/keyslot used by the inserted gamecard, these features will fail.
+- NSP dumping, ExeFS dumping/browsing and RomFS dumping/browsing capabilities for installed SD/eMMC require the "sdmc:/switch/prod.keys" file. Likewise, update NSP dumping from gamecards requires this file to be available. Use Lockpick_RCM to generate it.
+- If you go back to Horizon and get an error or black screen when trying to launch the inserted gamecard, just pull it out and re-insert it. No reboot needed. Any help on fixing this bug will be greatly appreciated.
+""",
+	"group" : TOOL,
+	"install_subfolder": "switch/gcdumptool",
+	"pattern" : [["nxdumptool"],".nro"],
+	"license" : GPL2
+	},
 ]
 
 emulist = [
@@ -758,6 +795,34 @@ It lets you easily activate and deactivate mods as well as handle conflicting mo
 	"group" : TOOL,
 	"install_subfolder": "switch\\PyNX",
 	"pattern" : [["Generic-Mod-Manager"],".py"],
+	},
+
+	{
+	"software" : "timefix",
+	"store_equivalent" : "timefix",
+	"githubapi" : "https://api.github.com/repos/LyfeOnEdge/timefix/releases",
+	"author" : "Retr0id",
+	"projectpage": "https://github.com/LyfeOnEdge/timefix",
+	"description" : "Fixes the 'can't initialize time' bug with PyNX, this will set your system clock to something incorrect, you may want to adjust it afterwards.\nSource code by Retr0id.",
+	"group" : TOOL,
+	"install_subfolder": "switch/timefix",
+	"pattern" : [["timefix"],".nro"],
+	"license" : None
+	},
+
+	{
+	"software" : "PyNX",
+	"store_equivalent" : "pynx",
+	"githubapi" : "https://api.github.com/repos/nx-python/PyNX/releases",
+	"author" : "elnardu", 
+	"projectpage": "https://gbatemp.net/threads/nx-python-create-python-homebrew-for-the-switch.499150/",
+	"description" : """nx-python is an ecosystem for developing and running Python homebrew applications on the Nintendo Switch. 
+
+PyNX serves as the entry point to running Python apps on your Switch. It is a homebrew app that contains a port of the CPython interpreter and allows you to run Python applications from the Homebrew Menu. Just name your application main.py and place it next to the PyNX.nro, and it will be executed as soon as you launch PyNX from the Homebrew Menu. Currently, Python 3.5 is supported.""",
+	"group" : "interpreter",
+	"install_subfolder": "switch",
+	"pattern" : [["PyNX"],".zip"],
+	"license" : "ISC License"
 	},
 
 ]
