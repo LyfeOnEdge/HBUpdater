@@ -523,6 +523,8 @@ Compatibility:
 	"pattern" : [["nxdumptool"],".nro"],
 	"license" : GPL2
 	},
+
+
 ]
 
 emulist = [
@@ -670,7 +672,6 @@ After porting 3DSGBA(which often crashed probably because of a huge amount of me
 	"pattern" : [["DeSmuME-NX"], ".nro"],
 	"license" : GPL2
 	},
-
 ]
 
 
@@ -779,7 +780,41 @@ Known Bugs: There appears to be some bug that causes the screen to flicker durin
 	"install_subfolder": "switch/TicTacToeNX",
 	"pattern" : [["TicTacToeNx"], ".nro"],
 	"license" : NA
+	},
+
+	{
+	"software" : "MarioBrosNX",
+	"store_equivalent" : "MarioBrosNX",
+	"githubapi" : "https://api.github.com/repos/KranKRival/MarioBrosNX/releases",
+	"author" : "KranKRival",
+	"projectpage": "https://gbatemp.net/threads/mariobrosnx-super-mario-bros-clone-for-the-nintendo-switch.546623/",
+	"description" : """MarioBrosNX C++/SDL2, Created by Łukasz Jakowski 2014, Ported to the Nintendo Switch By Krank/KuranKu 2019
+All ingame images and sound belong to its authors and none other, the right for mario bros title belongs to nintendo. 
+this game created for fun and love of the community.""",
+	"group" : GAME,
+	"install_subfolder": None,
+	"pattern" : [["MarioBrosNX"],".zip"],
+	"license" : GPL2
 	}
+
+# {
+#             "category": "game", 
+#             "binary": "/switch/smw/smw.nro", 
+#             "updated": "28/02/2019", 
+#             "name": "supermariowar-nx", 
+#             "license": "n/a", 
+#             "title": "Super Mario War NX", 
+#             "url": "https://github.com/p-sam/supermariowar-nx/releases", 
+#             "author": "p-sam", 
+#             "changelog": "nx2\\n-adds split joycon support with an option in controls screen (credits to @rsn8887 for this and the initial linear filtering)\\n-adds screen size options (fit to aspect ratio, integer scale, 1:1 and stretched fullscreen)\\n-adds screen filtering option (nearest, linear, or best which currently is equal to linear)\\n\\n2.0.0-nx1\\n\\nInitial Release.", 
+#             "extracted": 31881, 
+#             "version": "2.0.0-nx2", 
+#             "filesize": 16877, 
+#             "web_dls": 521, 
+#             "details": "A port of Super Mario War to the Switch, using SDL2 and libnx.\\n\\n\\n\\n\\n\\n.", 
+#             "app_dls": 2436, 
+#             "description": "A port of Super Mario War"
+#         }, 
 ]
 
 

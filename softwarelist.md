@@ -43,6 +43,7 @@
 ## Meritous - Lancer-X, nop90
 ## OpenLara - XProger
 ## TicTacToeNX - lorrdfarquad
+## MarioBrosNX - KranKRival, Łukasz Jakowski
 
 # Python ~ PyNX
 ## Generic Mod Manager - Genwald

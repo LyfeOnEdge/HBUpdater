@@ -72,7 +72,7 @@ No releases (Issue created on github)
     Tools:
         https://github.com/friedkeenan/GoldtreePy
 To add:
-    
+    https://github.com/masagrator/ReverseNX/releases
     https://github.com/Marice/ScreenTester-NX/releases <- Inconsistent release format but it will work due to flexible handling
     https://github.com/colin969/switch-reader/releases
     https://github.com/SilentFlyBy/Blobby-Volley-2-Switch/releases
