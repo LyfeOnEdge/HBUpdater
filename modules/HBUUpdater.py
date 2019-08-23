@@ -24,7 +24,7 @@ def download(fileURL):
         return None
 
 def openJson(file):
-    with open(file) as f:
+    with open(file, encoding="utf-8") as f:
         return json.load(f)
 
 def get_members(zip):
