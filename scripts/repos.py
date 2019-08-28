@@ -769,27 +769,20 @@ this game created for fun and love of the community.""",
     "install_subfolder": None,
     "pattern" : [["MarioBrosNX"],".zip"],
     "license" : GPL2
-    }
+    },
 
-# {
-#             "category": "game", 
-#             "binary": "/switch/smw/smw.nro", 
-#             "updated": "28/02/2019", 
-#             "name": "supermariowar-nx", 
-#             "license": "n/a", 
-#             "title": "Super Mario War NX", 
-#             "url": "https://github.com/p-sam/supermariowar-nx/releases", 
-#             "author": "p-sam", 
-#             "changelog": "nx2\\n-adds split joycon support with an option in controls screen (credits to @rsn8887 for this and the initial linear filtering)\\n-adds screen size options (fit to aspect ratio, integer scale, 1:1 and stretched fullscreen)\\n-adds screen filtering option (nearest, linear, or best which currently is equal to linear)\\n\\n2.0.0-nx1\\n\\nInitial Release.", 
-#             "extracted": 31881, 
-#             "version": "2.0.0-nx2", 
-#             "filesize": 16877, 
-#             "web_dls": 521, 
-#             "details": "A port of Super Mario War to the Switch, using SDL2 and libnx.\\n\\n\\n\\n\\n\\n.", 
-#             "app_dls": 2436, 
-#             "description": "A port of Super Mario War"
-#         }, 
-]
+    {
+    "software" : "Super Mario War NX",
+    "store_equivalent" : "supermariowar-nx",
+    "githubapi" : "https://api.github.com/repos/p-sam/supermariowar-nx/releases",
+    "author" : "p-sam",
+    "projectpage": "https://github.com/p-sam/supermariowar-nx/releases",
+    "description" : "A port of Super Mario War to the Switch, using SDL2 and libnx.",
+    "group" : GAME,
+    "install_subfolder": "switch",
+    "pattern" : [["smw"],".zip"],
+    "license" : "n/a",
+    },
 
 
 
