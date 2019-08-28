@@ -694,6 +694,23 @@
                 ".zip"
             ],
             "license": "GPL2"
+        },
+        {
+            "software": "Super Mario War NX",
+            "store_equivalent": "supermariowar-nx",
+            "githubapi": "https://api.github.com/repos/p-sam/supermariowar-nx/releases",
+            "author": "p-sam",
+            "projectpage": "https://github.com/p-sam/supermariowar-nx/releases",
+            "description": "A port of Super Mario War to the Switch, using SDL2 and libnx.",
+            "group": "game",
+            "install_subfolder": "switch",
+            "pattern": [
+                [
+                    "smw"
+                ],
+                ".zip"
+            ],
+            "license": "n/a"
         }
     ],
     "python": [

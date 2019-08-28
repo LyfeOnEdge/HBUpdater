@@ -782,8 +782,8 @@ this game created for fun and love of the community.""",
     "install_subfolder": "switch",
     "pattern" : [["smw"],".zip"],
     "license" : "n/a",
-    },
-
+    }
+]
 
 
 nxpythonlist = [
