@@ -52,6 +52,7 @@ def checkserial(serial_input):
     serial_input = serial_input.upper()
     digit_regex = r"\D"
 
+    if serial_input == "": return ""
     status = "Too short" if len(serial_input) < 11 else ("Too long" if len(serial_input) > 14 else None)
 
     if not status:

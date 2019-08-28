@@ -141,7 +141,9 @@ Release
 1.3
  - App now updates itself
  - Failing to download gravatars for Lyfe/npprmint no longer results in crash
- - Added more room to the error / message fram
+ - Added more room to the error / message frame
+1.4
+ - Repos are now shipped in a json format, generated from repos.py in the scripts folder. Edit the script then run it to produce a new repo file to use. 
 
 
 

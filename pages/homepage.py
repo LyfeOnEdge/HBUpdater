@@ -11,8 +11,7 @@ import tkinter as tk
 from tkinter.constants import *
 
 import modules.toolhelper as toolhelper
-import pages.serialpage as serialpage
-# import pages.errorpage as errorpage
+
 homebuttonwidth = 144
 homebuttonspacing = 5
 
