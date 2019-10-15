@@ -1,20 +1,12 @@
 /cache/*
-/hbupdater/*
 /downloads/*
-/payloads/*
-/titledb/*
-/conf/*
-/tools/*
-/titles/*
-/backups/*
-/for later/*
-user_repos.json
-fluffy.conf
-fluffy.log
 *.pyc
-guisettings_user.json
-assets/hbappstore.png
-assets/globe.png
-for later/compatibilitypage.py
-for later/sdpage.py
-pages/oldaddrepopage.py
+docu/python_setup_config.PNG
+modules/setting_handler.py
+settings.ini
+scripts/oauth
+scripts/downloads/*
+scripts/repos.json
+scripts/repos_old.json
+build.zip
+tools/*

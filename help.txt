@@ -1,0 +1,17 @@
+- Click the `Select SD Root` button
+- Navigate to your SD card in the file browser window that appears
+- Select your SD's root
+
+To install:
+- Select a homebrew item you wish to install from one of the lists
+- Select the desired version of the homebrew that you'd like to install (defaults to newest)
+- Wait for the loading bar to finish.
+- Your homebrew will be available for next use the next time you launch your switch
+
+To uninstall:
+- Select an installed homebrew item you wish to uninstall
+- Wait a moment
+- Selected homebrew will be removed from the Switch SD card
+
+To update:
+- Same as install, you can upgrade / downgrade to / from any version.

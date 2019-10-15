@@ -1,0 +1,23 @@
+Licensed under the GPLv3 license.
+
+This app is free and open source because the users (like you!) deserve it. Let's support homebrew and the right to control what software we run on our own devices.
+
+Credits:
+ - Original app (HBUpdater's gui and backend is heavily inspired by the Homebrew appstore originally by vgmoose and the 4tu team)
+     + vgmoose,
+     + PWScind,
+     + rw-r-r_0644,
+     + Zarklord1,
+     + Maschell,
+     + Roman,
+     + qwarktheawesome,
+     + Whovian9369,
+     + crc-32,
+     + rakujira
+ - HBUpdater
+    + Lyfeonedge
+
+Resources:
+Repository URL - https://www.switchbru.com/appstore/repo.json
+Original app source - https://github.com/vgmoose/hb-appstore
+Unofficial python rewrite source - https://github.com/LyfeOnEdge/unofficial-appstore

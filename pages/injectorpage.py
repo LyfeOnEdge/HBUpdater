@@ -1,326 +1,129 @@
-from modules.format import * 
-import modules.customwidgets as cw
-import modules.guicore as guicore
-import modules.HBUpdater as HBUpdater
-import modules.locations as locations
-import modules.webhandler as webhandler
-import modules.appstore as appstore
+from .detailpage import detailPage
+from widgets import button, ThemedLabel
+import style
+from appstore import getScreenImage
+from modules.locations import notfoundimage
+import os, sys
+
+class injectorPage(detailPage):
+	def __init__(self, parent, controller):
+		self.local_packages_handler = controller.local_packages_handler
+		self.injector = controller.injector
+				
+		self.column_inject_button = None		
+		detailPage.__init__(self,parent,controller)
+		self.column_package.place_forget()
+
+		self.column_installed_version = ThemedLabel(self.column_body,"",anchor="w",label_font=style.smalltext, foreground = style.w, background = style.color_1)
+		self.column_installed_version.place(x = 5, width = - 5, y = 3.666 * style.detailspagemultiplier, relwidth = 1, height = 0.333 * style.detailspagemultiplier)
+
+		self.releases_listbox.place(relwidth = 1, y=4.00*style.detailspagemultiplier, relheight = 1, height = - (4*style.detailspagemultiplier + 3 * (style.buttonsize + style.offset) + style.offset))
+
+	def update_page(self,repo):
+		self.selected_version = None
+		self.repo = repo
+
+		try:
+			package = repo["store_equivalent"]
+		except:
+			package = repo["software"]
+
+		github_content = repo["github_content"]
+
+		version = github_content[0]["tag_name"]
+
+		self.column_title.set("Title: {}".format(repo["name"]))
+
+		self.column_author.set("Author: {}".format(repo["author"]))
+		self.column_version.set("Latest Version: {}".format(github_content[0]["tag_name"]))
+		try:
+			self.column_license.set("License: {}".format(repo["license"]))
+		except:
+			self.column_license.set("License: N/A")
+
+		installed = self.local_packages_handler.get_package_version(self.repo["store_equivalent"])
+		if installed:
+			self.column_installed_version.set("Downloaded: {}".format(installed))
+		else:
+			self.column_installed_version.set("Not downloaded")
 
 
-import tkinter as tk
-from tkinter.constants import *
-from tkinter import messagebox
 
-import os, sys, subprocess, json
+		self.column_package.set("Package: {}".format(package))
+		self.column_downloads.set("Downloads: {}".format(repo["downloads"]))
+		self.column_updated.set("Updated: {}".format(github_content[0]["created_at"]))
 
-#archive handling
-from zipfile import ZipFile
+		self.content_frame_details.configure(state="normal")
+		self.content_frame_details.delete('1.0', "end")
 
-import pages.pagetemplate as pt
+		#Makes newlines in details print correctly. Hacky but :shrug:
+		details = repo["description"].replace("\\n", """
+"""
+			)
+		self.content_frame_details.insert("1.0", details)
+		self.content_frame_details.configure(state="disabled")
 
 
+		self.header_label.set(repo["name"])
+		self.header_author.set(repo["author"])
 
-
-details_guide_text = """This menu will allow you to install older versions of payload, and go to the payloads's project page.
-""" 
-
-class injectorScreen(pt.page):
-	def __init__(self, parent, controller,page_name,back_command):
-		pt.page.__init__(self, parent=parent, 
-			controller=controller,
-			back_command=back_command,
-			primary_button_command=self.injectpayload,
-			primary_button_text="INJECT",
-			secondary_button_command=lambda: self.getordownloadpayload(force_update=True),
-			secondary_button_text="DOWNLOAD",
-			version_function=self.checkpayloadversion,
-			status_column="DOWNLOADED",
-			page_title="PAYLOAD INJECTOR",
-			page_name=page_name
+		if not self.column_inject_button:
+			self.column_inject_button = button(self.column_body, 
+				callback = self.trigger_inject, 
+				text_string = "INJECT", 
+				font=style.mediumboldtext, 
+				background=style.color_2
 			)
 
-		self.ijlist = self.populatesoftwarelist(locations.payloadlist)
-		self.setlist(self.ijlist)
-
-		self.pjlist = self.populatesoftwarelist(locations.payloadinjector)
-
-		buttonlist = [
-			{
-			"image" : self.returnimage,
-			"callback" : back_command,
-			"tooltip" : "Back to home screen",
-			}
-		]
-
-		self.setbuttons(buttonlist)
-
-		#hide the uninstall button and move in project page button to fill
-		self.uninstall_button.place_forget()
-		self.project_page_button.place_forget()
-		#Re-place the table to make room for the console
-		self.maintable.place(relx=0,rely=0, relheight=0.7,relwidth=1)
-
-		self.console = cw.consolebox(self.content_frame)
-		self.console.place(relx=0,rely=.7,relwidth=1, relheight=.3)
-		self.printtoconsolebox("Connect switch, select payload, and press inject.\nThe payload and injector will be downloaded from github if they haven't been already.\n")
-		self.printtoconsolebox("Injector backend: fusee-launcher, written by ktempkin\n")
-
-		#Check if fusee launcher is download, display status for user
-		fuseestatus = guicore.checkguisetting("fusee-launcher","version")
-		notinstalled = [None, "not installed"]
-		if fuseestatus in notinstalled:
-			fuseestatus = "needs downloaded"
+		#Hides or places the uninstalll button if not installed or installed respectively
+		#get_package_entry returns none if no package is found or if the sd path is not set
+		if self.local_packages_handler.get_package_entry(package):
+			self.column_inject_button.place(rely=1,relx=0.5,x = - 1.5 * (style.buttonsize), y = - 1 * (style.buttonsize + style.offset), width = 3 * style.buttonsize, height = style.buttonsize)
+			self.column_install_button.settext("CHANGE")
 		else:
-			fuseestatus = "downloaded"
+			self.column_inject_button.place_forget()
+			if self.column_install_button:
+				self.column_install_button.settext("Download")
 
-		self.printtoconsolebox("Injector status: {}\n".format(fuseestatus))
+		def do_update_banner():
+			self.bannerimage = getScreenImage(package)
+			if self.bannerimage:
+				self.update_banner(self.bannerimage)
+			else:
+				self.update_banner(notfoundimage)
+				print("failed to download screenshot for {}".format(package))
 
-
-
-
-		self.updatetable(None)
-
-		self.setguidetext(details_guide_text)
-
-
-	def printtoboth(self,stringtoprint):
-		self.console.print(str(stringtoprint)+"\n")
-		print(stringtoprint)
-
-	def printtoconsolebox(self,stringtoprint):
-		self.console.print(stringtoprint)
-
-
-#Redefinitions of class functions for page specific stuff
-#This is so the gui remembers the last selected payload
-	#Update page whenever it is raised
-	def on_show_frame(self,event):
-		self.currentselection = guicore.checkguisetting("last_payload", "selection")
-
-		#Update with user repos
-		if self.softwaregroup:
-			self.softwarelist = self.basesoftwarelist[:]
-			user_repos = self.controller.user_repos
-			user_repos = guicore.getreposbygroupfromlist(self.softwaregroup, user_repos)
-			#Add repos if they are found
-			if user_repos:
-				self.softwarelist.extend(user_repos)
+		self.update_releases_listbox()
 			
+		self.controller.async_threader.do_async(do_update_banner)
 
-		self.refreshwindow()
-		self.updateinfobox()
-
-	#movement button / cursor callbacks, moves up or down main list
-	#get current selection from list box
-	def CurSelet(self, event):
+	def select_version(self, event):
 		try:
 			widget = event.widget
 			selection=widget.curselection()
 			picked = widget.get(selection[0])
-			self.currentselection = widget.get(0, "end").index(picked)
-			self.currenttagselection = 0
-			self.updateinfobox()
-			self.refreshdetailwindow()
-			guicore.setguisetting({"last_payload": {"selection": self.currentselection}},silent = True)
-		except:
-			pass
-	def pageup(self):
-		if self.currentselection < len(self.softwarelist)-1:
-			self.currentselection += 1
-			self.currenttagselection = 0
-			self.updateinfobox()
-			self.refreshdetailwindow()
-			guicore.setguisetting({"last_payload": {"selection": self.currentselection}},silent = True)
-	def pagedown(self):
-		if self.currentselection > 0:
-			self.currentselection -= 1
-			self.currenttagselection = 0
-			self.updateinfobox()
-			self.refreshdetailwindow()
-			guicore.setguisetting({"last_payload": {"selection": self.currentselection}},silent = True)
+			self.selected_version = picked
+			self.version_index = self.controller.local_packages_handler.get_tag_index(self.repo["github_content"], self.selected_version)
+			self.update_release_notes()
+		except Exception as e:
+			print(e)
 
+	def trigger_install(self):
+		self.controller.async_threader.do_async(self.local_packages_handler.install_package, [self.repo, self.version_index, self.progress_bar.update, self.reload_function, self.progress_bar.set_title], priority = "high")
 
-	def injectpayload(self,event=None):
-		if not webhandler.checkifmoduleinstalled("pyusb"):
-			resp =  tk.messagebox.askyesno("Install PyUSB?", "PyUSB is required for fusee-launcher to work, install?")
-			if resp:
-				try:
-					webhandler.installpipmodule("pyusb")
-				except:
-					self.printtoboth("Unknown error installing PyUSB")
-					return
-			else:
-				self.printtoboth("Got answer: no, not installing")
-				return
-
-		payload = self.getordownloadpayload()
-
-
-		injectpayload(self,payload)
-
-	def checkpayloadversion(self,chunk):
-		softwarename = chunk["software"]
-		version = guicore.checkguisetting(softwarename,"version")
-
-		if version == None or version =="not installed":
-			return("needs download")
+	def trigger_inject(self):
+		toolsfolder = os.path.join(sys.path[0],"tools")
+		payloadfolder = os.path.join(toolsfolder, self.repo["install_subfolder"])
+		print(self.repo["payload"])
+		payload = None
+		for item in os.listdir(payloadfolder):
+			if os.path.isfile(os.path.join(payloadfolder, item)):
+				if item.startswith(self.repo["payload"][0]):
+					if item.endswith(self.repo["payload"][1]):
+						payload = os.path.join(payloadfolder, item)
+						break
+		if payload:
+			print("injecting {}".format(payload))
+			self.injector.inject(payload)
 		else:
-			version = appstore.parse_version_to_store_equivalent(version,softwarename)
-			return version
-		return version
-
-
-
-
-
-
-#Payload handling
-
-	#Gets payload if already downloaded, if not downloads it
-	#Force makes it download regardless of if it's already downloaded
-	def getordownloadpayload(self, force_update=False):
-		if not os.path.isdir(locations.payloadsfolder):
-				os.mkdir(locations.payloadsfolder)
-
-		#Get the current software chunk
-		sc = self.softwarelist[self.currentselection]
-
-		softwarename = sc["software"]
-
-		#Check if payload already download, if not set it to download
-		status = guicore.checkguisetting(softwarename,"version")
-		if status == None or status =="not installed":
-			pass
-		#If it's already downloaded, get it, unless force_update is set
-		else:
-			if not force_update:
-				payload = guicore.checkguisetting(softwarename,"location")
-				return payload
-
-		softwarename = sc["software"]
-		
-		try:
-			with open(sc["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
-				jfile = json.load(json_file)
-				version = jfile[self.currenttagselection]["tag_name"]
-		except:
-			self.printtoboth("Failed to find repo json file, can't download payload.")
-			return
-
-		assets = jfile[self.currenttagselection]["assets"]
-		
-		#Find the correct asset using HBUpdater core method for finding assets
-		downloadurl = HBUpdater.findasset(sc["pattern"], assets)
-
-		self.printtoboth("downloading payload from {}".format(downloadurl))
-
-		#file yielded by the download
-		file = webhandler.download(downloadurl)
-		file = os.path.join(locations.downloadsfolder, file) #get absolute path to it
-			
-		#if downloaded file is already .bin, set the payload path to it.
-		if file.endswith(".bin"):
-			payload = file
-			
-		elif file.endswith(".zip"):
-			#if file is zip, unzip it and find the payload based on the pattern set in its entry in #locations
-			with ZipFile(file, 'r') as zipObj:
-				zipObj.extractall(locations.payloadsfolder)
-				self.printtoboth("Sucessfully extracted {} to payloads folder\n\n".format(file))
-				files = zipObj.namelist()
-				payload = None
-				pattern = sc["zip_items"]
-				for possiblepayloadfile in files:
-					for fp in pattern[0]:
-						if fp.lower() in possiblepayloadfile.lower():
-							if possiblepayloadfile.endswith(pattern[1].lower()):
-								payload = possiblepayloadfile
-								break
-
-				if payload == None:
-					self.printtoboth("Could not find payload in extracted files")
-					return 
-			payload = os.path.join(locations.payloadsfolder,payload)
-
-		else:
-			self.printtoboth("file handling method not found")
-			return
-
-		#prep new entry to the gui log
-		newentry = {
-					softwarename: {
-						"version": version,
-						"location": payload,
-					}
-				}
-		guicore.setguisetting(newentry)
-		self.updatetable(None)
-
-		return payload
-
-
-#Payload is a file path to a switch payload
-def injectpayload(self,payload):
-	if not os.path.isdir(locations.injectorfolder):
-		print("initializing folder {}".format(locations.injectorfolder))
-		os.mkdir(locations.injectorfolder)
-
-	fuseestatus = guicore.checkguisetting("fusee-launcher", "version")
-	if fuseestatus == "not installed" or fuseestatus == "none" or fuseestatus == None:
-		with open(self.pjlist[0]["githubjson"]) as json_file: #jsonfile is path, json_file is file obj
-			jfile = json.load(json_file)
-			downloadurl = jfile[0]["zipball_url"]
-			file = webhandler.download(downloadurl)
-			file = os.path.join(locations.downloadsfolder, file)
-			version = jfile[0]["tag_name"]
-			with ZipFile(file, 'r') as zipObj:
-				zipObj.extractall(locations.injectorfolder)
-				self.printtoboth("Sucessfully extracted {} to payloads folder".format(file))
-				files = zipObj.namelist()
-				injector = None
-				for possiblepayloadfile in files:
-					if possiblepayloadfile.startswith(files[0] + "fusee"):
-						injector = possiblepayloadfile
-				if injector == None:
-					self.printtoboth("Could not find injector in extracted files")
-					return 
-			newentry = {
-				"fusee-launcher" : {
-					"version": version,
-					"location": injector,
-				}
-			}
-			guicore.setguisetting(newentry)
-
-
-	script_file = guicore.checkguisetting("fusee-launcher", "location")
-	script_file = os.path.join(locations.injectorfolder, script_file)
-	if payload:
-		p = subprocess.Popen([sys.executable, '-u', script_file, payload],
-			stdout=subprocess.PIPE, 
-			stderr=subprocess.STDOUT, 
-			bufsize=1,
-		)
-
-		with p.stdout:
-		    for line in iter(p.stdout.readline, b''):
-		    	self.printtoboth(line)
-		p.wait()
-	else:
-		print("failed to find payload")
-
-
-
-
-
-
-#Returns true if switch found
-def detect_rcm():
-	import usb.core
-	dev=usb.core.find(idVendor=0x0955, idProduct=0x7321)
-	if dev:
-		return True
-
-# def enable_auto_injection():
-# 	guicore.setguisetting({"guisettings" : settings})
-
+			print("Failed to find payload")

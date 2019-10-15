@@ -1,0 +1,10 @@
+{
+    "UPDATENAME": "HBUpdater",
+    "UPDATEURL": "https://api.github.com/repos/LyfeOnEdge/HBUpdater/releases",
+    "ASSETPATTERN": [
+        [
+            "HBUpdater"
+        ],
+        ".zip"
+    ]
+}

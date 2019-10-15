@@ -1,37 +1,21 @@
-import json
-REPOFILENAME = "repos.json"
-def make_repo():
-    repo_file = {
-        "homebrew" : homebrewlist,
-        "emulators" : emulist,
-        "games" : gameslist,
-        "python" : nxpythonlist,
-        "nut" : nutserverdict,
-        "fluffy" : fluffydict,
-        "cfw" : customfirmwarelist,
-        "payloads" : payloadlist,
-        "fusee" : payloadinjector
-    }
-
-    print(json.dumps(repo_file, indent=4))
-
-    with open(REPOFILENAME, 'w+') as outfile:
-        json.dump(repo_file, outfile, indent=4)
-
-
 GAME = "game"
 TOOL = "tool"
-RECOMMENDED = "recommended"
-TITLEINSTALLER = "title installer"
 EMULATOR = "emu"
+POC = "proof-of-concept"
+
+APACHE2 = "Apache License 2.0"
 GPL3 = "GPL3"
 GPL2 = "GPL2"
+MIT = "MIT"
 BSD2 = "BSD v2"
 NA = "n/a"
 
+SUBFOLDER_SWITCH = "switch"
+
+SAVE_TOOL = "save tool"
 
 template = {
-    "software" : None,
+    "name" : None,
     "store_equivalent" : None,
     "githubapi" : None,
     "author" : None,
@@ -40,12 +24,13 @@ template = {
     "group" : None,
     "install_subfolder": None,
     "pattern" : [[],],
-    "license" : None
+    "license" : None,
+    "tags" : []
 }
 
 homebrewlist = [
     {
-    "software" : "Homebrew Store",
+    "name" : "Homebrew Store",
     "store_equivalent" : "appstore",
     "githubapi" : "https://api.github.com/repos/vgmoose/hb-appstore/releases", 
     "author" : "vgmoose", 
@@ -59,7 +44,7 @@ homebrewlist = [
 
 
     {
-    "software": "Edizon",
+    "name": "Edizon",
     "store_equivalent" : "Edizon",
     "githubapi": "https://api.github.com/repos/WerWolv/EdiZon/releases",
     "author": "WerWolv",    
@@ -85,12 +70,13 @@ All packed into one easy to use and easy to install Homebrew.""",
     "group": "save manager",
     "install_subfolder": None,
     "pattern" : [["SD"], ".zip"],
-    "license" : GPL2
+    "license" : GPL2,
+    "tags" : [SAVE_TOOL]
     },
 
 
     {
-    "software": "Lockpick",
+    "name": "Lockpick",
     "githubapi": "https://api.github.com/repos/shchmue/Lockpick/releases",
     "author": "shchmue",
     "projectpage": "https://github.com/shchmue/Lockpick/",
@@ -104,7 +90,7 @@ Due to key generation changes introduced in 7.0.0, Lockpick is not able to dump 
     },
 
     {
-    "software" : "Gag-Order",
+    "name" : "Gag-Order",
     "store_equivalent" : "gagorder",
     "githubapi" : "https://api.github.com/repos/Adubbz/Gag-Order/releases",
      
@@ -119,7 +105,7 @@ Due to key generation changes introduced in 7.0.0, Lockpick is not able to dump 
 
 
     {
-    "software" : "JKSV",
+    "name" : "JKSV",
     "store_equivalent" : "jksv",
     "githubapi" : "https://api.github.com/repos/J-D-K/JKSV/releases",
     "author" : "J-D-K", 
@@ -150,7 +136,7 @@ Due to key generation changes introduced in 7.0.0, Lockpick is not able to dump 
 
 
     {
-    "software" : "NX-Shell",
+    "name" : "NX-Shell",
     "store_equivalent" : "NX-shell",
     "githubapi" : "https://api.github.com/repos/joel16/NX-Shell/releases",
     "author" : "joel16",
@@ -164,7 +150,7 @@ Due to key generation changes introduced in 7.0.0, Lockpick is not able to dump 
 
 
     {
-    "software": "NxThemesInstaller",
+    "name": "NxThemesInstaller",
     "store_equivalent" : "NXthemes_Installer",
     "githubapi": "https://api.github.com/repos/exelix11/SwitchThemeInjector/releases",
      
@@ -187,23 +173,8 @@ Unfortunately SZS files from the switch os contain copyrighted data so to make t
     "license" : NA
     },
 
-
     {
-    "software": "pplay",
-    "store_equivalent" : "pplay",
-    "githubapi": "https://api.github.com/repos/Cpasjuste/pplay/releases",
-    "author" : "Cpasjuste", 
-    "projectpage": "https://gbatemp.net/threads/pplay-switch-video-player.526187/",
-    "description" : "pPlay is a video player for the Nintendo Switch. pPlay support most popular video formats, have subtitles (embedded ass) and http streaming support.",
-    "group" : "video player",
-    "install_subfolder": "switch",
-    "pattern" : [["pplay"], ".zip"],
-    "license" : NA
-    },
-
-
-    {
-    "software": "SwitchIdent Console",
+    "name": "SwitchIdent Console",
     "store_equivalent" : "switchident-console",
     "githubapi": "https://api.github.com/repos/joel16/SwitchIdent/releases",
     "author" : "joel16", 
@@ -217,7 +188,7 @@ Unfortunately SZS files from the switch os contain copyrighted data so to make t
 
 
     {
-    "software": "SwitchIdent (GUI)",
+    "name": "SwitchIdent (GUI)",
     "store_equivalent" : "switchident-GUI",
     "githubapi": "https://api.github.com/repos/joel16/SwitchIdent/releases",
     "author" : "joel16", 
@@ -231,7 +202,7 @@ Unfortunately SZS files from the switch os contain copyrighted data so to make t
 
 
     {
-    "software":  "Checkpoint",
+    "name":  "Checkpoint",
     "store_equivalent" : "Checkpoint",
     "githubapi": "https://api.github.com/repos/FlagBrew/Checkpoint/releases",
     "author" : "FlagBrew", 
@@ -240,11 +211,12 @@ Unfortunately SZS files from the switch os contain copyrighted data so to make t
     "group": "save manager",
     "install_subfolder": "switch/Checkpoint",
     "pattern" : [["Checkpoint"], ".nro"],
-    "license" : GPL3
+    "license" : GPL3,
+    "tags" : [SAVE_TOOL]
     },
 
     {
-    "software" : "PyNX",
+    "name" : "PyNX",
     "store_equivalent" : "pynx",
     "githubapi" : "https://api.github.com/repos/nx-python/PyNX/releases",
     "author" : "elnardu", 
@@ -260,7 +232,7 @@ PyNX serves as the entry point to running Python apps on your Switch. It is a ho
 
     #Temporailly unavailable
     # {
-    # "software": "sdsetup-switch",
+    # "name": "sdsetup-switch",
     # "store_equivalent" : "Homebrew_SD_Setup",
     # "githubapi" : "https://api.github.com/repos/noahc3/sdsetup-switch/releases",
     # "author" : "noahc3", 
@@ -274,7 +246,7 @@ PyNX serves as the entry point to running Python apps on your Switch. It is a ho
 
 
     {
-    "software": "ftpd",
+    "name": "ftpd",
     "store_equivalent" : "ftpd",
     "githubapi" : "https://api.github.com/repos/mtheall/ftpd/releases",
     "author" : "mtheall, TuxSH", 
@@ -287,7 +259,7 @@ PyNX serves as the entry point to running Python apps on your Switch. It is a ho
     },
 
     {
-    "software" : "Brainfuck Interpreter",
+    "name" : "Brainfuck Interpreter",
     "store_equivalent" : "brainfuck",
     "githubapi" : "https://api.github.com/repos/TheKgg/switch-brainfuck/releases",
     "author" : "TheKgg", 
@@ -307,7 +279,7 @@ PyNX serves as the entry point to running Python apps on your Switch. It is a ho
     },
 
     {
-    "software" : "Argon-NX SD Files",
+    "name" : "Argon-NX SD Files",
     "store_equivalent" : "argon-nx",
     "githubapi" : "https://api.github.com/repos/Guillem96/argon-nx/releases",
     "author" : "Guillem96", 
@@ -327,11 +299,11 @@ PyNX serves as the entry point to running Python apps on your Switch. It is a ho
 """,
     "group" : "loader",
     "install_subfolder": None,
-    "pattern" : [["sd-files"], ".zip"]
+    "pattern" : [["sd-files", "argon-nx"], ".zip"]
     },
 
     {
-    "software": "Hekate",
+    "name": "Hekate",
     "githubapi": "https://api.github.com/repos/CTCaer/hekate/releases",
     "store_equivalent" : "Hekate",
     "author" : "CTCaer", 
@@ -345,7 +317,7 @@ No more SD card removals""",
     },
 
     # {
-    # "software": "Hekate Joonie86",
+    # "name": "Hekate Joonie86",
     # "githubapi": "https://api.github.com/repos/Joonie86/hekate/releases",
     # "store_equivalent" : "Hekate_Joonie86",
     # "author" : "CTCaer, Joonie86",
@@ -357,32 +329,7 @@ No more SD card removals""",
     # },
 
     {
-    "software": "ComicNX",
-    "githubapi": "https://api.github.com/repos/HookedBehemoth/ComicNX/releases",
-    "store_equivalent" : "ComicNX",
-    "author" : "HookedBehemoth", 
-    "projectpage": "https://github.com/HookedBehemoth/ComicNX",
-    "description": """Shitty comic-browser for your Nintendo Switch.
-
-This uses my [HookedBehemoth's] Plutonium fork because I don't need Audio + Web (- ~1MiB) and I rescale Image-Elements on reloading an Image.
-
-Licensing
-- This software is licensed under the terms of the GPLv2.
-
-Credits
-- switchbrew for the libnx project and the extensive documentation, research and tool development pertaining to the Nintendo Switch.
-- devkitPro for the devkitA64 toolchain and libnx support.
-- atlasnx for Swurl and some util methods
-- XorTroll for Plutonium
-    """,
-    "group": TOOL,
-    "install_subfolder": "switch",
-    "pattern" : [["comic-browser", "ComicNX"], ".nro"],
-    "license" : GPL2,
-    },
-
-    {
-    "software": "Homebrew Menu",
+    "name": "Homebrew Menu",
     "githubapi": "https://api.github.com/repos/switchbrew/nx-hbmenu/releases",
     "store_equivalent" : "hbmenu",
     "author" : "yellows8, plutoo", 
@@ -394,7 +341,7 @@ Credits
     },
 
     {
-    "software": "Apollo",
+    "name": "Apollo",
     "githubapi": "https://api.github.com/repos/evo-brut3/Apollo/releases",
     "store_equivalent" : "Apollo",
     "author" : "evo-brut3", 
@@ -424,28 +371,7 @@ Nintendo for security <3.
 
 
     {
-    "software": "lennytube",
-    "githubapi": "https://api.github.com/repos/noirscape/lennytube/releases",
-    "store_equivalent" : "lennytube",
-    "author" : "noirscape", 
-    "projectpage": "https://gbatemp.net/threads/lennytube-homebrew-youtube-nro.545824/",
-    "description": """Youtube on the Nintendo Switch.
-
-Rationale
-The YouTube title on the Switch is only usable if one is not banned, since the title in question logs in on Nintendo Network. Whilst it's possible to bypass this by patching the YouTube app, this is far from ideal as the resulting file is not allowed to be shared.
-
-This application aims to circumvent that last problem by launching it's own WifiApplet, meaning no copyrighted data is ever involved.
-
-Limitations
-Desktop mode only (TV mode is inaccessible, Mobile doesn't play videos properly).
-Works only from APPLICATION mode (it will display a warning and instructions how to do this if you're still running from APPLET).""",
-    "group": "video player",
-    "install_subfolder": "switch",
-    "pattern" : [["lennytube"], ".nro"]
-    },
-
-    {
-    "software" : "fakenews-injector",
+    "name" : "fakenews-injector",
     "store_equivalent" : "fakenews-injector",
     "githubapi" : "https://api.github.com/repos/noahc3/fakenews-injector/releases",
     "author" : "noahc3",
@@ -462,7 +388,7 @@ Tested on 1.0.0, 3.0.0, 4.0.1 and 4.1.0, works both in CFW and with hbl launched
     },
 
     {
-    "software" : "nxdumptool",
+    "name" : "nxdumptool",
     "store_equivalent" : "gcdumptool",
     "githubapi" : "https://api.github.com/repos/DarkMatterCore/nxdumptool/releases",
     "author" : "DarkMatterCore",
@@ -498,12 +424,51 @@ Compatibility:
     "license" : GPL2
     },
 
+    {
+    "name" : "sys-audioplayer",
+    "store_equivalent" : "sys-audioplayer",
+    "githubapi" : "https://api.github.com/repos/KranKRival/sys-audioplayer/releases",
+    "author" : "KranKRival",
+    "projectpage": "https://github.com/KranKRival/sys-audioplayer",
+    "description" : """sys-audioplayer updated for official firmware 9
+This is a WIP background-audio-player as a custom Boot2 sysmodule for the Nintendo Switch.
 
+instructions:
+this is developed for Atmosphere/Kosmos , Not tested on other CFW
+
+Compiled Module Goes to /atmosphere/titles/4200000000000000/exefs.nsp
+flag the Module activated by making blank file /atmosphere/titles/4200000000000000/flags/boot2.flag
+add your songs (MP3 ONLY) to /music Directory on Root of your Sd Card
+enable the module nor by restart console, or using latest Kosmos ToolBox.
+Note:
+Music will start playing as soon as the module is Activated
+this is a beta version and the songs repeat 100 times by default / for future Repeat song Implementation !!!
+right now it just plays all the mp3s in the /music folder of your sdcard once the switch boots.""",
+    "group" : TOOL,
+    "install_subfolder": None,
+    "pattern" : [["Sys_AudioPlayer"],".zip"],
+    "license" : GPL3,
+    "tags" : [TOOL]
+    },
+
+    {
+    "name" : "JoyConMouse",
+    "store_equivalent" : "JoyConMouse",
+    "githubapi" : "https://api.github.com/repos/KranKRival/JoyConMouse/releases",
+    "author" : "KranKRival",
+    "projectpage": "https://github.com/KranKRival/JoyConMouse",
+    "description" : "this is a proof of concept of a mouse created with sdl2 and controlled by the left analog stick of the joycon there's button added to determine the button press",
+    "group" : POC,
+    "install_subfolder": SUBFOLDER_SWITCH,
+    "pattern" : [["JoyConMousePOC"],".zip"],
+    "license" : APACHE2,
+    "tags" : [POC, APACHE2],
+    },
 ]
 
 emulist = [
     {
-    "software": "VBA Next",
+    "name": "VBA Next",
     "store_equivalent" : "VBA_NEXT",
     "githubapi": "https://api.github.com/repos/RSDuck/vba-next-switch/releases",
     "author" : "RSDuck", 
@@ -518,7 +483,7 @@ After porting 3DSGBA(which often crashed probably because of a huge amount of me
     },
 
     {
-    "software": "CHIP8-NX",
+    "name": "CHIP8-NX",
     "store_equivalent" : "CHIP8",
     "githubapi" : "https://api.github.com/repos/Marice/CHIP8-NX/releases",
     "author" : "Marice", 
@@ -531,7 +496,7 @@ After porting 3DSGBA(which often crashed probably because of a huge amount of me
     },
 
     {
-    "software": "uae4all2",
+    "name": "uae4all2",
     "store_equivalent" : "uae4all2",
     "githubapi" : "https://api.github.com/repos/rsn8887/uae4all2/releases",
     "author" : "rsn8887", 
@@ -544,7 +509,7 @@ After porting 3DSGBA(which often crashed probably because of a huge amount of me
     },
 
     {
-    "software": "pFBA: final burn alpha",
+    "name": "pFBA: final burn alpha",
     "store_equivalent" : "pFBA",
     "githubapi" : "https://api.github.com/repos/Cpasjuste/pemu/releases",
     "author" : "Cpasjuste", 
@@ -557,7 +522,7 @@ After porting 3DSGBA(which often crashed probably because of a huge amount of me
     },
 
     {
-    "software": "pNES",
+    "name": "pNES",
     "store_equivalent" : "pNES",
     "githubapi" : "https://api.github.com/repos/Cpasjuste/pemu/releases",
     "author" : "Cpasjuste", 
@@ -570,7 +535,7 @@ After porting 3DSGBA(which often crashed probably because of a huge amount of me
     },
 
     {
-    "software": "pSNES",
+    "name": "pSNES",
     "store_equivalent" : "psnes",
     "githubapi" : "https://api.github.com/repos/Cpasjuste/pemu/releases",
     "author" : "Cpasjuste", 
@@ -583,7 +548,7 @@ After porting 3DSGBA(which often crashed probably because of a huge amount of me
     },
 
     {
-    "software": "OpenBor",
+    "name": "OpenBor",
     "store_equivalent" : "openbor",
     "githubapi" : "https://api.github.com/repos/Cpasjuste/openbor/releases",
     "author" : "Cpasjuste", 
@@ -596,7 +561,7 @@ After porting 3DSGBA(which often crashed probably because of a huge amount of me
     },
 
     {
-    "software": "ScummVM",
+    "name": "ScummVM",
     "store_equivalent" : "scummvm",
     "githubapi" : "https://api.github.com/repos/Cpasjuste/scummvm/releases",
     "author" : "Cpasjuste", 
@@ -609,7 +574,7 @@ After porting 3DSGBA(which often crashed probably because of a huge amount of me
     },
 
     {
-    "software": "NoiES",
+    "name": "NoiES",
     "store_equivalent" : "noies",
     "githubapi" : "https://api.github.com/repos/Hydr8gon/NoiES/releases",
     "author" : "Hydr8gon", 
@@ -622,7 +587,7 @@ After porting 3DSGBA(which often crashed probably because of a huge amount of me
     },
 
     {
-    "software": "melonDS",
+    "name": "melonDS",
     "store_equivalent" : "melonDS",
     "githubapi" : "https://api.github.com/repos/Hydr8gon/melonDS/releases",
     "author" : "Hydr8gon", 
@@ -635,7 +600,7 @@ After porting 3DSGBA(which often crashed probably because of a huge amount of me
     },
 
     {
-    "software": "DeSmuME-NX",
+    "name": "DeSmuME-NX",
     "store_equivalent" : "desmume",
     "githubapi" : "https://api.github.com/repos/Laproxi/DeSmuME-NX/releases",
     "author" : "Laproxi", 
@@ -652,15 +617,11 @@ After porting 3DSGBA(which often crashed probably because of a huge amount of me
 
 
 
-
-
-
-
 #GAMES
 
 gameslist = [
     {
-    "software" : "Meritous",
+    "name" : "Meritous",
     "store_equivalent" : "meritous",
     "githubapi" : "https://api.github.com/repos/Nop90-Switch/Meritous-Switch/releases",
     "author" : "Lancer-X, nop90", 
@@ -673,7 +634,7 @@ gameslist = [
     },
 
     {
-    "software" : "eduke32",
+    "name" : "eduke32",
     "store_equivalent" : "eduke32",
     "githubapi" : "https://api.github.com/repos/Cpasjuste/eduke32/releases",
     "author" : "Cpasjuste", 
@@ -687,7 +648,7 @@ gameslist = [
 
 
     {
-    "software" : "InvadersNX",
+    "name" : "InvadersNX",
     "store_equivalent" : "InvadersNX",
     "githubapi" : "https://api.github.com/repos/MaesterRowen/InvadersNX/releases",
     "author" : "MaesterRowen", 
@@ -705,7 +666,7 @@ Known Bugs: There appears to be some bug that causes the screen to flicker durin
 
 
     {
-    "software" : "Ken's Labyrinth",
+    "name" : "Ken's Labyrinth",
     "store_equivalent" : "Kens-Labyrinth",
     "githubapi" : "https://api.github.com/repos/sacredbanana/lab3d-sdl/releases", 
     "author" : "sacredbanana", 
@@ -718,7 +679,7 @@ Known Bugs: There appears to be some bug that causes the screen to flicker durin
     },
 
     {
-    "software": "2048",
+    "name": "2048",
     "store_equivalent" : "2048",
     "githubapi" : "https://api.github.com/repos/BernardoGiordano/2048/releases",
     "author" : "BernardoGiordano", 
@@ -731,7 +692,7 @@ Known Bugs: There appears to be some bug that causes the screen to flicker durin
     },
 
     {
-    "software": "OpenLara",
+    "name": "OpenLara",
     "store_equivalent" : "Openlara",
     "githubapi" : "https://api.github.com/repos/XProger/OpenLara/releases",
     "author" : "XProger", 
@@ -744,7 +705,7 @@ Known Bugs: There appears to be some bug that causes the screen to flicker durin
     },
 
     {
-    "software": "TicTacToeNX",
+    "name": "TicTacToeNX",
     "store_equivalent" : "TicTacToeNX",
     "githubapi" : "https://api.github.com/repos/lorrdfarquad/TikTacToeNX/releases",
     "author" : "lorrdfarquad", 
@@ -757,7 +718,31 @@ Known Bugs: There appears to be some bug that causes the screen to flicker durin
     },
 
     {
-    "software" : "MarioBrosNX",
+    "name" : "Super Mario War NX",
+    "store_equivalent" : "supermariowar-nx",
+    "githubapi" : "https://api.github.com/repos/retronx-team/supermariowar-nx/releases",
+    "author" : "p-sam",
+    "projectpage": "https://github.com/p-sam/supermariowar-nx/releases",
+    "description" : """Super Mario War is, quoting the main project, a fan-made multiplayer Super Mario Bros. style deathmatch game. You can find more information about the game itself and its history on the main readme.
+
+This uses:
+
+the devkitA64 toolchain, libnx and multiple portlibs from devkitpro
+a subrepo of supermariowar with switch specific changes
+Usage
+Download the latest release, and extract the archive in the /switch folder on your SD Card. Then, run the game from the hbmenu using hbl.
+
+Todo
+networking""",
+    "group" : GAME,
+    "install_subfolder": "switch",
+    "pattern" : [["smw"],".zip"],
+    "license" : "n/a",
+    },
+
+
+    {
+    "name" : "MarioBrosNX",
     "store_equivalent" : "MarioBrosNX",
     "githubapi" : "https://api.github.com/repos/KranKRival/MarioBrosNX/releases",
     "author" : "KranKRival",
@@ -771,24 +756,61 @@ this game created for fun and love of the community.""",
     "license" : GPL2
     },
 
+
     {
-    "software" : "Super Mario War NX",
-    "store_equivalent" : "supermariowar-nx",
-    "githubapi" : "https://api.github.com/repos/p-sam/supermariowar-nx/releases",
-    "author" : "p-sam",
-    "projectpage": "https://github.com/p-sam/supermariowar-nx/releases",
-    "description" : "A port of Super Mario War to the Switch, using SDL2 and libnx.",
+    "name" : "OpenJazzNX",
+    "store_equivalent" : "OpenJazzNX",
+    "githubapi" : "https://api.github.com/repos/KranKRival/OpenJazzNX/releases",
+    "author" : "KranKRival",
+    "projectpage": "https://github.com/KranKRival/OpenJazzNX/",
+    "description" : "Port of OpenJazz to the nintendo switch With SDL2 Support.",
     "group" : GAME,
     "install_subfolder": "switch",
-    "pattern" : [["smw"],".zip"],
-    "license" : "n/a",
-    }
+    "pattern" : [["OpenJazzNX"],".zip"],
+    "license" : GPL2
+    },
+
+    {
+    "name" : "BomberManNX",
+    "store_equivalent" : "BomberManNX",
+    "githubapi" : "https://api.github.com/repos/KranKRival/BomberManNX/releases",
+    "author" : "KranKRival",
+    "projectpage": "https://gbatemp.net/threads/bombermannx-classic-bomberman-clone-for-the-nintendo-switch.549187/",
+    "description" : """BomberManNX
+Clone of Bomberman game in C++ using SDL2 for the nintendo switch
+
+Authors:
+* Aleksandar Miletic / developer
+* Mirko Brkusanin / developer
+* KranK / Port to the nintendo switch
+Original Game
+https://github.com/Sandman1705/Bombermaniac""",
+    "group" : GAME,
+    "install_subfolder": "switch",
+    "pattern" : [["BomberManNX"],".zip"],
+    "license" : MIT,
+    "tags" : [GAME]
+    },
+
+    {
+    "name" : "PacManNX",
+    "store_equivalent" : "PacManNX",
+    "githubapi" : "https://api.github.com/repos/KranKRival/PacManNX/releases",
+    "author" : "KranKRival",
+    "projectpage": "https://github.com/KranKRival/PacManNX",
+    "description" : "A Clone of original PacMan For The Nintendo Switch made in C++ using SDL2",
+    "group" : GAME,
+    "install_subfolder": "switch",
+    "pattern" : [["PacManNX"],".zip"],
+    "license" : GPL2,
+    "tags" : [GAME]
+    },
 ]
 
 
 nxpythonlist = [
     {
-    "software" : "Generic Mod Manager",
+    "name" : "Generic Mod Manager",
     "githubapi" : "https://api.github.com/repos/Genwald/Generic-Mod-Manager/releases",
     "author" : "Genwald", 
     "projectpage": "https://gbatemp.net/threads/generic-mod-manager-a-mod-manager.517626/",
@@ -800,7 +822,7 @@ It lets you easily activate and deactivate mods as well as handle conflicting mo
     },
 
     {
-    "software" : "timefix",
+    "name" : "timefix",
     "store_equivalent" : "timefix",
     "githubapi" : "https://api.github.com/repos/LyfeOnEdge/timefix/releases",
     "author" : "Retr0id",
@@ -813,7 +835,7 @@ It lets you easily activate and deactivate mods as well as handle conflicting mo
     },
 
     {
-    "software" : "PyNX",
+    "name" : "PyNX",
     "store_equivalent" : "pynx",
     "githubapi" : "https://api.github.com/repos/nx-python/PyNX/releases",
     "author" : "elnardu", 
@@ -832,7 +854,8 @@ PyNX serves as the entry point to running Python apps on your Switch. It is a ho
 
 customfirmwarelist = [
     {
-    "software" : "Atmos",
+    "name" : "Atmosphere",
+    "store_equivalent" : "Atmosphere",
     "githubapi" : "https://api.github.com/repos/Atmosphere-NX/Atmosphere/releases",
     "author" : "Atmosphere-NX",
     "projectpage": "https://github.com/Atmosphere-NX/Atmosphere/releases",
@@ -844,7 +867,7 @@ customfirmwarelist = [
     },
 
     {
-    "software" : "Kosmos",
+    "name" : "Kosmos",
     "githubapi" : "https://api.github.com/repos/AtlasNX/Kosmos/releases",
     "author" : "AtlasNX",
     "projectpage": "https://github.com/AtlasNX/Kosmos/releases",
@@ -855,7 +878,8 @@ customfirmwarelist = [
     },
 
     {
-    "software" : "ReiNX",
+    "name" : "ReiNX",
+    "store_equivalent" : "ReiNX",
     "githubapi" : "https://api.github.com/repos/Reisyukaku/ReiNX/releases",
     "author" : "Reisyukaku", 
     "projectpage": "https://github.com/Reisyukaku/ReiNX",
@@ -871,7 +895,8 @@ customfirmwarelist = [
 payloadlist = [
     #Message ctcaer about having hekate as its own payload
     {
-    "software": "Hekate",
+    "name": "Hekate Payload",
+    "store_equivalent": "Hekate",
     "githubapi": "https://api.github.com/repos/CTCaer/hekate/releases",
     "author" : "CTCaer", 
     "projectpage": "https://gbatemp.net/threads/rcm-payload-hekate-ctcaer-mod.502604/",
@@ -879,25 +904,30 @@ payloadlist = [
 This version supports booting ALL current OS/CS CFW, Linux chainloading and payload tools.
 No more SD card removals""",
     "group": "PAYLOADS",
-    "zip_items": [["hekate_ctcaer"],".bin"],
-    "pattern": [["hekate_ctcaer"],".zip"]
+    "payload": ["hekate_ctcaer",".bin"],
+    "pattern": [["hekate_ctcaer"],".zip"],
+    "install_subfolder" : "hekate"
     },
 
 
 
     {
-    "software": "fusee-primary",
+    "name": "fusee-primary",
+    "store_equivalent": "fusee-primary",
     "githubapi": "https://api.github.com/repos/Atmosphere-NX/Atmosphere/releases",
     "author" : "Atmosphere-NX", 
     "projectpage": "https://github.com/Atmosphere-NX/Atmosphere/tree/master/fusee/fusee-primary",
     "description" : "Bootloader for Atmosphere",
     "group" : "PAYLOADS",
-    "pattern": [["fusee-primary"],".bin"]
+    "pattern": [["fusee-primary"],".bin"],
+    "payload": ["fusee-primary",".bin"],
+    "install_subfolder" : "fusee-primary"
     },
 
 
     {
-    "software" : "Argon-NX payload",
+    "name" : "Argon-NX payload",
+    "store_equivalent" : "argon-nx",
     "githubapi" : "https://api.github.com/repos/Guillem96/argon-nx/releases",
     "author" : "Guillem96", 
     "projectpage": "https://gbatemp.net/threads/argon-nx-payload-chainloader.527178/",
@@ -915,12 +945,15 @@ No more SD card removals""",
  - If payload.bin is not present or VOLUME DOWN button is pressed on payload injection, Argon NX will list all payloads located at argon/payloads, and you will be able to select one of them to launch it.
 """,
     "group" : "PAYLOADS",
-    "pattern": [["argon-nx"],".bin"]
+    "pattern": [["argon-nx"],".zip"],
+    "payload": ["argon-nx",".bin"],
+    "install_subfolder": "argon"
     },
 
 
     {
-    "software" : "Lockpick RCM",
+    "name" : "Lockpick RCM",
+    "store_equivalent" : "Lockpick_RCM",
     "githubapi" : "https://api.github.com/repos/shchmue/Lockpick_RCM/releases",
     "github_asset" : None,
     "author" : "shchmue", 
@@ -929,11 +962,13 @@ No more SD card removals""",
 
 Due to changes imposed by firmware 7.0.0, Lockpick homebrew can no longer derive the latest keys. In the boot-time environment however, there are fewer limitations.""",
     "group" : "PAYLOADS",
-    "pattern": [["Lockpick_RCM"],".bin"]
+    "pattern": [["Lockpick_RCM"],".bin"],
+    "payload": ["Lockpick_RCM",".bin"],
+    "install_subfolder" : "lockpick"
     },
 
 #   {
-#   "software" : "memloader",
+#   "name" : "memloader",
 #   "githubapi" : "https://api.github.com/repos/blawar/memloader/releases",
 #   "author" : "blawar", 
 #   "projectpage": "https://github.com/blawar/memloader",
@@ -972,7 +1007,7 @@ Due to changes imposed by firmware 7.0.0, Lockpick homebrew can no longer derive
 
 payloadinjector = [
     {
-    "software" : "fusee-launcher",
+    "name" : "fusee-launcher",
     "githubapi" : "https://api.github.com/repos/Cease-and-DeSwitch/fusee-launcher/releases",
     "github_asset" : "tarball_url", 
     "author" : "Qyriad", 
@@ -983,46 +1018,69 @@ payloadinjector = [
     },
 ]
 
+medialist = [
+    {
+    "name": "pplay",
+    "store_equivalent" : "pplay",
+    "githubapi": "https://api.github.com/repos/Cpasjuste/pplay/releases",
+    "author" : "Cpasjuste", 
+    "projectpage": "https://gbatemp.net/threads/pplay-switch-video-player.526187/",
+    "description" : "pPlay is a video player for the Nintendo Switch. pPlay support most popular video formats, have subtitles (embedded ass) and http streaming support.",
+    "group" : "video player",
+    "install_subfolder": "switch",
+    "pattern" : [["pplay"], ".zip"],
+    "license" : NA
+    },
+
+    {
+    "name": "ComicNX",
+    "githubapi": "https://api.github.com/repos/HookedBehemoth/ComicNX/releases",
+    "store_equivalent" : "ComicNX",
+    "author" : "HookedBehemoth", 
+    "projectpage": "https://github.com/HookedBehemoth/ComicNX",
+    "description": """Shitty comic-browser for your Nintendo Switch.
+
+This uses my [HookedBehemoth's] Plutonium fork because I don't need Audio + Web (- ~1MiB) and I rescale Image-Elements on reloading an Image.
+
+Licensing
+- This software is licensed under the terms of the GPLv2.
+
+Credits
+- switchbrew for the libnx project and the extensive documentation, research and tool development pertaining to the Nintendo Switch.
+- devkitPro for the devkitA64 toolchain and libnx support.
+- atlasnx for Swurl and some util methods
+- XorTroll for Plutonium
+    """,
+    "group": TOOL,
+    "install_subfolder": "switch",
+    "pattern" : [["comic-browser", "ComicNX"], ".nro"],
+    "license" : GPL2,
+    },
+
+    {
+    "name": "lennytube",
+    "githubapi": "https://api.github.com/repos/noirscape/lennytube/releases",
+    "store_equivalent" : "lennytube",
+    "author" : "noirscape", 
+    "projectpage": "https://gbatemp.net/threads/lennytube-homebrew-youtube-nro.545824/",
+    "description": """Youtube on the Nintendo Switch.
+
+Rationale
+The YouTube title on the Switch is only usable if one is not banned, since the title in question logs in on Nintendo Network. Whilst it's possible to bypass this by patching the YouTube app, this is far from ideal as the resulting file is not allowed to be shared.
+
+This application aims to circumvent that last problem by launching it's own WifiApplet, meaning no copyrighted data is ever involved.
+
+Limitations
+Desktop mode only (TV mode is inaccessible, Mobile doesn't play videos properly).
+Works only from APPLICATION mode (it will display a warning and instructions how to do this if you're still running from APPLET).""",
+    "group": "video player",
+    "install_subfolder": "switch",
+    "pattern" : [["lennytube"], ".nro"]
+    }
+
+]
 
 
-#These come with special asset handling
-nutserverdict = {
-    "software" : "Nut Server",
-    "githubapi" : "https://api.github.com/repos/blawar/nut/releases",
-    "author" : "blawar", 
-    "projectpage": "https://gbatemp.net/threads/nut.515530/",
-    "description" : "Nut server for installing title backups",
-    "group" : "SPECIAL",
-    "dependencies" : [
-        "colorama", 
-        "pyopenssl", 
-        "requests", 
-        "tqdm", 
-        "unidecode", 
-        "image", 
-        "bs4", 
-        "urllib3", 
-        "flask", 
-        "pyqt5"
-        ]
-}
-
-fluffydict = {
-    "software" : "Fluffy",
-    "githubapi" : "https://api.github.com/repos/fourminute/Fluffy/releases",
-    "author" : "Fluffy", 
-    "projectpage": "https://gbatemp.net/threads/fluffy-a-tinfoil-and-goldleaf-gui.528930/",
-    "description" : "Fluffy server for installing title backups",
-    "group" : "SPECIAL",
-    "dependencies" : [
-        "pyusb",
-        "pyqt5",
-        "libusb",
-        "libusb1",
-        "qdarkstyle",
-        "configparser"
-        ]
-}
 
 
 
@@ -1031,14 +1089,7 @@ fluffydict = {
 
 
 
-
-
-
-
-
-
-
-# software = {
+# name = {
 #   "tool" : homebrewlist,
 #   "game" : gameslist,
 #   "cfw" : customfirmwarelist,
@@ -1049,7 +1100,7 @@ fluffydict = {
 #   },
 # #other switch content
 #   {
-#   "software": "sigpatches",
+#   "name": "sigpatches",
 #   "githubapi": None, #yet, added this at last moment, will be dynamic next version
 #   "projectpage": "https://gbatemp.net/threads/i-heard-that-you-guys-need-some-sweet-patches-for-atmosphere.521164/",
 #   "directlink": "https://github.com/AtlasNX/Kosmos/releases/download/v11.11.1/Additional.SigPatches.espatches.zip",
@@ -1077,7 +1128,7 @@ fluffydict = {
 
 # experimentallist = [
 #   {
-#   "software" : "Incognito",
+#   "name" : "Incognito",
 #   "githubapi" : "https://api.github.com/repos/blawar/incognito/releases",
 #   "author" : "blawar", 
 #   "projectpage": "https://gbatemp.net/threads/incognito.531924/",
@@ -1194,7 +1245,7 @@ fluffydict = {
 
 
 # {
-# "software": "nx-hbloader",
+# "name": "nx-hbloader",
 # "githubapi": "https://api.github.com/repos/switchbrew/nx-hbloader/releases",
 # "store_equivalent" : 
 # "author" : "switchbrew", 
@@ -1210,6 +1261,77 @@ fluffydict = {
 
 
 
+    # "name" : None,
+    # "store_equivalent" : None,
+    # "githubapi" : None,
+    # "author" : None,
+    # "projectpage": None,
+    # "description" : None,
+    # "group" : None,
+    # "install_subfolder": None,
+    # "pattern" : [[],],
+    # "license" : None,
+    # "tags" : []
+
+    # "name" : None,
+    # "store_equivalent" : None,
+    # "githubapi" : None,
+    # "author" : None,
+    # "projectpage": None,
+    # "description" : None,
+    # "group" : None,
+    # "install_subfolder": None,
+    # "pattern" : [[],],
+    # "license" : None,
+    # "tags" : []
+
+    # "name" : None,
+    # "store_equivalent" : None,
+    # "githubapi" : None,
+    # "author" : None,
+    # "projectpage": None,
+    # "description" : None,
+    # "group" : None,
+    # "install_subfolder": None,
+    # "pattern" : [[],],
+    # "license" : None,
+    # "tags" : []
+
+    # "name" : None,
+    # "store_equivalent" : None,
+    # "githubapi" : None,
+    # "author" : None,
+    # "projectpage": None,
+    # "description" : None,
+    # "group" : None,
+    # "install_subfolder": None,
+    # "pattern" : [[],],
+    # "license" : None,
+    # "tags" : []
+
+    # "name" : None,
+    # "store_equivalent" : None,
+    # "githubapi" : None,
+    # "author" : None,
+    # "projectpage": None,
+    # "description" : None,
+    # "group" : None,
+    # "install_subfolder": None,
+    # "pattern" : [[],],
+    # "license" : None,
+    # "tags" : []
+
+    # "name" : None,
+    # "store_equivalent" : None,
+    # "githubapi" : None,
+    # "author" : None,
+    # "projectpage": None,
+    # "description" : None,
+    # "group" : None,
+    # "install_subfolder": None,
+    # "pattern" : [[],],
+    # "license" : None,
+    # "tags" : []
 
 
 
@@ -1219,5 +1341,7 @@ fluffydict = {
 
 
 
-if __name__ == '__main__':
-    make_repo()
+
+
+
+#https://github.com/KranKRival/BootSoundNX/releases # Bad release structure
