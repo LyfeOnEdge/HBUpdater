@@ -94,6 +94,7 @@ class appstorePage(activeFrame):
         self.selected_sort_method = tk.StringVar()
         self.selected_sort_method.set(SORT_OPTIONS[0])
         self.content_frame_header_sort_method_dropdown = tk.OptionMenu(self.content_frame_header,self.selected_sort_method,*SORT_OPTIONS)
+        self.content_frame_header_sort_method_dropdown.configure(foreground = style.w)
         self.content_frame_header_sort_method_dropdown.configure(background = style.color_2)
         self.content_frame_header_sort_method_dropdown.configure(highlightthickness = 0)
         self.content_frame_header_sort_method_dropdown.configure(borderwidth = 0)

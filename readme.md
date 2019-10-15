@@ -21,7 +21,7 @@ HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Home
 ![Built-in RCM injector (Uses fusee-launcher)](img/injector.png)
 
 # Requirements:
-    Works on: Mac, Window, Linux
+    Works on: macOS, Windows, Linux
     Python 3.6 or greater
 
 # How to use:
@@ -43,7 +43,7 @@ HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Home
 - Navigate to the directory in a terminal
 - Type `python HBUpdaterGUI.py`
   - If you are missing dependencies do the following:
-  - sudo apt-get install python3 python3-pip python3-tk python3-pil.imagetk
+  - `sudo apt install python3 python3-pip python3-tk python3-pil.imagetk`
 - If you don't know how to do this you should probably be using Windows.
 - For access to USB functions you must run python with elevated privledges (sudo)
 

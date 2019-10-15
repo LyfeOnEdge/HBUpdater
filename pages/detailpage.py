@@ -1,4 +1,5 @@
 import os
+import tkinter as tk
 import tkinter.filedialog
 import modules.locations as locations
 from widgets import ThemedFrame, ThemedLabel, ThemedListbox, activeFrame, scrolledText, button, tooltip, ScrolledThemedListBox
@@ -19,55 +20,62 @@ class detailPage(activeFrame):
         self.selected_version = None
         self.version_index = None
         self.repo = None
+        self.package = None
 
         self.bind("<Configure>", self.on_configure)
 
-        #------------------------------
         self.column = ThemedFrame(self, background = style.color_1)
         self.column.place(relx = 1, rely = 0, width = style.sidecolumnwidth, relheight = 1, x = - style.sidecolumnwidth)
 
         self.column_body = ThemedFrame(self.column, background = style.color_1)
         self.column_body.place(relwidth=1, relheight=1)
 
-
         self.column_title = ThemedLabel(self.column_body,"",anchor="w",label_font=style.mediumboldtext, foreground = style.w, background = style.color_1)
-        self.column_title.place(x = 5, width = - 5, rely = 0, relwidth = 1, height = style.detailspagemultiplier)
+        self.column_title.place(x = style.offset, width = - style.offset, rely = 0, relwidth = 1, height = style.detailspagemultiplier)
 
-
-        #------------------------------
         self.column_author = ThemedLabel(self.column_body,"",anchor="w",label_font=style.smalltext, foreground = style.w, background = style.color_1)
-        self.column_author.place(x = 5, width = - 5, y = style.detailspagemultiplier, relwidth = 1, height = 0.333 * style.detailspagemultiplier)
+        self.column_author.place(x = style.offset, width = - style.offset, y = style.detailspagemultiplier, relwidth = 1, height = 0.333 * style.detailspagemultiplier)
 
         self.column_version = ThemedLabel(self.column_body,"",anchor="w",label_font=style.smalltext, foreground = style.w, background = style.color_1)
-        self.column_version.place(x = 5, width = - 5, y = 1.333 * style.detailspagemultiplier, relwidth = 1, height = 0.333 * style.detailspagemultiplier)
+        self.column_version.place(x = style.offset, width = - style.offset, y = 1.333 * style.detailspagemultiplier, relwidth = 1, height = 0.333 * style.detailspagemultiplier)
 
         self.column_license = ThemedLabel(self.column_body,"",anchor="w",label_font=style.smalltext, foreground = style.w, background = style.color_1)
-        self.column_license.place(x = 5, width = - 5, y = 1.666 * style.detailspagemultiplier, relwidth = 1, height = 0.333 * style.detailspagemultiplier)
-        #------------------------------
+        self.column_license.place(x = style.offset, width = - style.offset, y = 1.666 * style.detailspagemultiplier, relwidth = 1, height = 0.333 * style.detailspagemultiplier)
 
-        #------------------------------
         self.column_package = ThemedLabel(self.column_body,"",anchor="w",label_font=style.smalltext, foreground = style.w, background = style.color_1)
-        self.column_package.place(x = 5, width = - 5, y = 2.333 * style.detailspagemultiplier, relwidth = 1, height = 0.333 * style.detailspagemultiplier)
+        self.column_package.place(x = style.offset, width = - style.offset, y = 2.000 * style.detailspagemultiplier, relwidth = 1, height = 0.333 * style.detailspagemultiplier)
 
         self.column_downloads = ThemedLabel(self.column_body,"",anchor="w",label_font=style.smalltext, foreground = style.w, background = style.color_1)
-        self.column_downloads.place(x = 5, width = - 5, y = 2.666 * style.detailspagemultiplier, relwidth = 1, height = 0.333 * style.detailspagemultiplier)
+        self.column_downloads.place(x = style.offset, width = - style.offset, y = 2.333 * style.detailspagemultiplier, relwidth = 1, height = 0.333 * style.detailspagemultiplier)
 
         self.column_updated = ThemedLabel(self.column_body,"",anchor="w",label_font=style.smalltext, foreground = style.w, background = style.color_1)
-        self.column_updated.place(x = 5, width = - 5, y = 3.00 * style.detailspagemultiplier, relwidth = 1, height = 0.333 * style.detailspagemultiplier)
-        #------------------------------
+        self.column_updated.place(x = style.offset, width = - style.offset, y = 2.666 * style.detailspagemultiplier, relwidth = 1, height = 0.333 * style.detailspagemultiplier)
 
-        self.releases_listbox = ScrolledThemedListBox(self.column_body)
-        self.releases_listbox.configure(activestyle = "none")
-        self.releases_listbox.place(relwidth = 1, y=3.66*style.detailspagemultiplier, relheight = 1, height = - (3.66*style.detailspagemultiplier + 3 * (style.buttonsize + style.offset) + style.offset))
+        self.column_separator_top = ThemedLabel(self.column_body, "", background=style.lg)
+        self.column_separator_top.place(rely=1,relwidth = 1, x = + style.offset, y = - 3 * (style.buttonsize + style.offset) - 3 * style.offset - style.buttonsize - 1 - 0.5 * style.buttonsize, width = - 2 * style.offset, height = 1)
 
-        self.releases_listbox.bind('<<ListboxSelect>>',self.select_version)
+        self.tags_menu_label = ThemedLabel(self.column_body,"Releases:",anchor="w",label_font=style.smallboldtext, foreground = style.w, background = style.color_1)
+        self.tags_menu_label.place(rely=1,relwidth = 1, x = + style.offset, y = - 3 * (style.buttonsize + style.offset) - 2 * style.offset - style.buttonsize - 1 - 0.5 * style.buttonsize, width = - 2 * style.offset, height = 0.5 * style.buttonsize)
+
+        self.TAGS_LIST = ["You shouldn't be seeing this"]
+        self.selected_tag_name = tk.StringVar()
+        self.selected_tag_name.set(None)
+        self.tags_dropdown = tk.OptionMenu(self.column_body ,self.selected_tag_name, *self.TAGS_LIST)
+        self.tags_dropdown.configure(foreground = style.w)
+        self.tags_dropdown.configure(background = style.color_2)
+        self.tags_dropdown.configure(highlightthickness = 0)
+        self.tags_dropdown.configure(borderwidth = 0)
+        self.tags_dropdown.place(rely=1,relwidth = 1, x = + style.offset, y = - 3 * (style.buttonsize + style.offset) - 2 * style.offset - style.buttonsize - 1, width = - 2 * style.offset, height = style.buttonsize)
+
+        self.column_separator_bot = ThemedLabel(self.column_body, "", background=style.lg)
+        self.column_separator_bot.place(rely=1,relwidth = 1, x = + style.offset, y = - 3 * (style.buttonsize + style.offset) - style.offset - 1, width = - 2 * style.offset, height = 1)
 
         self.column_open_url_button = button(self.column_body, 
             callback = self.trigger_open_tab, 
             text_string = "VISIT PAGE", 
             font=style.mediumboldtext, 
             background=style.color_2,
-            ).place(rely=1,relx=0.5,x = - 1.5 * (style.buttonsize), y = - 3 * (style.buttonsize + style.offset), width = 3 * style.buttonsize, height = style.buttonsize)
+            ).place(rely=1,relwidth = 1, x = + style.offset, y = - 3 * (style.buttonsize + style.offset), width = - 2 * style.offset, height = style.buttonsize)
 
         self.column_install_button = button(self.column_body, 
             callback = self.trigger_install, 
@@ -75,7 +83,7 @@ class detailPage(activeFrame):
             font=style.mediumboldtext, 
             background=style.color_2
             )
-        self.column_install_button.place(rely=1,relx=0.5,x = - 1.5 * (style.buttonsize), y = - 2 * (style.buttonsize + style.offset), width = 3 * style.buttonsize, height = style.buttonsize)
+        self.column_install_button.place(rely=1,relwidth = 1, x = + style.offset, y = - 2 * (style.buttonsize + style.offset), width = - 2 * style.offset, height = style.buttonsize)
 
         self.column_uninstall_button = button(self.column_body, 
             callback = self.trigger_uninstall, 
@@ -126,13 +134,30 @@ class detailPage(activeFrame):
 
         self.yesnoPage = yesnoPage(self)
 
+    def update_option_menu(self, options):
+        menu = self.tags_dropdown['menu']
+        menu.delete(0, 'end')
+        for string in options:
+            menu.add_command(label=string, 
+                             command=lambda value=string: self.on_menu_update(value))
+        self.on_menu_update(options[0])
+
+    def on_menu_update(self, option):
+        self.selected_tag_name.set(option)
+        self.select_version(option)
+
     def update_page(self,repo):
         self.selected_version = None
         self.repo = repo
+
         try:
             package = repo["store_equivalent"]
         except:
             package = repo["software"]
+
+        self.package = package
+
+        self.controller.async_threader.do_async(self.do_update_banner)
 
         github_content = repo["github_content"]
 
@@ -169,7 +194,7 @@ class detailPage(activeFrame):
         #Hides or places the uninstalll button if not installed or installed respectively
         #get_package_entry returns none if no package is found or if the sd path is not set
         if self.appstore_handler.get_package_entry(package):
-            self.column_uninstall_button.place(rely=1,relx=0.5,x = - 1.5 * (style.buttonsize), y = - 1 * (style.buttonsize + style.offset), width = 3 * style.buttonsize, height = style.buttonsize)
+            self.column_uninstall_button.place(rely=1,relwidth = 1, x = + style.offset, y = - 1 * (style.buttonsize + style.offset), width = - (3 * style.offset + style.buttonsize), height = style.buttonsize)
             if self.column_install_button:
                 if self.appstore_handler.clean_version(self.appstore_handler.get_package_version(package), package) > self.appstore_handler.clean_version(self.appstore_handler.get_package_version(version), package):
                     self.column_install_button.settext("UPDATE")
@@ -180,42 +205,30 @@ class detailPage(activeFrame):
             if self.column_install_button:
                 self.column_install_button.settext("INSTALL")
 
-        def do_update_banner():
-            self.bannerimage = getScreenImage(package)
-            if self.bannerimage:
-                self.update_banner(self.bannerimage)
-            else:
-                self.update_banner(locations.notfoundimage)
-                print("failed to download screenshot for {}".format(package))
+        tags = []
+        for release in self.repo["github_content"]:
+            tags.append(release["tag_name"])
+        self.update_option_menu(tags)
 
-        self.update_releases_listbox()
-            
-        self.controller.async_threader.do_async(do_update_banner, [])
-
-    def select_version(self, event):
+    def select_version(self, option):
         try:
-            widget = event.widget
-            selection=widget.curselection()
-            picked = widget.get(selection[0])
-            self.selected_version = picked
+            self.selected_version = option
             self.version_index = self.controller.appstore_handler.get_tag_index(self.repo["github_content"], self.selected_version)
             self.update_release_notes()
         except Exception as e:
-            print(e)
+            # print(e)
+            pass
 
     def on_configure(self, event=None):
         if self.repo:
-            repo = self.repo
-            try:
-                package = repo["store_equivalent"]
-            except:
-                package = repo["software"]
+            self.do_update_banner(self.package)
 
-            self.bannerimage = getScreenImage(package)
-            if self.bannerimage:
-                self.update_banner(self.bannerimage)
-            else:
-                self.update_banner(locations.notfoundimage)
+    def do_update_banner(self):
+        self.bannerimage = getScreenImage(self.package)
+        if self.bannerimage:
+            self.update_banner(self.bannerimage)
+        else:
+            self.update_banner(locations.notfoundimage)
 
     def update_banner(self,image_path):
         maxheight = self.content_banner_image_frame.winfo_height()
@@ -236,15 +249,6 @@ class detailPage(activeFrame):
 
             self.content_banner_image.configure(image=art_image)
             self.content_banner_image.image = art_image
-
-    def update_releases_listbox(self):
-        self.releases_listbox.delete(0,"end")
-        for release in self.repo["github_content"]:
-            tag = release["tag_name"]
-            self.releases_listbox.insert("end",tag)
-        self.releases_listbox.select_set(0) #sets focus on the first item in listbox
-        self.releases_listbox.event_generate("<<ListboxSelect>>")
-        self.update_release_notes()
 
     def update_release_notes(self):
         notes = self.repo["github_content"][self.version_index]["body"]
