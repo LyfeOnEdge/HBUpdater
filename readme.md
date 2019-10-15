@@ -20,6 +20,9 @@ HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Home
 ## Built-in RCM injector
 ![Built-in RCM injector (Uses fusee-launcher)](img/injector.png)
 
+## Demo
+[![Alt text](https://img.youtube.com/vi/NESayHlzOwU/0.jpg)](https://www.youtube.com/watch?v=NESayHlzOwU)
+
 # Requirements:
     Works on: macOS, Windows, Linux
     Python 3.6 or greater
