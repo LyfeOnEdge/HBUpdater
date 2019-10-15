@@ -69,7 +69,7 @@ HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Home
 
 ## repo collection
   Package entries are created from several lists of structs, each struct in the form:
-  ```json
+  ```python
   template = {
     "name" : None, #Project Name
     "store_equivalent" : None, #Homebrew appstore package for compatibility, if it exists, otherwise it's an HBUpdater specific package
