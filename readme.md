@@ -56,15 +56,15 @@ HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Home
 
 # How it works:
 ## The big picture
-[**repo collection**](##-repo-collection)
+[**repo collection**](##repo-collection)
 
-[**repo stitiching**](#-repo-stitching)
+[**repo stitiching**](#repo-stitching)
 
-[**repo distribution**](#-repo-distribution)
+[**repo distribution**](#repo-distribution)
   
-[**repo parsing**](#-repo-parsing)
+[**repo parsing**](#repo-parsing)
   
-[**package management**](#-package-management)
+[**package management**](#package-management)
 
 ## repo collection
     Package entries are created from several lists of structs, each struct in the form:
