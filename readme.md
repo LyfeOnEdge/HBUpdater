@@ -51,6 +51,12 @@ Currently the [backend](https://github.com/LyfeOnEdge/HBUpdater_API) runs every 
 - If you don't know how to do this you should probably be using Windows.
 - For access to USB functions you must run python with elevated privledges (sudo)
 
+## TroubleShooting:
+##### Mac:
+ - Error:
+  - ```ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1056)```
+  - Macintosh HD > Applications > Python3.6 folder (or whatever version of python you're using) > double click on "Install Certificates.command" file
+
 ##### Want to contribute? Have ideas? Questions? Great!
 You can find me here: 
 **[4TU/Switchbru](https://discord.gg/uAfu6yM)**
