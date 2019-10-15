@@ -49,14 +49,15 @@ HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Home
 
 ## TroubleShooting:
 ##### Mac:
- - Error:
+- Error:
   - ```ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1056)```
- - Solution:
+- Solution:
   - Macintosh HD > Applications > Python3.6 folder (or whatever version of python you're using) > double click on "Install Certificates.command" file
 
 # How it works:
+
 ## The big picture
-[**repo collection**](##repo-collection)
+[**repo collection**](#repo-collection)
 
 [**repo stitiching**](#repo-stitching)
 
@@ -83,16 +84,16 @@ HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Home
       "tags" : [] #list of items for future sorting
     }
     ```
-    Each list represents a category of 
-    This struct is contained in a list object in a .py file, this is to ensure conformity by assigning things such as groups and license types to a global string, before it gets turned into a json object.
+    Each list represents a category and is added to the json as a key-value pair `{category : category_repo_entries_list}`.
+    This struct is contained in a list object in a [repos.py file](https://github.com/LyfeOnEdge/HBUpdater_API/blob/master/repos.py). the python file was chosen over a hand-made json file to ensure conformity by assigning things such as groups, tags, and license types to global strings, before it gets turned into a json object.
 
 ## repo stitching
-    The repo builder is a script located in the source of LyfeOnEdge/HBUpdater_API. It accesses the github api using a github token. The purpose of the token is twofold, it allows the repo builder to exceed the normal 60 api requests / hour as well as make releases in its *own* repo. This means the "releases" section of the LyfeOnEdge/HBUpdater_API repo source on github acts as an etagged "server" for the repo json.
+    The repo builder is the repomaker_server.py script located in the source of LyfeOnEdge/HBUpdater_API. It accesses the github api using a github token. The purpose of the token is twofold, it allows the repo builder to exceed the normal 60 api requests / hour as well as make releases in its *own* repo. This means the "releases" section of the LyfeOnEdge/HBUpdater_API repo source on github acts as an etagged "server" for the repo json.
 
     The repo builder goes through each entry in the repo and grabs the api json, it then adds the loaded api json as a value to the entry.
 
 ## repo distribution
-    When each entry has had an updated json object appended the whole object is organized into a json object and dumped. If any content in the json has changed it gets pushed as a new release to github.
+    When each entry has had an updated json object appended the whole object is organized into a json object and dumped. If any content in the json has changed it gets pushed as a new release to github, with the tag name incrementing by one.
 
     The receiving app (LyfeOnEdge/HBUpdaterGUI) grabs the repo file by getting the github api releases json at https://api.github.com/repos/LyfeOnEdge/HBUpdater_API/releases, which contains a link to the latest release of the HBUpdater_API repo.
 
@@ -101,7 +102,7 @@ HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Home
 
 ## package management
     HBUpdater uses a heavily modified python rewrite of vgmoose's [libget](https://github.com/vgmoose/libget)
-    It should be compatible with the Appstore, except packages not offered by the appstore will not show up in vgmoose's appstore.
+    It should be compatible with vgmooses [Homebrew Appstore](https://github.com/vgmoose/hb-appstore), except packages not also offered by the appstore will not show up in vgmoose's appstore.
 
 ##### Want to contribute? Have ideas? Questions? Great!
 You can find me here: 
