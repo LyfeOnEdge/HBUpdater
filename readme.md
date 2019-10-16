@@ -60,6 +60,8 @@ HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Home
 
 # How it works:
 
+###NOTICE: I WILL BE MOVING TO A BETTER REPO SYSTEM IN THE FUTURE, DETAILS SOON(tm).
+
 ## The big picture
 [**repo collection**](#repo-collection)
 
@@ -71,25 +73,15 @@ HBUpdater is a one-stop-shop for managing and updating your Nintendo Switch Home
   
 [**package management**](#package-management)
 
+Short and sweet:
+The backend (AKA HBUpdater_API):
+A script periodically (every 30 minutes) queries the github api with an auth token to grab updated api files for each package at `https://api.github.com/repos/__organization__/__repo__`, it then bundles the api files, checks them agains a previous version, and if anything has changed releases this bundle at: `https://github.com/LyfeOnEdge/HBUpdater_API/releases`
+
+The frontend (AKA HBUpdater):
+Any tool that interacts with the api should be able to grab a github release. The api file is grabbed from `https://api.github.com/repos/LyfeOnEdge/HBUpdater_API/releases`, the latest release is found, downloaded, and parsed into categories by an intermediate tool.
+
 ## repo collection
-  Package entries are created from several lists of structs, each struct in the form:
-  ```python
-  template = {
-    "name" : None, #Project Name
-    "store_equivalent" : None, #Homebrew appstore package for compatibility, if it exists, otherwise it's an HBUpdater specific package
-    "githubapi" : None, #Api url to access an etagged json from
-    "author" : None, #Github author, multiples separated by comma
-    "projectpage": None, #Usually github or a scene site
-    "description" : None, #Usually pulled from github or a scene site
-    "group" : None, #One another sorting field
-    "install_subfolder": None, #Subfolder to unzip to or place file in
-    "pattern" : [[],], #Pattern of the target asset (payload, zip, binary, etc)
-    "license" : None, 
-    "tags" : [] #list of items for future sorting
-  }
-  ```
-  Each list represents a category and is added to the json as a key-value pair `{category : category_repo_entries_list}`.
-  This struct is contained in a list object in a [repos.py file](https://github.com/LyfeOnEdge/HBUpdater_API/blob/master/repos.py). the python file was chosen over a hand-made json file to ensure conformity by assigning things such as groups, tags, and license types to global strings, before it gets turned into a json object.
+  Package entries are sorted into several categories in [repos.py file](https://github.com/LyfeOnEdge/HBUpdater_API/blob/master/repos.py). The python file was chosen over a hand-made json file to ensure conformity by assigning things such as groups, tags, and license types to global strings, before it gets turned into a json object.
 
 ## repo stitching
   The repo builder is the repomaker_server.py script located in the source of LyfeOnEdge/HBUpdater_API. It accesses the github api using a github token. The purpose of the token is twofold, it allows the repo builder to exceed the normal 60 api requests / hour as well as make releases in its *own* repo. This means the "releases" section of the LyfeOnEdge/HBUpdater_API repo source on github acts as an etagged "server" for the repo json.
