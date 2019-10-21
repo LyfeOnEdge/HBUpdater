@@ -55,6 +55,8 @@ class HBUpdater_handler(object):
     #Set this to a root of an sd card or in a dir to test
     def set_path(self, path, silent = False):
         self.base_install_path = path
+        if not path:
+            path = ""
         print("Set SD Root path to %s" % path)
         self.packages = None
         self.get_packages(silent = silent)
@@ -224,8 +226,8 @@ class HBUpdater_handler(object):
                     return [os.path.join(subfolder,filename)]
                 else:
                     return [filename]
-            except: 
-                print("Failed to copy {} to SD".format(filename) )
+            except Exception as e: 
+                print("Failed to copy {} to SD ~{}".format(filename, e))
         def handleNRO():
             return handleMove()
         def handlePY():
@@ -245,9 +247,9 @@ class HBUpdater_handler(object):
                     else:
                         namelist.append(location)
                 print("files copied: \n {}".format(namelist))
-                if remove_downloaded_file_after:
-                    os.remove(file)
-                return namelist
+            if remove_downloaded_file_after:
+                os.remove(file)
+            return namelist
 
         def handle7Z():
             print(".7z archives are not supported yet")

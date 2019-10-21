@@ -1,4 +1,5 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
 version = "2.0"
 print("HBUpdater version %s" % version)
 

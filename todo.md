@@ -12,3 +12,8 @@ Modules:
         + change download path for zips, delete after download / load in to ram instead
      
     
+2.0:
+Major Revision
+2.1:
+fixed error when no path selected when sd dialog shows
+fixed fail-to-install due to an issue where `with open()` on a zip would allow the file to be deleted within the `with` on linux but not mac

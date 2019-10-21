@@ -157,7 +157,7 @@ class detailPage(activeFrame):
 
         self.package = package
 
-        self.controller.async_threader.do_async(self.do_update_banner)
+        self.controller.async_threader.do_async(self.update_banner)
 
         github_content = repo["github_content"]
 
@@ -221,16 +221,16 @@ class detailPage(activeFrame):
 
     def on_configure(self, event=None):
         if self.repo:
-            self.do_update_banner(self.package)
+            self.update_banner()
 
-    def do_update_banner(self):
+    def update_banner(self):
         self.bannerimage = getScreenImage(self.package)
         if self.bannerimage:
-            self.update_banner(self.bannerimage)
+            self.do_update_banner(self.bannerimage)
         else:
-            self.update_banner(locations.notfoundimage)
+            self.do_update_banner(locations.notfoundimage)
 
-    def update_banner(self,image_path):
+    def do_update_banner(self,image_path):
         maxheight = self.content_banner_image_frame.winfo_height()
         maxwidth = self.content_banner_image_frame.winfo_width()
         if maxwidth > 0 and maxheight > 0:
@@ -264,7 +264,7 @@ class detailPage(activeFrame):
         self.content_frame_version_details.configure(state="disabled")
 
     def show(self, repo):
-        self.update_banner(locations.notfoundimage)
+        self.do_update_banner(locations.notfoundimage)
         self.controller.async_threader.do_async(self.update_page, [repo], priority = "medium")
         self.tkraise()
         for child in self.winfo_children():
