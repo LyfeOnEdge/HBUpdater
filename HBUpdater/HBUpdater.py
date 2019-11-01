@@ -192,7 +192,7 @@ class HBUpdater_handler(object):
         entry = {}
         entry["title"] = name
         entry["author"] = repo_entry["author"]
-        entry["category"] = repo_entry["group"]
+        entry["category"] = repo_entry["category"]
         entry["license"] = repo_entry["license"]
         entry["description"] = repo_entry["description"]
         entry["url"] = url
