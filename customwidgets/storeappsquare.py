@@ -38,7 +38,7 @@ class storeAppSquare(ThemedFrame):
     def set_image(self):
         repo = self.repo
         try:
-            package = repo["store_equivalent"]
+            package = repo["package"]
         except:
             package = None
 
@@ -103,7 +103,7 @@ class storeAppSquare(ThemedFrame):
                     self.buttonstatuslabel.place(x = self.base_x, y = label_y - 1.5 * style.buttontextheight + 4)
 
                     status = None
-                    package = self.repo["store_equivalent"]
+                    package = self.repo["package"]
                     if self.status_handler.packages:
                         if package in self.status_handler.packages:
                             installed_version = self.status_handler.get_package_version(package)

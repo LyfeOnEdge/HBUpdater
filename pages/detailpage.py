@@ -151,7 +151,7 @@ class detailPage(activeFrame):
         self.repo = repo
 
         try:
-            package = repo["store_equivalent"]
+            package = repo["package"]
         except:
             package = repo["software"]
 

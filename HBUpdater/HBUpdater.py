@@ -102,7 +102,7 @@ class HBUpdater_handler(object):
             print("Not continuing with install")
             return
         try:
-            package = repo_entry["store_equivalent"]
+            package = repo_entry["package"]
         except:
             print("Error - package name not found in repo data")
             do_progress_function("Error - package name not found in repo data", 15)
@@ -196,7 +196,7 @@ class HBUpdater_handler(object):
         entry["license"] = repo_entry["license"]
         entry["description"] = repo_entry["description"]
         entry["url"] = url
-        package = repo_entry["store_equivalent"]
+        package = repo_entry["package"]
         #Convert github version to store version
         entry["version"] = self.clean_version(version, package)
         
@@ -341,7 +341,7 @@ class HBUpdater_handler(object):
             print("Not continuing with uninstall")
             return
 
-        package = repo_entry["store_equivalent"]
+        package = repo_entry["package"]
         if not self.get_package_entry(package):
             print("Could not find package in currently selected location.")
             print("Not continuing with uninstall")

@@ -212,7 +212,6 @@ class categoryFrame(tk.Frame):
                             button_y_proportion = button.get_xy()[1] * ratio
                             if canvas_top < button_y_proportion and button_y_proportion < canvas_bottom:
                                 self.controller.async_threader.do_async(button.build_button, [], priority = "low")
-
             self.is_displaying = False
 
     def clear_then_update(self):
@@ -236,7 +235,7 @@ class categoryFrame(tk.Frame):
 
     def do_search_query(self):
         def doSearch(searchterm):
-            search_categories = ["name", "store_equivalent", "author", "description"]
+            search_categories = ["name", "package", "author", "description"]
             for button in self.buttons:
                 button.active = False
                 for category in search_categories:

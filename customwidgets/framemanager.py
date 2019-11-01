@@ -14,7 +14,8 @@ class frameManager(tk.Tk):
                 image_sharer, #Simple tool to have one base location to lookup images
                 updater, #Tool to handle updating
                 injector, #Tool to handle injection Switch RCM payloads
-                ): 
+                args,
+                ):  #Passed args to be accessed globally
 
         tk.Tk.__init__(self)
         self.updater = updater
@@ -24,6 +25,7 @@ class frameManager(tk.Tk):
         self.repo_parser = repo_parser
         self.image_sharer = image_sharer
         self.injector = injector
+        self.args = args
         self.geometry("{}x{}".format(geometry["width"],geometry["height"])) 
         # self.resizable(False, False)
 
@@ -45,7 +47,6 @@ class frameManager(tk.Tk):
 
                 #place the frame to fill the whole window, stack them all in the same place
                 frame.grid(row=0, column=0, sticky="nsew")
-
 
     def show_frame(self, page_name):
         #Show frame for the given page name

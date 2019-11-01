@@ -1,9 +1,9 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-version = "2.1"
+version = "2.2"
 print("HBUpdater version %s" % version)
 
-import os, sys, platform, json, threading
+import os, sys, platform, json, threading, argparse
 from timeit import default_timer as timer
 #print version, exit if minimum version requirements aren't met
 print("Using Python {}.{}".format(sys.version_info[0],sys.version_info[1]))
@@ -64,7 +64,7 @@ with open(repos_github_api, encoding = "utf-8") as package_repos:
 	repo = json.load(package_repos)
 	assets = repo[0]["assets"]
 #Borrow HBUpdater findasset function 
-repo_remote = local_packages_handler.findasset([["repos"], "json"], assets, silent = True)
+repo_remote = local_packages_handler.findasset([["repo"], "json"], assets, silent = True)
 packages_json = getJson("repos",repo_remote)
 
 #Parse the json into categories
@@ -83,7 +83,13 @@ geometry = {
 	"height" : 575
 }
 
-def startGUI():
+def create_arg_parser():
+	parser = argparse.ArgumentParser(description='pass a repo.json to load a local one instead of one downloaded from github')
+	parser.add_argument('repo',
+					help='repo.json path')
+	return parser
+
+def startGUI(args = None):
 	#frameManager serves to load all pages and stack them on top of each other (all 2 of them)
 	#also serves to make many important objects and functions easily available to children frames
 	gui = frameManager(pagelist,
@@ -95,6 +101,7 @@ def startGUI():
 		image_sharer,
 		updater,
 		rcminjector,
+		args
 		)
 
 	#Set title formattedwith version
@@ -120,4 +127,9 @@ def startGUI():
 	gui.mainloop()
 
 if __name__ == '__main__':
-	startGUI()
+	parsed_args = None
+	if len(sys.argv) > 1:
+		arg_parser = create_arg_parser()
+		parsed_args = arg_parser.parse_args(sys.argv[1:])
+
+	startGUI(parsed_args)

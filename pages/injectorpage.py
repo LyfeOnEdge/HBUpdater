@@ -22,7 +22,7 @@ class injectorPage(detailPage):
 		self.repo = repo
 
 		try:
-			package = repo["store_equivalent"]
+			package = repo["package"]
 		except:
 			package = repo["software"]
 
@@ -42,7 +42,7 @@ class injectorPage(detailPage):
 		except:
 			self.column_license.set("License: N/A")
 
-		installed = self.local_packages_handler.get_package_version(self.repo["store_equivalent"])
+		installed = self.local_packages_handler.get_package_version(self.repo["package"])
 		if installed:
 			self.column_installed_version.set("Downloaded: {}".format(installed))
 		else:

@@ -46,11 +46,14 @@ class updater_object:
     def check_for_update(self, current_version):
         #Download update json from github
         update_file = download_object(self.update_url, "{}.json".format(self.update_name))
-        if not update_file: sys.exit("Failed to download github api json")
-
-        update_data = json.loads(update_file)[0]
-        if not update_data: sys.exit("No update data in github api json")
-
+        if not update_file:
+            print("Failed to download github api json")
+            return
+        update_data = json.loads(update_file)
+        if not update_data: 
+            print("No update data in github api json")
+            return
+        update_data = update_data[0]
         latest_version = update_data["tag_name"]
 
         if float(latest_version) > float(current_version):

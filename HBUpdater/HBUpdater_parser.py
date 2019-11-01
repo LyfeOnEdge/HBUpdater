@@ -52,16 +52,14 @@ class parser(object):
         if not self.sorted:
             if self.all:
                 new_all = []
-                for genre in self.all.keys():
-                    for software in self.all[genre]:
-                        repo_keys = software.keys()
-                        if not "store_equivalent" in repo_keys:
-                            software["store_equivalent"] = software["name"]
-                        if not "license" in repo_keys:
-                            software["license"] = "N/A"
+                for package in self.all:
+                    if not "package" in package.keys():
+                        package["package"] = package["name"]
+                    if not "license" in package.keys():
+                        package["license"] = "N/A"
+                    if not package["category"] in self.category_blacklist:
+                        new_all.append(package)
+                    self.map[package["category"]].append(package)
 
-                        if not genre in self.category_blacklist:
-                            new_all.append(software)
-                        self.map[genre].append(software)
                 self.all = new_all
                 self.sorted = True
