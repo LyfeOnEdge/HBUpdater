@@ -185,7 +185,7 @@ class HBUpdater_handler(object):
         print("Installing {}".format(name))
 
         #parse api link to a github project releases link
-        url = parse_api_to_standard_github(repo_entry["githubapi"])
+        url = parse_api_to_standard_github(repo_entry["release_api"])
         url = url.strip("/") + "/releases"
 
         #Create empty appstore entry and populate it
