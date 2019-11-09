@@ -194,7 +194,7 @@ class categoryFrame(tk.Frame):
 
                 ratio = 1 / canvas_height
 
-                viewable_buffer = (1.5 * button_height) * ratio
+                viewable_buffer = (3 * button_height) * ratio
 
                 #add a buffer to the range to search for buttons that need placing
                 canvas_top = self.canvas.yview()[0] - viewable_buffer
