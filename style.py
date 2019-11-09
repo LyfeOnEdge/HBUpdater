@@ -17,18 +17,18 @@ sortdropdownwidth = 150
 detailspagemultiplier = 70
 ##Text Styles
 #Normal Text
-smallertext = ("Roboto",8)
-smalltext = ("Roboto",10)
-mediumtext = ("Roboto",12)
-largetext = ("Roboto",14,)
+smallertext = ("Corbel",8)
+smalltext = ("Corbel",10)
+mediumtext = ("Corbel",12)
+largetext = ("Corbel",14,)
 #Bold
-smallerboldtext = ("Roboto",8,"bold")
-smallboldtext = ("Roboto",10,"bold")
-mediumboldtext = ("Roboto",12,"bold")
-largeboldtext = ("Roboto",14,"bold")
-giantboldtext = ("Roboto",16,"bold")
-hugeboldtext = ("Roboto",20,"bold")
-mondoboldtext = ("Roboto",25,"bold")
+smallerboldtext = ("Corbel",8,"bold")
+smallboldtext = ("Corbel",10,"bold")
+mediumboldtext = ("Corbel",12,"bold")
+largeboldtext = ("Corbel",14,"bold")
+giantboldtext = ("Corbel",16,"bold")
+hugeboldtext = ("Corbel",20,"bold")
+mondoboldtext = ("Corbel",25,"bold")
 
 #easy color definitions
 b = "#000000" #Black

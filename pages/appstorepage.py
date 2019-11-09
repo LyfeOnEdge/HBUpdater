@@ -73,7 +73,7 @@ class appstorePage(activeFrame):
         self.column_set_sd = button(self.column_footer, 
             callback = self.set_sd, 
             text_string = "Select SD Root", 
-            font=style.mediumboldtext, 
+            font=style.mediumtext, 
             background=style.color_2
             ).place(relwidth = 1, relheight = 0.5, y = style.offset, x = style.offset, width = - 2 * style.offset, height = - 2 * style.offset)
 

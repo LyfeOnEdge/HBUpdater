@@ -92,7 +92,7 @@ Any tool that interacts with the api should be able to grab a github release. Th
   The repo builder goes through each entry in the repo and grabs the api json, it then adds the loaded api json to the info grabbed from the repository.
 
 ## repo distribution
-  When each entry has had an updated json object appended the whole object is organized into a json object and dumped. If any content in the json has changed it gets pushed as a new release to github, with the tag name incrementing by one.
+  When each entry has had an updated json object appended the whole object is organized into a larger json object and dumped. If any content in the json has changed it gets pushed as a new release to github, with the tag name incrementing by one.
 
   The receiving app (LyfeOnEdge/HBUpdaterGUI) grabs the repo file by getting the github api releases json at https://api.github.com/repos/LyfeOnEdge/HBUpdater_API/releases, which contains a link to the latest release of the HBUpdater_API repo.
 

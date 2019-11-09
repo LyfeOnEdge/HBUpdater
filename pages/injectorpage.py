@@ -27,7 +27,7 @@ class injectorPage(detailPage):
 			package = repo["software"]
 
 		self.package = package
-		self.controller.async_threader.do_async(self.do_update_banner)
+		self.controller.async_threader.do_async(self.update_banner) 
 
 		github_content = repo["github_content"]
 
