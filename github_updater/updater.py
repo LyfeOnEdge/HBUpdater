@@ -124,6 +124,11 @@ def get_members(zip):
             yield zipinfo
 
 def download_object(remote_name, filename):
-    r = urllib.request.urlopen(remote_name)
-    if r.getcode() == 200:
-        return r.read()
+    try:
+        r = urllib.request.urlopen(remote_name)
+        if r.getcode() == 200:
+            return r.read()
+    except urllib.error.HTTPError:
+        print("Error getting app update data (github quota exceeded?)")
+    except Exception as e:
+        print(e)

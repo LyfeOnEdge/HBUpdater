@@ -29,7 +29,7 @@ class settingsPage(tk.Frame):
 		self.thumbnail_size_dropdown_label = ThemedLabel(self, label_text = "~ Tile Size", background = style.color_2)
 		self.thumbnail_size_dropdown_label.place(y = style.offset, x = 200 + style.offset, height = style.buttonsize - 2 * style.offset, width = 200)
 
-		maximized_options = ["true", "false"]
+		maximized_options = [ "fullscreen", "maximized", "normal"]
 		self.maximized_on_launch_dropdown = customOptionMenu(self, maximized_options)
 		self.maximized_on_launch_dropdown.place(y = style.offset + style.buttonsize, x = style.offset, height = style.buttonsize - 2 * style.offset, width = 200 - style.offset)
 		self.maximized_dropdown_label = ThemedLabel(self, label_text = "~ Maximized on launch", background = style.color_2)
@@ -47,6 +47,7 @@ class settingsPage(tk.Frame):
 	def save(self):
 		self.settings.set_setting("thumbnail_size", self.thumbnail_size_dropdown.option.get())
 		self.settings.set_setting("maximized", self.maximized_on_launch_dropdown.option.get())
+
 		self.settings.save()
 
 	def show(self):

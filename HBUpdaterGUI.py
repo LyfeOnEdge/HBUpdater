@@ -62,12 +62,16 @@ if not local_packages_handler.check_if_get_init():
 
 print("Getting updated HBUpdater repo file")
 repos_github_api = getJson("repos_api","https://api.github.com/repos/LyfeOnEdge/HBUpdater_API/releases")
-with open(repos_github_api, encoding = "utf-8") as package_repos:
-	repo = json.load(package_repos)
-	assets = repo[0]["assets"]
-#Borrow HBUpdater findasset function 
-repo_remote = local_packages_handler.findasset([["repo"], "json"], assets, silent = True)
-packages_json = getJson("repos",repo_remote)
+if repos_github_api:
+	with open(repos_github_api, encoding = "utf-8") as package_repos:
+		repo = json.load(package_repos)
+		assets = repo[0]["assets"]
+	#Borrow HBUpdater findasset function 
+	repo_remote = local_packages_handler.findasset([["repo"], "json"], assets, silent = True)
+	packages_json = getJson("repos",repo_remote)
+else:
+	print("Failed to download packages json repo file, falling back on old version")
+	packages_json = os.path.join(sys.path[0], "cache/json/repos.json")
 
 #Parse the json into categories
 repo_parser = parser()
@@ -104,7 +108,14 @@ def startGUI(args = None):
 	#Set title formattedwith version
 	gui.title("HBUpdater %s" % version)
 	#Launch fullscreen
-	gui.attributes("-zoomed", settings.get_setting("maximized"))
+
+	if settings.get_setting("maximized"):
+		maximized_options = {
+			"fullscreen" : "-fullscreen",
+			"maximized" : "-zoomed",
+			"normal" : None
+		}
+		gui.attributes(maximized_options[settings.get_setting("maximized")], True)
 
 	#Set icon
 	favicon = None
@@ -132,3 +143,4 @@ if __name__ == '__main__':
 		parsed_args = arg_parser.parse_args(sys.argv[1:])
 
 	startGUI(parsed_args)
+
