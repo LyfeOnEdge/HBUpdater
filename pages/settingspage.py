@@ -29,7 +29,7 @@ class settingsPage(tk.Frame):
 		thumbnail_sizes = ["tiny", "small", "medium", "large", "huge"]
 		self.thumbnail_size_dropdown = customOptionMenu(self, thumbnail_sizes)
 		self.thumbnail_size_dropdown.place(y = style.offset + style.buttonsize, x = style.offset, height = style.buttonsize - 2 * style.offset, width = 200 - style.offset)
-		self.thumbnail_size_dropdown_label = ThemedLabel(self, label_text = "~ Tile Size", background = style.color_2)
+		self.thumbnail_size_dropdown_label = ThemedLabel(self, label_text = "~ Tile Size\n(No restart)", background = style.color_2)
 		self.thumbnail_size_dropdown_label.place(y = style.offset + style.buttonsize, x = 200 + style.offset, height = style.buttonsize - 2 * style.offset, width = 200)
 
 		maximized_options = [ "fullscreen", "maximized", "windowed"]
@@ -41,7 +41,7 @@ class settingsPage(tk.Frame):
 		topmost_options = [ "true", "false"]
 		self.topmost_dropdown = customOptionMenu(self, topmost_options)
 		self.topmost_dropdown.place(y = 3 * (style.offset + style.buttonsize), x = style.offset, height = style.buttonsize - 2 * style.offset, width = 200 - style.offset)
-		self.topmost_dropdown_label = ThemedLabel(self, label_text = "~ Keep window topmost?\n(Requires restart)", background = style.color_2)
+		self.topmost_dropdown_label = ThemedLabel(self, label_text = "~ Keep window topmost?", background = style.color_2)
 		self.topmost_dropdown_label.place(y = 3 * (style.offset + style.buttonsize), x = 200 + style.offset, height = style.buttonsize - 2 * style.offset, width = 200)
 
 		self.savebutton = button(self, callback=self.save,text_string="Save",background=style.color_1)
