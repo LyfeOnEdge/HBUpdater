@@ -1,5 +1,6 @@
 {
     "thumbnail_size": "small",
     "width": 780,
-    "height": 575
+    "height": 575,
+    "fullscreen": "false"
 }

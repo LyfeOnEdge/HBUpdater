@@ -38,6 +38,7 @@ from widgets import icon_dict
 from pages import pagelist
 from fusee_wrapper import fusee_object as injector
 from settings_tool import settings
+import style
 
 print("Checking for updates...")
 if updater.check_for_update(version):
@@ -107,6 +108,8 @@ def startGUI(args = None):
 
 	#Set title formattedwith version
 	gui.title("HBUpdater %s" % version)
+	#Launch fullscreen
+	gui.attributes("-zoomed", settings.get_setting("fullscreen"))
 
 	#Set icon
 	favicon = None
