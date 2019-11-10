@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-version = "2.2"
+version = "2.3"
 print("HBUpdater version %s" % version)
 
 import os, sys, platform, json, threading, argparse

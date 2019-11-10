@@ -29,3 +29,8 @@ Moved to new repo.json layout
 fixed bug displaying injector banner, less bold
 reduced package image pop-in, and fixed images missing on screen load due to insufficient padding
 Added settings system, settings page, added on-the fly tile size adjustment
+Updater failing to get update file no longer causes crash
+Falls back on old repo json when new one unavailable
+Added multiple maximization settings (Normal/Fullscreen/Maximized)
+Added setting to keep window topmost
+Fixed searchbar and dropdown padding in main page

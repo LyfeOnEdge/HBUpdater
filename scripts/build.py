@@ -13,7 +13,8 @@ ignored_files = {
     ".git",
     ".gitignore",
     ".gitattributes",
-    "build.zip"
+    "build.zip",
+    "settings.json"
 }
 
 non_relative_folders = {
