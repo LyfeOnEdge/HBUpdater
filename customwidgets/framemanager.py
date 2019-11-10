@@ -6,7 +6,7 @@ import tkinter as tk
 class frameManager(tk.Tk):
     def __init__(self, 
                 pages, #List of pages to put in outermost z-layer
-                geometry, #Startup size
+                settings, #Settings handler
                 local_packages_handler, #Tool to manage local packages, payloads etc
                 appstore_handler, #Object to manage appstore sd content
                 repo_parser, #Object to deal with the appstore json
@@ -19,6 +19,7 @@ class frameManager(tk.Tk):
 
         tk.Tk.__init__(self)
         self.updater = updater
+        self.settings = settings
         self.async_threader = async_threader
         self.local_packages_handler = local_packages_handler
         self.appstore_handler = appstore_handler
@@ -26,7 +27,7 @@ class frameManager(tk.Tk):
         self.image_sharer = image_sharer
         self.injector = injector
         self.args = args
-        self.geometry("{}x{}".format(geometry["width"],geometry["height"])) 
+        self.geometry("{}x{}".format(settings.get_setting("width"),settings.get_setting("height")))
         # self.resizable(False, False)
 
         # the container is where we'll stack a bunch of frames

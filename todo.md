@@ -3,6 +3,9 @@ Less bold
 
 Releases listbox - display if asset could be found. otherwise grey out download button and listbox entry
 
+splash on installed_category_frame when nothing present.
+
+
 System-specific:
     - Linux
         + favicon

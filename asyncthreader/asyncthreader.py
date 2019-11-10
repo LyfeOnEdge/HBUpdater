@@ -6,7 +6,7 @@ from .asyncthread import asyncThread
 #Only start threads you have no intention of retrieving data from with this
 #force_high_priority will force high-priority threads to start on the next timer update even if the limit has been reached
 class asyncThreader():
-    def __init__(self, max_threads = 10, force_high_priority = True, force_medium_priority = True):
+    def __init__(self, max_threads = 16, force_high_priority = True, force_medium_priority = True):
         self.force_high_priority = force_high_priority
         self.force_medium_priority = force_medium_priority
         self.max_threads = max_threads

@@ -23,8 +23,10 @@ class storeAppSquare(ThemedFrame):
         self.base_y = None #Stores the base y location to build the button from for dynamic building
         self.canvas = None
         self.placed = False
+        self.thumbnailheight = None
+        self.thumbnailwidth = None
         ThemedFrame.__init__(self, parent, background = style.w)
-
+        
         self.buttonobj = button(self,image_object=None,callback=lambda: self.callback(repo),background = style.color_2)
         self.buttonobj.place(relheight=1,relwidth=1)
         
@@ -35,6 +37,26 @@ class storeAppSquare(ThemedFrame):
         self.buttonseparator = None #Placeholder for underline in each button
         self.buttonstatuslabel = None #Placeholder for download / version status
 
+        self.update_button_sizes()
+
+    def update_button_sizes(self):
+        thumbnail_size_map = {
+            "tiny" : (style.tiny_thumbnail_height, style.tiny_thumbnail_width),
+            "small" : (style.small_thumbnail_height, style.small_thumbnail_width),
+            "medium" : (style.medium_thumbnail_height, style.medium_thumbnail_width),
+            "large" : (style.large_thumbnail_height, style.large_thumbnail_width),
+            "huge" : (style.huge_thumbnail_height, style.huge_thumbnail_width)
+        }
+
+        thumbnail_size = self.controller.settings.get_setting("thumbnail_size")
+        thumbnail_size = thumbnail_size_map.get(thumbnail_size)
+
+        if thumbnail_size:
+            if not self.thumbnailwidth == thumbnail_size[1]:
+                self.thumbnailheight = thumbnail_size[0]
+                self.thumbnailwidth = thumbnail_size[1]
+                return True
+
     def set_image(self):
         repo = self.repo
         try:
@@ -42,26 +64,19 @@ class storeAppSquare(ThemedFrame):
         except:
             package = None
 
-        #Checks a shared dict to see if this package already has an image loaded, returns none if not
-        self.button_image = self.image_sharer.get_image(package)
+        try:
+            image_file = getPackageIcon(package) or notfoundimage
+            button_image = Image.open(image_file)
 
-        if not self.button_image:
-            try:
-                image_file = getPackageIcon(package) or notfoundimage
-                button_image = Image.open(image_file)
+            #Resizes and saves image if it's the wrong size for faster loads in the future
+            if not button_image.size[0] == [self.thumbnailwidth, self.thumbnailheight]:
+                button_image = button_image.resize((self.thumbnailwidth, self.thumbnailheight), Image.ANTIALIAS)
 
-                #Resizes and saves image if it's the wrong size for faster loads in the future
-                if not button_image.size[0] == [style.thumbnailwidth, style.thumbnailheight]:
-                    button_image = button_image.resize((style.thumbnailwidth, style.thumbnailheight), Image.ANTIALIAS)
+            self.button_image = ImageTk.PhotoImage(button_image)
 
-                self.button_image = ImageTk.PhotoImage(button_image)
-                if not image_file == notfoundimage:
-                    self.image_sharer.set_image(package, self.button_image)
-
-            except Exception as e:
-                print(e)
-                self.button_image = self.category_frame.notfoundimage
-                self.image_sharer.set_image(package, self.button_image)
+        except Exception as e:
+            print(e)
+            self.button_image = self.category_frame.notfoundimage
 
         self.buttonobj.setimage(self.button_image)
         self.imageset = True
@@ -75,27 +90,28 @@ class storeAppSquare(ThemedFrame):
         return((self.base_x, self.base_y))
 
     def build_button(self):
-        if not self.placed:            
+        update_button_sizes = self.update_button_sizes()
+        if not self.placed:        
             if self.base_y and self.base_x and self.canvas:
                 self.placed = True
                 repo = self.repo
 
-                label_y = self.base_y + style.thumbnailheight - style.buttontextheight + 40
+                label_y = self.base_y + self.thumbnailheight - style.buttontextheight + 40
 
                 def place_button():
-                    self.place(x=self.base_x, y = self.base_y, height = style.thumbnailheight + 2 * style.offset, width = style.thumbnailwidth)
+                    self.place(x=self.base_x, y = self.base_y, height = self.thumbnailheight + 2 * style.offset, width = self.thumbnailwidth)
                     # ttp = "{}\nAuthor: {}\nDownloads: {}".format(repo["description"], repo["author"], repo["downloads"])
                     # self.button_ttp = tooltip(self.buttonobj,ttp)
                 
                 def place_buttontitlelabel():
                     if not self.buttontitlelabel:
                         self.buttontitlelabel = ThemedLabel(self.canvas,self.repo["name"],anchor="e",label_font=style.mediumboldtext,foreground=style.w,background=style.color_2)
-                    self.buttontitlelabel.place(x = self.base_x, y =  label_y - 1.5 * style.buttontextheight, width = style.thumbnailwidth)
+                    self.buttontitlelabel.place(x = self.base_x, y =  label_y - 1.5 * style.buttontextheight, width = self.thumbnailwidth)
 
                 def place_buttonauthorlabel():
                     if not self.buttonauthorlabel:
                         self.buttonauthorlabel = ThemedLabel(self.canvas,self.repo["author"],anchor="e",label_font=style.smallboldtext,foreground=style.lg,background=style.color_2)
-                    self.buttonauthorlabel.place(x = self.base_x, y = label_y, width = style.thumbnailwidth)
+                    self.buttonauthorlabel.place(x = self.base_x, y = label_y, width = self.thumbnailwidth)
 
                 def place_buttonstatuslabel():
                     if not self.buttonstatuslabel:
@@ -127,7 +143,7 @@ class storeAppSquare(ThemedFrame):
                 def place_buttonseparator():
                     if not self.buttonseparator:
                         self.buttonseparator = tk.Label(self.canvas, background=style.lg, borderwidth= 0)
-                    self.buttonseparator.place(x = self.base_x, y = label_y + 2 * style.offset + style.buttontextheight, height = 1, width = style.thumbnailwidth)
+                    self.buttonseparator.place(x = self.base_x, y = label_y + 2 * style.offset + style.buttontextheight, height = 1, width = self.thumbnailwidth)
 
                 place_button()
                 place_buttonauthorlabel()
@@ -136,7 +152,7 @@ class storeAppSquare(ThemedFrame):
                 place_buttonversionlabel()
                 place_buttonseparator()
 
-                if not self.imageset:
+                if not self.imageset or update_button_sizes:
                     self.set_image()
 
                 self.items = [

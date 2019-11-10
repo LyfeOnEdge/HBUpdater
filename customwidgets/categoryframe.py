@@ -24,6 +24,8 @@ class categoryFrame(tk.Frame):
         self.lastsearch = False #Used to remember the last term searched
         self.searchtimer = None
         self.sort_type = None
+        self.thumbnailheight = None
+        self.thumbnailwidth = None
 
         tk.Frame.__init__(self, parent, background = style.w, border = 0, highlightthickness = 0)
 
@@ -31,13 +33,14 @@ class categoryFrame(tk.Frame):
         self.get_image = ImageTk.PhotoImage(Image.open("assets/GET.png").resize((style.statussize, style.statussize), Image.ANTIALIAS))
         self.installed_image = ImageTk.PhotoImage(Image.open("assets/INSTALLED.png").resize((style.statussize, style.statussize), Image.ANTIALIAS))
         self.update_image = ImageTk.PhotoImage(Image.open("assets/UPDATE.png").resize((style.statussize, style.statussize), Image.ANTIALIAS))
-        self.notfoundimage = ImageTk.PhotoImage(Image.open(notfoundimage).resize((style.thumbnailwidth, style.thumbnailheight - 10), Image.ANTIALIAS))
+        self.notfoundimage = ImageTk.PhotoImage(Image.open(notfoundimage).resize((style.large_thumbnail_width, style.large_thumbnail_width - 10), Image.ANTIALIAS))
 
         self.status_map = {
             "UPTODATE" : self.installed_image,
             "NEEDSUPDATE" : self.update_image,
             "NOTINSTALLED" : self.get_image
         }
+
 
         #make canvas and scroll bar
         self.canvas = tk.Canvas(self, bg=style.color_2, relief=tk.constants.SUNKEN)
@@ -79,7 +82,7 @@ class categoryFrame(tk.Frame):
 
         #Build buttons from passed repo
         self.makeButtonList()
-        self.buildFrame()
+        self.rebuild()
 
         self.framework.add_on_refresh_callback(self.clear_then_update)
 
@@ -98,8 +101,25 @@ class categoryFrame(tk.Frame):
 
     def rebuild(self):
         self.clear()
+        self.update_button_sizes()
         self.buildFrame()
         self.update_displayed_buttons()
+
+    def update_button_sizes(self):
+        thumbnail_size_map = {
+            "tiny" : (style.tiny_thumbnail_height, style.tiny_thumbnail_width),
+            "small" : (style.small_thumbnail_height, style.small_thumbnail_width),
+            "medium" : (style.medium_thumbnail_height, style.medium_thumbnail_width),
+            "large" : (style.large_thumbnail_height, style.large_thumbnail_width),
+            "huge" : (style.huge_thumbnail_height, style.huge_thumbnail_width)
+        }
+
+        thumbnail_size = self.controller.settings.get_setting("thumbnail_size")
+        thumbnail_size = thumbnail_size_map.get(thumbnail_size)
+
+        if thumbnail_size:
+            self.thumbnailheight = thumbnail_size[0]
+            self.thumbnailwidth = thumbnail_size[1]
 
     def makeButtonList(self):
         self.buttons = []
@@ -130,8 +150,8 @@ class categoryFrame(tk.Frame):
                     self.buttons.sort(key=lambda x: x.repo[sort_type], reverse = reverse)
 
                 # buildstart = timer()
-                x_spacing = style.thumbnailwidth + 2 * style.offset
-                y_spacing = style.thumbnailheight + 13 * style.offset
+                x_spacing = self.thumbnailwidth + 2 * style.offset
+                y_spacing = self.thumbnailheight + 13 * style.offset
                 #Set the width 
                 scrollbar_width = self.scrollbar.winfo_width()
                 if scrollbar_width == 1:
@@ -159,7 +179,6 @@ class categoryFrame(tk.Frame):
                     if button.active:
                         base_y = _y * y_spacing + style.offset
                         base_x = _x * (x_spacing) + style.offset + (_x + 1) * (space_offset)
-
                         button.set_xy_canvas(base_x, base_y, self.canvas_frame)
                         _x += 1
 
@@ -186,7 +205,7 @@ class categoryFrame(tk.Frame):
             self.is_displaying = True
             #If frame is visible
             if self.selected:
-                button_height = style.thumbnailheight + 13 * style.offset
+                button_height = self.thumbnailheight + 13 * style.offset
                 canvas_height = self.canvas_frame.winfo_height()
                 if not canvas_height:
                     print("canvas height is zero")

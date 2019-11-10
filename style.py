@@ -5,8 +5,8 @@ headerheight = 70
 footerheight = 100
 offset = 5
 buttonsize = 40
-thumbnailwidth = 250
-thumbnailheight = 150
+thumbnailwidth = 500
+thumbnailheight = 300
 searchboxheight = headerheight / 2
 tileoffset = 4
 buttontextheight = 15
@@ -15,6 +15,18 @@ progressbarheight = 80
 yesnopagefooterheight = 70
 sortdropdownwidth = 150
 detailspagemultiplier = 70
+
+tiny_thumbnail_height = 75
+tiny_thumbnail_width = 125
+small_thumbnail_height = 150
+small_thumbnail_width = 250
+medium_thumbnail_height = 225
+medium_thumbnail_width = 375
+large_thumbnail_height = 300
+large_thumbnail_width = 500
+huge_thumbnail_height = 375
+huge_thumbnail_width = 625
+
 ##Text Styles
 #Normal Text
 smallertext = ("Corbel",8)

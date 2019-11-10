@@ -37,6 +37,7 @@ from github_updater import updater
 from widgets import icon_dict
 from pages import pagelist
 from fusee_wrapper import fusee_object as injector
+from settings_tool import settings
 
 print("Checking for updates...")
 if updater.check_for_update(version):
@@ -93,7 +94,7 @@ def startGUI(args = None):
 	#frameManager serves to load all pages and stack them on top of each other (all 2 of them)
 	#also serves to make many important objects and functions easily available to children frames
 	gui = frameManager(pagelist,
-		geometry,
+		settings,
 		local_packages_handler,
 		store_handler,
 		repo_parser,
