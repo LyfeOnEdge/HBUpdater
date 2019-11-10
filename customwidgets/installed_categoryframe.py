@@ -30,5 +30,6 @@ class installed_categoryFrame(categoryFrame):
 
     def rebuild(self):
         self.clear()
+        self.update_button_sizes()
         self.makeButtonList()
         self.update_displayed_buttons()
