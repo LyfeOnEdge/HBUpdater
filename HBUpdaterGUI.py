@@ -116,7 +116,15 @@ def startGUI(args = None):
 		"windowed" : None
 	}
 	if maximized_options[settings.get_setting("maximized")]:
-		gui.attributes(maximized_options[settings.get_setting("maximized")], True)
+		opt = maximized_options[settings.get_setting("maximized")]
+
+		if platform.system() == 'Windows':
+			try:
+				gui.state(opt.strip("-"))
+			except Exception as e:
+				print("Error setting window launch type for windows, this is a bug please report it:\n     {}".format(e))
+		else:
+			gui.attributes(opt, True)
 
 	#Set icon
 	favicon = None
@@ -144,4 +152,3 @@ if __name__ == '__main__':
 		parsed_args = arg_parser.parse_args(sys.argv[1:])
 
 	startGUI(parsed_args)
-
