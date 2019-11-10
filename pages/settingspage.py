@@ -29,13 +29,11 @@ class settingsPage(tk.Frame):
 		self.thumbnail_size_dropdown_label = ThemedLabel(self, label_text = "~ Tile Size", background = style.color_2)
 		self.thumbnail_size_dropdown_label.place(y = style.offset, x = 200 + style.offset, height = style.buttonsize - 2 * style.offset, width = 200)
 
-		fullscreen_options = ["true", "false"]
-		self.fullscreen_on_launch_dropdown = customOptionMenu(self, fullscreen_options)
-		self.fullscreen_on_launch_dropdown.place(y = style.offset + style.buttonsize, x = style.offset, height = style.buttonsize - 2 * style.offset, width = 200 - style.offset)
-		self.fullscreen_dropdown_label = ThemedLabel(self, label_text = "~ Fullscreen on launch", background = style.color_2)
-		self.fullscreen_dropdown_label.place(y = style.offset + style.buttonsize, x = 200 + style.offset, height = style.buttonsize - 2 * style.offset, width = 200)
-
-
+		maximized_options = ["true", "false"]
+		self.maximized_on_launch_dropdown = customOptionMenu(self, maximized_options)
+		self.maximized_on_launch_dropdown.place(y = style.offset + style.buttonsize, x = style.offset, height = style.buttonsize - 2 * style.offset, width = 200 - style.offset)
+		self.maximized_dropdown_label = ThemedLabel(self, label_text = "~ Maximized on launch", background = style.color_2)
+		self.maximized_dropdown_label.place(y = style.offset + style.buttonsize, x = 200 + style.offset, height = style.buttonsize - 2 * style.offset, width = 200)
 
 		self.savebutton = button(self, callback=self.save,text_string="Save",background=style.color_1)
 		self.savebutton.place(relx=0.5, x = - 0.5 * style.sidecolumnwidth, width = style.sidecolumnwidth, height = style.buttonsize, rely = 1, y = - (style.offset + style.buttonsize))
@@ -44,11 +42,11 @@ class settingsPage(tk.Frame):
 
 	def configure(self, event):
 		self.thumbnail_size_dropdown.option.set(self.settings.get_setting("thumbnail_size"))
-		self.fullscreen_on_launch_dropdown.option.set(self.settings.get_setting("fullscreen"))
+		self.maximized_on_launch_dropdown.option.set(self.settings.get_setting("maximized"))
 
 	def save(self):
 		self.settings.set_setting("thumbnail_size", self.thumbnail_size_dropdown.option.get())
-		self.settings.set_setting("fullscreen", self.fullscreen_on_launch_dropdown.option.get())
+		self.settings.set_setting("maximized", self.maximized_on_launch_dropdown.option.get())
 		self.settings.save()
 
 	def show(self):
@@ -56,6 +54,3 @@ class settingsPage(tk.Frame):
 
 	def hide(self):
 		self.place_forget()
-
-
-

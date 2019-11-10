@@ -80,11 +80,6 @@ image_sharer = icon_dict()
 
 rcminjector = injector(print_function = print)
 
-geometry = {
-	"width" : 780,
-	"height" : 575
-}
-
 def create_arg_parser():
 	parser = argparse.ArgumentParser(description='pass a repo.json to load a local one instead of one downloaded from github')
 	parser.add_argument('repo',
@@ -109,7 +104,7 @@ def startGUI(args = None):
 	#Set title formattedwith version
 	gui.title("HBUpdater %s" % version)
 	#Launch fullscreen
-	gui.attributes("-zoomed", settings.get_setting("fullscreen"))
+	gui.attributes("-zoomed", settings.get_setting("maximized"))
 
 	#Set icon
 	favicon = None
