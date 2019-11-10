@@ -2,5 +2,6 @@
     "thumbnail_size": "small",
     "width": 780,
     "height": 575,
-    "maximized": "normal"
+    "maximized": "windowed",
+    "keep_topmost": "false"
 }

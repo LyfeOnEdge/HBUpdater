@@ -107,14 +107,15 @@ def startGUI(args = None):
 
 	#Set title formattedwith version
 	gui.title("HBUpdater %s" % version)
-	#Launch fullscreen
+	#Wheteher to keep window topmost
+	gui.attributes("-topmost", True if settings.get_setting("keep_topmost") == "true" else False)
 
-	if settings.get_setting("maximized"):
-		maximized_options = {
-			"fullscreen" : "-fullscreen",
-			"maximized" : "-zoomed",
-			"normal" : None
-		}
+	maximized_options = {
+		"fullscreen" : "-fullscreen",
+		"maximized" : "-zoomed",
+		"windowed" : None
+	}
+	if maximized_options[settings.get_setting("maximized")]:
 		gui.attributes(maximized_options[settings.get_setting("maximized")], True)
 
 	#Set icon
