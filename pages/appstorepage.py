@@ -54,16 +54,16 @@ class appstorePage(activeFrame):
 		self.column_header = ThemedFrame(self.column, background = style.color_1)
 		self.column_header.place(relx = 0, rely = 0, relwidth = 1, height = style.headerheight)
 
-		self.column_header_title = ThemedLabel(self.column_header,"HBUpdater\nGPLv3",anchor="center",label_font=style.giantboldtext, background = style.color_1)
-		self.column_header_title.place(relx = 0,rely = 0, relwidth = 1, relheight = 1, height = - 1)
+		self.column_header_title = ThemedLabel(self.column_header,"HBUpdater\nGPLv3",anchor="n",label_font=style.giantboldtext, background = style.color_1)
+		self.column_header_title.place(relx = 0,rely = 0, relwidth = 1, relheight = 1, height = - (style.offset + 1), y = + style.offset)
 
-		self.column_header_separator = ThemedLabel(self.column_header, "", background=style.lg)
+		self.column_header_separator = ThemedLabel(self.column_header, "", background=style.w)
 		self.column_header_separator.place(x = style.offset, rely = 1, y = - 1, relwidth = 1, width = -2 * style.offset)
 
 		self.column_body = ThemedFrame(self.column, background = style.color_1)
 		self.column_body.place(relx = 0, relwidth = 1, y = style.headerheight, relheight = 1, height = - (style.headerheight + style.footerheight))
 
-		self.category_listbox = ThemedListbox(self.column_body)
+		self.category_listbox = ThemedListbox(self.column_body, foreground = style.w)
 		self.category_listbox.configure(activestyle = "none")
 		self.category_listbox.place(relwidth=1,relheight=1)
 		self.category_listbox.bind('<<ListboxSelect>>',self.select_frame)
@@ -92,8 +92,8 @@ class appstorePage(activeFrame):
 		self.content_frame_header = ThemedFrame(self.content_frame)
 		self.content_frame_header.place(relx = 0, rely = 0, relwidth = 1, height = style.searchboxheight)
 
-		self.category_label = ThemedLabel(self.content_frame_header,"",anchor="w",label_font=style.giantboldtext, background = style.color_1, foreground=style.lg)
-		self.category_label.place(relheight = 1, rely=0.5, y=-0.5*style.searchboxheight)
+		self.category_label = ThemedLabel(self.content_frame_header,"",anchor="nw",label_font=style.giantboldtext, background = style.color_1, foreground=style.lg)
+		self.category_label.place(x = + style.offset, relx = 0,rely = 0, relheight = 1, height = - (style.offset + 1), y = + style.offset)
 
 		self.content_frame_header_search_bar = searchBox(self.content_frame_header, command = self.search, entry_background=style.color_2, borderwidth = 0)
 
@@ -231,8 +231,8 @@ class appstorePage(activeFrame):
 			category_label_offset = self.category_label.winfo_width()
 			#If the category label has been populated, otherwise the offset is usually just a few pixels (prevents an ugly draw on launch)
 			if category_label_offset > style.offset:
-				self.content_frame_header_sort_method_dropdown.place(relx = 1, x = -(style.offset + style.sortdropdownwidth), width = style.sortdropdownwidth, rely=0.5, y=-0.5*style.searchboxheight + style.offset, relheight =1, height = - 2 *style.offset)
-				self.content_frame_header_search_bar.place(x = category_label_offset + style.offset, rely=0.5, y=-0.5*style.searchboxheight + style.offset,relheight =1, relwidth = 1, width = - (category_label_offset + 4 * style.offset + style.sortdropdownwidth), height = - 2 *style.offset)
+				self.content_frame_header_sort_method_dropdown.place(relx = 1, x = -(style.offset + style.sortdropdownwidth), width = style.sortdropdownwidth, y=+ 1.5 * style.offset, relheight =1, height = - 2 *style.offset)
+				self.content_frame_header_search_bar.place(x = + 1.5 * style.offset + category_label_offset, y=+ 1.5 * style.offset, relheight =1, relwidth = 1, width = - (category_label_offset + 3.5 * style.offset + style.sortdropdownwidth), height = - 2 *style.offset)
 			else:
 				self.content_frame_header_search_bar.place_forget()
 				self.controller.after(100, self.update_search_bar_position)

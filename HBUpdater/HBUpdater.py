@@ -327,7 +327,7 @@ class HBUpdater_handler(object):
         with open(info_file, 'w+') as inf:
             json.dump(store_entry, inf, indent=4,)
 
-        print("Created appstore entry for {} \n{}".format(package, json.dumps(store_entry,indent=4)))
+        print("Created log entry for {} \n{}".format(package, json.dumps(store_entry,indent=4)))
 
     #Uninstalls a package given a chunk from the repo
     def uninstall_package(self, repo_entry):
@@ -337,7 +337,7 @@ class HBUpdater_handler(object):
             print("Not continuing with uninstall")
             return
         if not self.check_if_get_init():
-            print("Appstore get folder not initiated.")
+            print(".get folder not initiated.")
             print("Not continuing with uninstall")
             return
 
