@@ -25,3 +25,7 @@ fixed error when no path selected when sd dialog shows
 fixed fail-to-install due to an issue where `with open()` on a zip would allow the file to be deleted within the `with` on linux but not windows, thanks cptWhiskey.
 2.2:
 Moved to new repo.json layout
+2.3:
+fixed bug displaying injector banner, less bold
+reduced package image pop-in, and fixed images missing on screen load due to insufficient padding
+Added settings system, settings page, added on-the fly tile size adjustment
