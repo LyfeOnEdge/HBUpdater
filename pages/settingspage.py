@@ -70,8 +70,8 @@ class settingsPage(tk.Frame):
 
 	def do_clear_cache(self):
 		for root, dirs, files in os.walk(locations.cachefolder, topdown=False):
-		   for f in files:
-		      os.remove(os.path.join(root, f))
+			for f in files:
+				os.remove(os.path.join(root, f))
 
 	def show(self):
 		self.place(relwidth = 1, relheight = 1)
