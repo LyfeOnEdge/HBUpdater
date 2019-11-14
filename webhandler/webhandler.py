@@ -1,5 +1,5 @@
 import os, sys, shutil
-import modules.locations as locations
+import locations
 from .etags import accessETaggedFile
 
 #web handling

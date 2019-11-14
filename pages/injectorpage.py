@@ -2,7 +2,7 @@ from .detailpage import detailPage
 from widgets import button, ThemedLabel
 import style
 from appstore import getScreenImage
-from modules.locations import notfoundimage
+from locations import notfoundimage
 import os, sys
 
 class injectorPage(detailPage):

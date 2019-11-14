@@ -2,7 +2,7 @@ from PIL import Image, ImageTk
 import tkinter as tk
 from widgets import ThemedFrame, button, tooltip, ThemedLabel
 from appstore import getPackageIcon
-from modules.locations import notfoundimage
+from locations import notfoundimage
 import style
 import platform 
 

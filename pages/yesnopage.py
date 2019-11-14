@@ -40,7 +40,10 @@ class yesnoPage(tk.Frame):
 
     def on_yes(self):
         print("Got yes\n-------------------------------")
-        self.yes_command()
+        try:
+            self.yes_command()
+        except Exception as e:
+            print("Error in yes_command in yesnopage {}".format(e))
         self.yes_command = None
         self.hide()
 

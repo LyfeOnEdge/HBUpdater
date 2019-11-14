@@ -30,7 +30,7 @@ from customwidgets import frameManager
 from appstore import getPackageIcon, appstore_handler
 from HBUpdater import parser, HBUpdater_handler
 from webhandler import getJson
-from modules.locations import update_url
+from locations import update_url
 from asyncthreader import asyncThreader
 from github_updater import updater
 from widgets import icon_dict

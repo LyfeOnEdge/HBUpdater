@@ -1,7 +1,7 @@
 #LyfeOnEdge's super simple etag handler.
 import os, sys, shutil, json
 import urllib.request
-import modules.locations as locations
+import locations
 
 
 #Header for checking if etag is updated

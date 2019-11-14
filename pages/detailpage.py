@@ -1,7 +1,7 @@
 import os
 import tkinter as tk
 import tkinter.filedialog
-import modules.locations as locations
+import locations
 from widgets import ThemedFrame, ThemedLabel, ThemedListbox, activeFrame, scrolledText, button, tooltip, ScrolledThemedListBox
 from customwidgets import progressFrame
 import style

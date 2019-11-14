@@ -3,9 +3,8 @@ import tkinter as tk
 from tkinter.constants import *
 from widgets import button, ThemedLabel
 import style
-
-
-
+from .yesnopage import yesnoPage
+import locations
 
 class customOptionMenu(tk.OptionMenu):
 	def __init__(self, frame, opts):
@@ -30,24 +29,30 @@ class settingsPage(tk.Frame):
 		self.thumbnail_size_dropdown = customOptionMenu(self, thumbnail_sizes)
 		self.thumbnail_size_dropdown.place(y = style.offset + style.buttonsize, x = style.offset, height = style.buttonsize - 2 * style.offset, width = 200 - style.offset)
 		self.thumbnail_size_dropdown_label = ThemedLabel(self, label_text = "~ Tile Size\n(No restart)", background = style.color_2)
-		self.thumbnail_size_dropdown_label.place(y = style.offset + style.buttonsize, x = 200 + style.offset, height = style.buttonsize - 2 * style.offset, width = 200)
+		self.thumbnail_size_dropdown_label.place(y = style.offset + style.buttonsize, x = 200 + style.offset, height = style.buttonsize - 2 * style.offset, width = 300)
 
 		maximized_options = [ "fullscreen", "maximized", "windowed"]
 		self.maximized_on_launch_dropdown = customOptionMenu(self, maximized_options)
 		self.maximized_on_launch_dropdown.place(y = 2 * (style.offset + style.buttonsize), x = style.offset, height = style.buttonsize - 2 * style.offset, width = 200 - style.offset)
 		self.maximized_dropdown_label = ThemedLabel(self, label_text = "~ Maximized on launch", background = style.color_2)
-		self.maximized_dropdown_label.place(y = 2 * (style.offset + style.buttonsize), x = 200 + style.offset, height = style.buttonsize - 2 * style.offset, width = 200)
+		self.maximized_dropdown_label.place(y = 2 * (style.offset + style.buttonsize), x = 200 + style.offset, height = style.buttonsize - 2 * style.offset, width = 300)
 
 		topmost_options = [ "true", "false"]
 		self.topmost_dropdown = customOptionMenu(self, topmost_options)
 		self.topmost_dropdown.place(y = 3 * (style.offset + style.buttonsize), x = style.offset, height = style.buttonsize - 2 * style.offset, width = 200 - style.offset)
 		self.topmost_dropdown_label = ThemedLabel(self, label_text = "~ Keep window topmost?", background = style.color_2)
-		self.topmost_dropdown_label.place(y = 3 * (style.offset + style.buttonsize), x = 200 + style.offset, height = style.buttonsize - 2 * style.offset, width = 200)
+		self.topmost_dropdown_label.place(y = 3 * (style.offset + style.buttonsize), x = 200 + style.offset, height = style.buttonsize - 2 * style.offset, width = 300)
+
+		self.clear_cache_button = button(self, callback=self.clear_cache,text_string="Clear cache.",background=style.color_1)
+		self.clear_cache_button.place(y = 4 * (style.offset + style.buttonsize), x = style.offset, height = style.buttonsize - 2 * style.offset, width = 200 - style.offset)
+		self.clear_cache_label = ThemedLabel(self, label_text = "~ Clear image and json cache?", background = style.color_2)
+		self.clear_cache_label.place(y = 4 * (style.offset + style.buttonsize), x = 200 + style.offset, height = style.buttonsize - 2 * style.offset, width = 300)
 
 		self.savebutton = button(self, callback=self.save,text_string="Save",background=style.color_1)
 		self.savebutton.place(relx=0.5, x = - 0.5 * style.sidecolumnwidth, width = style.sidecolumnwidth, height = style.buttonsize, rely = 1, y = - (style.offset + style.buttonsize))
 		#Bind frame raise
 		self.bind("<<ShowFrame>>", self.configure)
+		self.yesno = yesnoPage(self)
 
 	def configure(self, event):
 		self.thumbnail_size_dropdown.option.set(self.settings.get_setting("thumbnail_size"))
@@ -59,6 +64,14 @@ class settingsPage(tk.Frame):
 		self.settings.set_setting("maximized", self.maximized_on_launch_dropdown.option.get())
 		self.settings.set_setting("keep_topmost", self.topmost_dropdown.option.get())
 		self.settings.save()
+
+	def clear_cache(self):
+		self.yesno.getanswer("Are you sure you'd like to clear the cache?", self.do_clear_cache)
+
+	def do_clear_cache(self):
+		for root, dirs, files in os.walk(locations.cachefolder, topdown=False):
+		   for f in files:
+		      os.remove(os.path.join(root, f))
 
 	def show(self):
 		self.place(relwidth = 1, relheight = 1)

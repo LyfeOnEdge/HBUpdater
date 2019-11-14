@@ -2,7 +2,7 @@ import os
 import tkinter.filedialog
 import tkinter as tk
 import style as style
-import modules.locations as locations
+import locations
 from widgets import ThemedFrame, ThemedListbox, ThemedLabel, searchBox, activeFrame, scrolledText, button
 from customwidgets import categoryFrame, installed_categoryFrame, injector_categoryFrame
 from .yesnopage import yesnoPage

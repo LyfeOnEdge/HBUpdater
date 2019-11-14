@@ -5,7 +5,7 @@ from timeit import default_timer as timer
 import style
 from .storeappsquare import storeAppSquare
 from widgets import ThemedLabel
-from modules.locations import notfoundimage
+from locations import notfoundimage
 class categoryFrame(tk.Frame):
     def __init__(self,parent,controller,framework, repos):
         #list of repos to be displayed by this frame
