@@ -247,7 +247,7 @@ class categoryFrame(tk.Frame):
     def search_poll(self):
         if self.is_searching:
             #.4 second delay on search debouncer
-            if (timer() - self.searchtimer) > (0.4):
+            if (timer() - self.searchtimer) > (0.25):
                 self.controller.async_threader.do_async(self.do_search_query, [], priority = "low")
             else:
                 self.controller.after(100, self.search_poll)
