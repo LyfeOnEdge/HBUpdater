@@ -166,7 +166,7 @@ class categoryFrame(tk.Frame):
 
                 #If there's not enough room to build anything
                 if not _maxperrow:
-                    return
+                    _maxperrow = 1
 
                 empty_space = _framewidth - (_maxperrow * x_spacing)
 
