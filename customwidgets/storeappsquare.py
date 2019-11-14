@@ -123,10 +123,11 @@ class storeAppSquare(ThemedFrame):
                     if self.status_handler.packages:
                         if package in self.status_handler.packages:
                             installed_version = self.status_handler.get_package_version(package)
+                            current_version = self.controller.repo_parser.package_dict[package]["github_content"][0]["tag_name"]
 
-                            if self.status_handler.clean_version(installed_version, package) == self.status_handler.clean_version(installed_version, package):
+                            if self.status_handler.clean_version(installed_version, package) == self.status_handler.clean_version(current_version, package):
                                 status = "UPTODATE"
-                            elif self.status_handler.clean_version(installed_version, package) < self.status_handler.clean_version(installed_version, package):
+                            elif self.status_handler.clean_version(installed_version, package) < self.status_handler.clean_version(current_version, package):
                                 status = "NEEDSUPDATE"
                         else:
                             status = "NOTINSTALLED"

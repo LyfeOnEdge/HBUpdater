@@ -143,16 +143,17 @@ def startGUI(args = None):
 	favicon = None
 	if platform.system() == 'Windows':
 		print("Windows detected, setting icon")
+		favicon = os.path.join("assets", 'favicon.ico')
 	elif platform.system() == "Linux":
 		print("Linux detected, setting icon")
-		favicon = os.path.join("assets", 'favicon.xbm')
+		favicon = 'assets/favicon.png'
 	elif platform.system() == "Darwin":
 		print("Mac detected, not setting icon as it is not supported")
 
 	if favicon:
 		if os.path.exists(favicon):
 			#Set icon
-			gui.iconbitmap(favicon)
+			gui.tk.call('wm', 'iconphoto', gui._w, tk.PhotoImage(file=favicon))
 		else:
 			print("Icon file not found, not setting favicon")
 

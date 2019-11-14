@@ -25,6 +25,8 @@ class parser(object):
             "payloads" : self.payloadlist,
         }
 
+        self.package_dict = {}
+
         self.list_list = [ self.all ]
         for key in self.map:
             self.list_list.append(self.map[key])
@@ -60,6 +62,8 @@ class parser(object):
                     if not package["category"] in self.category_blacklist:
                         new_all.append(package)
                     self.map[package["category"]].append(package)
+
+                    self.package_dict[package["package"]] = package
 
                 self.all = new_all
                 self.sorted = True
