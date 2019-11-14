@@ -71,7 +71,7 @@ if not local_packages_handler.check_if_get_init():
 	local_packages_handler.init_get()
 
 def get_updated_repo_file():
-	print("Getting updated HBUpdater repo file")
+	print("Getting updated HBUpdater api file")
 	repos_github_api = getJson("repos_api","https://api.github.com/repos/LyfeOnEdge/HBUpdater_API/releases")
 	if repos_github_api:
 		with open(repos_github_api, encoding = "utf-8") as package_repos:
@@ -79,6 +79,7 @@ def get_updated_repo_file():
 			assets = repo[0]["assets"]
 		#Borrow HBUpdater findasset function 
 		repo_remote = local_packages_handler.findasset([["repo"], "json"], assets, silent = True)
+		print("Getting updated HBUpdater repo file")
 		packages = getJson("repos",repo_remote)
 	else:
 		print("Failed to download packages json repo file, falling back on old version")
@@ -141,14 +142,11 @@ def startGUI(args = None):
 
 	#Set icon
 	favicon = None
-	if platform.system() == 'Windows':
-		print("Windows detected, setting icon")
-		favicon = os.path.join("assets", 'favicon.ico')
-	elif platform.system() == "Linux":
-		print("Linux detected, setting icon")
+	if platform.system() in ['Window', 'Linux']:
+		print("{} detected, setting icon".format(platform.system()))
 		favicon = 'assets/favicon.png'
 	elif platform.system() == "Darwin":
-		print("Mac detected, not setting icon as it is not supported")
+		print("MacOS detected, not setting icon as it is not supported")
 
 	if favicon:
 		if os.path.exists(favicon):

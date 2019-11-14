@@ -290,7 +290,7 @@ class categoryFrame(tk.Frame):
     def on_mouse_wheel(self, event):
         try:
             if platform.system() == 'Windows':
-                self.canvas.yview_scroll(-1*(event.delta/120), "units")
+                self.canvas.yview_scroll(int(-1*(event.delta/120)), "units")
             elif platform.system() == "Linux":
                 if event.num == 5:
                     self.canvas.yview_scroll(1, "units")
