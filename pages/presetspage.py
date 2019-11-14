@@ -12,23 +12,23 @@ class presetsPage(ThemedFrame):
         self.controller = controller
         self.appstore_handler = controller.appstore_handler
         self.repo_parser = controller.repo_parser
-
-
-        self.preset_json = None #Holds the value of the json, makes it easy to "reset"
-        self.unsaved_preset_json = None
-
+        self.current_file_path = None
+        self.unsaved_file = None
 
         ThemedFrame.__init__(self,parent)
 
-        self.unincluded_packages_listbox = ThemedListbox(self,foreground=style.b)
-        self.included_packages_listbox = ThemedListbox(self, foreground=style.b):
+        self.packages_listbox = ThemedListbox(self,foreground=style.b)
 
-        self.author_name = entrybox(self, placeholder = "Preset Author")
         self.preset_name = entrybox(self, placeholder = "Preset Package Name")
+        self.author_name = entrybox(self, placeholder = "Preset Author")
         self.preset_package_version = entrybox(self, placeholder = "Preset Package Version (Optional)")
 
         self.output_json = themedScrollingText(self)
 
+        self.savebutton = button(self, callback=self.save,text_string="Save",background=style.color_1)
+        self.savebutton.place(relx=0.5, x = - 0.5 * style.sidecolumnwidth, width = style.sidecolumnwidth, height = style.buttonsize, rely = 1, y = - (style.offset + style.buttonsize))
+        #Bind frame raise
+        self.bind("<<ShowFrame>>", self.configure)
 
         save config button
         reset config button
@@ -56,6 +56,9 @@ class presetsPage(ThemedFrame):
 
 
         self.show()
+
+    def save(self):
+        pass
 
     #Gets the page ready to make a new repo
     def new(self):

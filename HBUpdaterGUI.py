@@ -13,18 +13,17 @@ if sys.version_info[0] < 3 or sys.version_info[1] < 6: #Trying to import tkinter
 #This is called before the below module imports to ensure no exception is encountered trying to import tk
 try:
 	import tkinter as tk
+	print("Using tkinter version {}".format(tk.Tcl().eval('info patchlevel')))
 except:
-	input("Cannot start: Tkinter not installed, consult the readme for more information.")
+	input("Cannot start: Tkinter not installed, consult the readme for more information. Press enter to exit program.") #Input is called to prevent the cli from closing until the user has seen the message 
 	sys.exit()
 
 #This is called before the below module imports to ensure no exception is encountered trying to import pil
 try:
 	import PIL #Import pillow library
 except:
-	input("Cannot start: Pillow module not installed, try `pip install Pillow` or consult the readme for more information.")
+	input("Cannot start: Pillow module not installed, try `pip install Pillow` or consult the readme for more information. Press enter to exit program.")
 	sys.exit()
-
-print("Using tkinter version {}".format(tk.Tcl().eval('info patchlevel')))
 
 #Import local modules
 from customwidgets import frameManager
@@ -49,6 +48,17 @@ else:
 #Async threader tool for getting downloads and other functions asyncronously
 threader = asyncThreader()
 
+def create_arg_parser():
+	parser = argparse.ArgumentParser(description='pass a repo.json to load a local one instead of one downloaded from github')
+	parser.add_argument('repo',
+					help='repo.json path')
+	return parser
+
+parsed_args = None
+if len(sys.argv) > 1:
+	arg_parser = create_arg_parser()
+	parsed_args = arg_parser.parse_args(sys.argv[1:])
+
 toolsfolder = os.path.join(sys.path[0], "tools")
 if not os.path.isdir(toolsfolder):
 	print("Initing tools folder")
@@ -60,18 +70,27 @@ local_packages_handler.set_path(toolsfolder, silent = True)
 if not local_packages_handler.check_if_get_init():
 	local_packages_handler.init_get()
 
-print("Getting updated HBUpdater repo file")
-repos_github_api = getJson("repos_api","https://api.github.com/repos/LyfeOnEdge/HBUpdater_API/releases")
-if repos_github_api:
-	with open(repos_github_api, encoding = "utf-8") as package_repos:
-		repo = json.load(package_repos)
-		assets = repo[0]["assets"]
-	#Borrow HBUpdater findasset function 
-	repo_remote = local_packages_handler.findasset([["repo"], "json"], assets, silent = True)
-	packages_json = getJson("repos",repo_remote)
+def get_updated_repo_file():
+	print("Getting updated HBUpdater repo file")
+	repos_github_api = getJson("repos_api","https://api.github.com/repos/LyfeOnEdge/HBUpdater_API/releases")
+	if repos_github_api:
+		with open(repos_github_api, encoding = "utf-8") as package_repos:
+			repo = json.load(package_repos)
+			assets = repo[0]["assets"]
+		#Borrow HBUpdater findasset function 
+		repo_remote = local_packages_handler.findasset([["repo"], "json"], assets, silent = True)
+		packages = getJson("repos",repo_remote)
+	else:
+		print("Failed to download packages json repo file, falling back on old version")
+		packages = os.path.join(sys.path[0], "cache/json/repos.json")
+
+	return packages
+
+if not (parsed_args if not parsed_args else parsed_args.repo):
+	packages_json = get_updated_repo_file()
 else:
-	print("Failed to download packages json repo file, falling back on old version")
-	packages_json = os.path.join(sys.path[0], "cache/json/repos.json")
+	print("Using passed repo json {}".format(parsed_args.repo))
+	packages_json = parsed_args.repo
 
 #Parse the json into categories
 repo_parser = parser()
@@ -83,12 +102,6 @@ store_handler = HBUpdater_handler("SWITCH")
 image_sharer = icon_dict()
 
 rcminjector = injector(print_function = print)
-
-def create_arg_parser():
-	parser = argparse.ArgumentParser(description='pass a repo.json to load a local one instead of one downloaded from github')
-	parser.add_argument('repo',
-					help='repo.json path')
-	return parser
 
 def startGUI(args = None):
 	#frameManager serves to load all pages and stack them on top of each other (all 2 of them)
@@ -146,9 +159,4 @@ def startGUI(args = None):
 	gui.mainloop()
 
 if __name__ == '__main__':
-	parsed_args = None
-	if len(sys.argv) > 1:
-		arg_parser = create_arg_parser()
-		parsed_args = arg_parser.parse_args(sys.argv[1:])
-
 	startGUI(parsed_args)
