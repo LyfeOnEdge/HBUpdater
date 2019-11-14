@@ -19,7 +19,6 @@ class ThemedFrame(tk.Frame):
 
 		tk.Frame.__init__(self,parent, background = background, highlightcolor = frame_highlightcolor, highlightthickness=frame_highlightthickness, highlightbackground=color_1, borderwidth = frame_borderwidth)
 
-
 #themed author/ etc label
 class ThemedLabel(tk.Label):
 	def __init__(self,frame,label_text="",label_font=smalltext,text_variable=None,background = color_1,foreground=lg,anchor="w",wraplength = None):
@@ -49,44 +48,6 @@ class ThemedListbox(tk.Listbox):
 			font = largetext,
 			activestyle=None
 		)
-
-#Custom button
-#A tkinter label with a bound on-click event to fix some issues 
-#that were happening with normal tkinter buttons on MacOS.
-#Unfortunately MacOS was causing a weird white translucent
-#effect to be applied to all classes that used the tk.Button Widget.
-#This fixes it but making our own "button" by binding a callback to 
-#an on_click event. Feel free to use this in other projects where mac
-#compatibility is an issue, also special thanks to Kabiigon for testing
-#this widget until I got it right since I don't have a mac
-class button(tk.Label):
-	def __init__(self,frame,callback=None,image_object= None,text_string=None,background=color_2, font=smallboldtext):
-		self.callback = callback
-
-		tk.Label.__init__(self,frame,
-			background=background,
-			foreground= w,
-			borderwidth= 0,
-			activebackground=color_1,
-			image=image_object,
-			text = text_string,
-			font = font,
-			anchor="center"
-			)
-		self.bind('<Button-1>', self.on_click)
-
-	#Use callback when our makeshift "button" clicked
-	def on_click(self, event=None):
-		if self.callback:
-			self.callback()
-
-	#Function to set the button's image
-	def setimage(self,image):
-		self.configure(image=image)
-
-	#Function to set the button's text
-	def settext(self,text):
-		self.configure(text=text)
 
 #Widgets with scroll bars that appear when needed and supporting code
 #Automatic scrollbars on certain text boxes
