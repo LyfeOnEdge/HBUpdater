@@ -4,6 +4,7 @@ from tkinter.constants import *
 from widgets import button, ThemedLabel
 import style
 from .yesnopage import yesnoPage
+from .usermessagepage import usermessagePage
 import locations
 
 class customOptionMenu(tk.OptionMenu):
@@ -53,6 +54,7 @@ class settingsPage(tk.Frame):
 		#Bind frame raise
 		self.bind("<<ShowFrame>>", self.configure)
 		self.yesno = yesnoPage(self)
+		self.okpage = usermessagePage(self)
 
 	def configure(self, event):
 		self.thumbnail_size_dropdown.option.set(self.settings.get_setting("thumbnail_size"))
@@ -60,10 +62,14 @@ class settingsPage(tk.Frame):
 		self.topmost_dropdown.option.set(self.settings.get_setting("keep_topmost"))
 
 	def save(self):
-		self.settings.set_setting("thumbnail_size", self.thumbnail_size_dropdown.option.get())
-		self.settings.set_setting("maximized", self.maximized_on_launch_dropdown.option.get())
-		self.settings.set_setting("keep_topmost", self.topmost_dropdown.option.get())
-		self.settings.save()
+		try:
+			self.settings.set_setting("thumbnail_size", self.thumbnail_size_dropdown.option.get())
+			self.settings.set_setting("maximized", self.maximized_on_launch_dropdown.option.get())
+			self.settings.set_setting("keep_topmost", self.topmost_dropdown.option.get())
+			self.settings.save()
+			self.okpage.telluser("Settings saved successfully")
+		except Exception as e:
+			self.okpage.telluser("Failed to save settings\n{}".format(e))
 
 	def clear_cache(self):
 		self.yesno.getanswer("Are you sure you'd like to clear the cache?", self.do_clear_cache)
@@ -72,9 +78,3 @@ class settingsPage(tk.Frame):
 		for root, dirs, files in os.walk(locations.cachefolder, topdown=False):
 			for f in files:
 				os.remove(os.path.join(root, f))
-
-	def show(self):
-		self.place(relwidth = 1, relheight = 1)
-
-	def hide(self):
-		self.place_forget()
