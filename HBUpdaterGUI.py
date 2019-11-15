@@ -18,6 +18,13 @@ except:
 	input("Cannot start: Tkinter not installed, consult the readme for more information. Press enter to exit program.") #Input is called to prevent the cli from closing until the user has seen the message 
 	sys.exit()
 
+try:
+	TKVERSION = float(tk.Tcl().eval('info patchlevel')[0:3])
+except Exception as e:
+	TKVERSION = 0
+	print("Failed to get tkinter version ~ {}".format(e))
+print(TKVERSION)
+
 #This is called before the below module imports to ensure no exception is encountered trying to import pil
 try:
 	import PIL #Import pillow library
@@ -142,7 +149,7 @@ def startGUI(args = None):
 
 	#Set icon
 	favicon = None
-	if platform.system() in ['Window', 'Linux']:
+	if platform.system() in ['Windows', 'Linux']:
 		print("{} detected, setting icon".format(platform.system()))
 		favicon = 'assets/favicon.png'
 	elif platform.system() == "Darwin":
@@ -154,6 +161,17 @@ def startGUI(args = None):
 			gui.tk.call('wm', 'iconphoto', gui._w, tk.PhotoImage(file=favicon))
 		else:
 			print("Icon file not found, not setting favicon")
+
+	if (True if settings.get_setting("borderless") == "true" else False):
+		if platform.system() in ['Windows']:
+			gui.overrideredirect(1)
+		else:
+			try:
+				if TKVERSION > 8.5:
+					if gui.tk.call('tk','windowingsystem') == "x11":
+						gui.wm_attributes('-type', 'splash')
+			except:
+				print("Failed to set window type to borderless")
 
 	gui.mainloop()
 

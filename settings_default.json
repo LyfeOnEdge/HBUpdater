@@ -3,5 +3,6 @@
     "width": 780,
     "height": 575,
     "maximized": "windowed",
-    "keep_topmost": "false"
+    "keep_topmost": "false",
+    "borderless": "false"
 }

@@ -18,6 +18,8 @@ class customOptionMenu(tk.OptionMenu):
 		self.option = option
 		self.option.set(opts[0])
 
+truefalse_options = [ "true", "false"]
+
 class settingsPage(tk.Frame):
 	def __init__(self, parent, settings):
 		tk.Frame.__init__(self,parent,background=style.color_2)
@@ -38,16 +40,20 @@ class settingsPage(tk.Frame):
 		self.maximized_dropdown_label = ThemedLabel(self, label_text = "~ Maximized on launch", background = style.color_2)
 		self.maximized_dropdown_label.place(y = 2 * (style.offset + style.buttonsize), x = 200 + style.offset, height = style.buttonsize - 2 * style.offset, width = 300)
 
-		topmost_options = [ "true", "false"]
-		self.topmost_dropdown = customOptionMenu(self, topmost_options)
+		self.topmost_dropdown = customOptionMenu(self, truefalse_options)
 		self.topmost_dropdown.place(y = 3 * (style.offset + style.buttonsize), x = style.offset, height = style.buttonsize - 2 * style.offset, width = 200 - style.offset)
-		self.topmost_dropdown_label = ThemedLabel(self, label_text = "~ Keep window topmost?", background = style.color_2)
+		self.topmost_dropdown_label = ThemedLabel(self, label_text = "~ Keep window topmost", background = style.color_2)
 		self.topmost_dropdown_label.place(y = 3 * (style.offset + style.buttonsize), x = 200 + style.offset, height = style.buttonsize - 2 * style.offset, width = 300)
 
+		self.borderless_dropdown = customOptionMenu(self, truefalse_options)
+		self.borderless_dropdown.place(y = 4 * (style.offset + style.buttonsize), x = style.offset, height = style.buttonsize - 2 * style.offset, width = 200 - style.offset)
+		self.borderless_dropdown_label = ThemedLabel(self, label_text = "~ Borderless window", background = style.color_2)
+		self.borderless_dropdown_label.place(y = 4 * (style.offset + style.buttonsize), x = 200 + style.offset, height = style.buttonsize - 2 * style.offset, width = 300)
+
 		self.clear_cache_button = button(self, callback=self.clear_cache,text_string="Clear cache.",background=style.color_1)
-		self.clear_cache_button.place(y = 4 * (style.offset + style.buttonsize), x = style.offset, height = style.buttonsize - 2 * style.offset, width = 200 - style.offset)
+		self.clear_cache_button.place(y = 5 * (style.offset + style.buttonsize), x = style.offset, height = style.buttonsize - 2 * style.offset, width = 200 - style.offset)
 		self.clear_cache_label = ThemedLabel(self, label_text = "~ Clear image and json cache?", background = style.color_2)
-		self.clear_cache_label.place(y = 4 * (style.offset + style.buttonsize), x = 200 + style.offset, height = style.buttonsize - 2 * style.offset, width = 300)
+		self.clear_cache_label.place(y = 5 * (style.offset + style.buttonsize), x = 200 + style.offset, height = style.buttonsize - 2 * style.offset, width = 300)
 
 		self.savebutton = button(self, callback=self.save,text_string="Save",background=style.color_1)
 		self.savebutton.place(relx=0.5, x = - 0.5 * style.sidecolumnwidth, width = style.sidecolumnwidth, height = style.buttonsize, rely = 1, y = - (style.offset + style.buttonsize))
@@ -60,12 +66,14 @@ class settingsPage(tk.Frame):
 		self.thumbnail_size_dropdown.option.set(self.settings.get_setting("thumbnail_size"))
 		self.maximized_on_launch_dropdown.option.set(self.settings.get_setting("maximized"))
 		self.topmost_dropdown.option.set(self.settings.get_setting("keep_topmost"))
+		self.borderless_dropdown.option.set(self.settings.get_setting("borderless"))
 
 	def save(self):
 		try:
 			self.settings.set_setting("thumbnail_size", self.thumbnail_size_dropdown.option.get())
 			self.settings.set_setting("maximized", self.maximized_on_launch_dropdown.option.get())
 			self.settings.set_setting("keep_topmost", self.topmost_dropdown.option.get())
+			self.settings.set_setting("borderless", self.borderless_dropdown.option.get())
 			self.settings.save()
 			self.okpage.telluser("Settings saved successfully")
 		except Exception as e:

@@ -1,4 +1,4 @@
-import os
+import os, sys
 import tkinter.filedialog
 import tkinter as tk
 import style as style
@@ -7,6 +7,7 @@ from widgets import ThemedFrame, ThemedListbox, ThemedLabel, searchBox, activeFr
 from customwidgets import categoryFrame, installed_categoryFrame, injector_categoryFrame
 from .yesnopage import yesnoPage
 from .settingspage import settingsPage
+from .exitpage import exitPage
 
 sort_option_default = "Sort: Default"
 sort_option_package_title_ascending = "Title A -> Z"
@@ -123,6 +124,7 @@ class appstorePage(activeFrame):
 		about_frame = aboutFrame(self.content_stacking_frame)
 		readme_frame = readmeFrame(self.content_stacking_frame)
 		settings_frame = settingsPage(self.content_stacking_frame, self.controller.settings)
+		exit_frame = exitPage(self.content_stacking_frame, self.controller)
 
 		self.category_frames = [all_frame,media_frame,emus_frame,games_frame,tools_frame,python_frame,cfw_frame,installed_frame,injector_frame]
 
@@ -178,6 +180,10 @@ class appstorePage(activeFrame):
 			{
 			"frame" : settings_frame,
 			"text" : "SETTINGS"
+			},
+			{
+			"frame" : exit_frame,
+			"text" : "EXIT"
 			}
 		]
 

@@ -16,6 +16,10 @@ class asyncThreader():
         self.low_priority_threads = []
         self.unique_thread = {}
         self.running_threads = []
+
+        self.watchdog = None
+        self.stopwatchdog = None
+        self.watchdogrunning = None
         
         self.update_running_threads()
 
@@ -54,14 +58,20 @@ class asyncThreader():
 
     #Not to be called by user
     def update_running_threads(self):
+        self.watchdogrunning = True
         self.clear_dead_threads()
         #Do high, then medium, then low-priority tasks, only do the next if the previous que was empty or finished
         if self.start_threads_and_move_to_running(self.high_priority_threads, force = self.force_high_priority):
             if self.start_threads_and_move_to_running(self.medium_priority_threads, force = self.force_medium_priority):
                 self.start_threads_and_move_to_running(self.low_priority_threads)
 
-        #Schedule Self
-        threading.Timer(0.05, self.update_running_threads).start()
+        if not self.stopwatchdog:
+            #Schedule Self
+            self.watchdog = threading.Timer(0.05, self.update_running_threads)
+            self.watchdog.start()
+        else:
+            self.stopwatchdog = False
+            self.watchdogrunning = False
 
     #Returns true if there are no remaining threads in the passed list, else we are maxed out
     def start_threads_and_move_to_running(self, threads, force=False):
@@ -85,3 +95,11 @@ class asyncThreader():
             while do_start_and_move_to_running():
                 pass
             return True
+
+    def exit(self):
+        self.join()
+        print("Stopping watchdog")
+        self.stopwatchdog = True
+        while self.watchdogrunning:
+            pass
+        print("Watchdog stopped")
