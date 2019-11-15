@@ -26,7 +26,6 @@ class categoryFrame(tk.Frame):
         self.sort_type = None
         self.thumbnailheight = None
         self.thumbnailwidth = None
-        self.last_size = [None, None]
 
         tk.Frame.__init__(self, parent, background = style.w, border = 0, highlightthickness = 0)
 
@@ -41,7 +40,6 @@ class categoryFrame(tk.Frame):
             "NEEDSUPDATE" : self.update_image,
             "NOTINSTALLED" : self.get_image
         }
-
 
         #make canvas and scroll bar
         self.canvas = tk.Canvas(self, bg=style.color_2, relief=tk.constants.SUNKEN)
@@ -285,11 +283,8 @@ class categoryFrame(tk.Frame):
             button.placed = False
 
     def configure(self, event):
-        size = [self.winfo_height(), self.winfo_width()]
-        if not size == self.last_size:
-            self.last_size = size
-            self.buildFrame()
-            self.framework.refresh()
+        self.buildFrame()
+        self.framework.refresh()
 
     def on_mouse_wheel(self, event):
         try:
