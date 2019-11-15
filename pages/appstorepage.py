@@ -123,7 +123,7 @@ class appstorePage(activeFrame):
 		help_frame = helpFrame(self.content_stacking_frame)
 		about_frame = aboutFrame(self.content_stacking_frame)
 		readme_frame = readmeFrame(self.content_stacking_frame)
-		settings_frame = settingsPage(self.content_stacking_frame, self.controller.settings)
+		settings_frame = settingsPage(self.content_stacking_frame, self.controller)
 		exit_frame = exitPage(self.content_stacking_frame, self.controller)
 
 		self.category_frames = [all_frame,media_frame,emus_frame,games_frame,tools_frame,python_frame,cfw_frame,installed_frame,injector_frame]

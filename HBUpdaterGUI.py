@@ -53,7 +53,7 @@ else:
 	print("Up to date.")
 
 #Async threader tool for getting downloads and other functions asyncronously
-threader = asyncThreader()
+threader = asyncThreader(max_threads = int(settings.get_setting("gui_threads")))
 
 def create_arg_parser():
 	parser = argparse.ArgumentParser(description='pass a repo.json to load a local one instead of one downloaded from github')

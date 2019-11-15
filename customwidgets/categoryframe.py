@@ -26,6 +26,7 @@ class categoryFrame(tk.Frame):
         self.sort_type = None
         self.thumbnailheight = None
         self.thumbnailwidth = None
+        self.last_size = [None, None]
 
         tk.Frame.__init__(self, parent, background = style.w, border = 0, highlightthickness = 0)
 
@@ -284,8 +285,11 @@ class categoryFrame(tk.Frame):
             button.placed = False
 
     def configure(self, event):
-        self.buildFrame()
-        self.framework.refresh()
+        size = [self.winfo_height(), self.winfo_width()]
+        if not size == self.last_size:
+            self.last_size = size
+            self.buildFrame()
+            self.framework.refresh()
 
     def on_mouse_wheel(self, event):
         try:

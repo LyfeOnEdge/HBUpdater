@@ -56,6 +56,9 @@ class asyncThreader():
                     t.handled = True
             self.running_threads = [t for t in self.running_threads if not t.handled]
 
+    def set_max_threads(self, max_threads):
+        self.max_threads = max_threads
+
     #Not to be called by user
     def update_running_threads(self):
         self.watchdogrunning = True

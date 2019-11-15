@@ -4,5 +4,6 @@
     "height": 575,
     "maximized": "windowed",
     "keep_topmost": "false",
-    "borderless": "false"
+    "borderless": "false",
+    "gui_threads": "8"
 }
