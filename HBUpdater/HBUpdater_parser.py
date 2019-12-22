@@ -67,3 +67,9 @@ class parser(object):
 
                 self.all = new_all
                 self.sorted = True
+
+    def get_package(self, package):
+        return self.package_dict[package]
+
+    def get_latest_version(self, package):
+        return self.get_package(package)["github_content"][0]["tag_name"]

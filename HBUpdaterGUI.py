@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-version = "2.3"
+version = "2.4"
 print("HBUpdater version %s" % version)
 
 import os, sys, platform, json, threading, argparse
@@ -34,15 +34,14 @@ except:
 
 #Import local modules
 from customwidgets import frameManager
-from appstore import getPackageIcon, appstore_handler
-from HBUpdater import parser, HBUpdater_handler
-from webhandler import getJson
+from appstore import getPackageIcon
+from HBUpdater import repo_parser, store_handler, local_packages_handler
+from webhandler import getJson, getCachedJson
 from locations import update_url
-from asyncthreader import asyncThreader
+from asyncthreader import threader
 from github_updater import updater
-from widgets import icon_dict
 from pages import pagelist
-from fusee_wrapper import fusee_object as injector
+from fusee_wrapper import injector
 from settings_tool import settings
 import style
 
@@ -53,7 +52,7 @@ else:
 	print("Up to date.")
 
 #Async threader tool for getting downloads and other functions asyncronously
-threader = asyncThreader(max_threads = int(settings.get_setting("gui_threads")))
+threader.set_max_threads(int(settings.get_setting("gui_threads")))
 
 def create_arg_parser():
 	parser = argparse.ArgumentParser(description='pass a repo.json to load a local one instead of one downloaded from github')
@@ -71,13 +70,12 @@ if not os.path.isdir(toolsfolder):
 	print("Initing tools folder")
 	os.mkdir(toolsfolder)
 #Tool to manage local packages (downloaded payloads, etc)
-local_packages_handler = HBUpdater_handler("GENERIC")
 local_packages_handler.set_path(toolsfolder, silent = True)
 #Init tracking file for local packages as needed
 if not local_packages_handler.check_if_get_init():
 	local_packages_handler.init_get()
 
-def get_updated_repo_file():
+if not parsed_args:
 	print("Getting updated HBUpdater api file")
 	repos_github_api = getJson("repos_api","https://api.github.com/repos/LyfeOnEdge/HBUpdater_API/releases")
 	if repos_github_api:
@@ -87,47 +85,35 @@ def get_updated_repo_file():
 		#Borrow HBUpdater findasset function 
 		repo_remote = local_packages_handler.findasset([["repo"], "json"], assets, silent = True)
 		print("Getting updated HBUpdater repo file")
-		packages = getJson("repos",repo_remote)
+		packages_json = getJson("repos",repo_remote)
 	else:
 		print("Failed to download packages json repo file, falling back on old version")
-		packages = os.path.join(sys.path[0], "cache/json/repos.json")
-
-	return packages
-
-if not (parsed_args if not parsed_args else parsed_args.repo):
-	packages_json = get_updated_repo_file()
+		packages_json = os.path.join(sys.path[0], "cache/json/repos.json")
 else:
-	print("Using passed repo json {}".format(parsed_args.repo))
-	packages_json = parsed_args.repo
+	if parsed_args.repo.lower() == "test":
+		print("Using local json")
+		packages_json = getCachedJson("repos")
+	else:
+		print("Using passed repo json {}".format(parsed_args.repo))
+		packages_json = parsed_args.repo
 
 #Parse the json into categories
-repo_parser = parser()
 repo_parser.blacklist_categories(["payloads"])
 threader.do_async(repo_parser.load, [packages_json], priority = "high")
 #Shared tool for installing and managing hbas apps via the switchbru site on the sd card
-store_handler = HBUpdater_handler("SWITCH")
 
-image_sharer = icon_dict()
-
-rcminjector = injector(print_function = print)
 
 def startGUI(args = None):
 	#frameManager serves to load all pages and stack them on top of each other (all 2 of them)
 	#also serves to make many important objects and functions easily available to children frames
 	gui = frameManager(pagelist,
-		settings,
-		local_packages_handler,
-		store_handler,
-		repo_parser,
-		threader,
-		image_sharer,
-		updater,
-		rcminjector,
 		args
 		)
 
-	#Set title formattedwith version
-	gui.title("HBUpdater %s" % version)
+	#Set title formatted with version
+	version_string = "HBUpdater %s" % version
+	gui.set_version(version_string)
+	gui.title(version_string)
 	#Wheteher to keep window topmost
 	gui.attributes("-topmost", True if settings.get_setting("keep_topmost") == "true" else False)
 

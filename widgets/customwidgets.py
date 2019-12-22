@@ -46,7 +46,8 @@ class ThemedListbox(tk.Listbox):
 			highlightthickness=highlightthickness,
 			foreground= foreground,
 			font = largetext,
-			activestyle=None
+			activestyle=None,
+			exportselection = False
 		)
 
 #Widgets with scroll bars that appear when needed and supporting code
@@ -120,6 +121,12 @@ class ScrolledThemedListBox(AutoScroll, ThemedListbox):
 	def __init__(self, master, **kw):
 		ThemedListbox.__init__(self, master, **kw,)
 		AutoScroll.__init__(self, master)
+
+class scrollingTkListbox(AutoScroll, tk.Listbox):
+    @_create_container
+    def __init__(self, master, **kw):
+        tk.Listbox.__init__(self, master, **kw,)
+        AutoScroll.__init__(self, master)
 
 def _bound_to_mousewheel(event, widget):
 	child = widget.winfo_children()[0]

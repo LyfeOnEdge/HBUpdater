@@ -54,9 +54,6 @@ class searchBox(tk.Frame):
         entry.delete(0, tk.constants.END)
         entry.insert(0, text)
         
-    def clear(self):
-        self.entry_var.set("")
-        
     def focus(self):
         self.entry.focus()
 

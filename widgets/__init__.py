@@ -9,3 +9,4 @@ from .themedscrollingtext import themedScrollingText
 from .tk_image_sharer import icon_dict
 from .tooltips import tooltip
 from .safe_button import button
+image_sharer = icon_dict()

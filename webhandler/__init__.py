@@ -1,1 +1,1 @@
-from .webhandler import opentab, download, getJson
+from .webhandler import opentab, download, getJson, getCachedJson

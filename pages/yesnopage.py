@@ -8,6 +8,7 @@ class yesnoPage(tk.Frame):
     def __init__(self, parent):
         tk.Frame.__init__(self,parent,background=style.color_1)
         self.yes_command = None
+        self.follow_up = False
 
         self.usertext = scrolledText(self, wrap = 'word', font = style.hugeboldtext, padx = 4 * style.offset, pady = 4 * style.offset, background = style.color_1, foreground = style.w)
         self.usertext.place(relwidth = 1, relheight = 1, height = - (style.buttonsize + 2 * style.offset))
@@ -25,10 +26,14 @@ class yesnoPage(tk.Frame):
         self.place(relwidth = 1, relheight = 1)
 
     def hide(self):
-        self.place_forget()
+        if not self.follow_up:
+            self.place_forget()
+        else:
+            self.follow_up = False
 
 
-    def getanswer(self, question, yes_command):
+    def getanswer(self, question, yes_command, follow_up = False):
+        self.follow_up = follow_up
         self.yes_command = yes_command
 
         print("-------------------------------\nQuestion raised - \n{}".format(question))
@@ -40,14 +45,16 @@ class yesnoPage(tk.Frame):
 
     def on_yes(self):
         print("Got yes\n-------------------------------")
+        command = self.yes_command
+        self.yes_command = None
         try:
-            self.yes_command()
+            command()
         except Exception as e:
             print("Error in yes_command in yesnopage {}".format(e))
-        self.yes_command = None
         self.hide()
 
     def on_no(self):
         print("Got no\n-------------------------------")
         self.yes_command = None
+        self.follow_up = False
         self.hide()

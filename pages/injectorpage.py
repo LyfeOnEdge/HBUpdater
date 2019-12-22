@@ -2,14 +2,17 @@ from .detailpage import detailPage
 from widgets import button, ThemedLabel
 import style
 from appstore import getScreenImage
+from HBUpdater import local_packages_handler
 from locations import notfoundimage
+from fusee_wrapper import injector
+from asyncthreader import threader
 import os, sys
 
 class injectorPage(detailPage):
 	def __init__(self, parent, controller):
-		self.local_packages_handler = controller.local_packages_handler
-		self.injector = controller.injector
-				
+		self.local_packages_handler = local_packages_handler
+		self.injector = injector
+		
 		self.column_inject_button = None		
 		detailPage.__init__(self,parent,controller)
 		# self.column_package.place_forget()
@@ -27,7 +30,7 @@ class injectorPage(detailPage):
 			package = repo["software"]
 
 		self.package = package
-		self.controller.async_threader.do_async(self.update_banner) 
+		threader.do_async(self.update_banner) 
 
 		github_content = repo["github_content"]
 
@@ -90,7 +93,7 @@ class injectorPage(detailPage):
 				self.column_install_button.settext("Download")
 
 	def trigger_install(self):
-		self.controller.async_threader.do_async(self.local_packages_handler.install_package, [self.repo, self.version_index, self.progress_bar.update, self.reload_function, self.progress_bar.set_title], priority = "high")
+		threader.do_async(self.local_packages_handler.install_package, [self.repo, self.version_index, self.progress_bar.update, self.reload_function, self.progress_bar.set_title], priority = "high")
 
 	def trigger_inject(self):
 		toolsfolder = os.path.join(sys.path[0],"tools")

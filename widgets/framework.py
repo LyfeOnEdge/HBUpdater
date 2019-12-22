@@ -1,7 +1,7 @@
 import tkinter as tk
 
 class activeFrame(tk.Frame):
-    def __init__(self, parent, controller, tick_delay = 250):
+    def __init__(self, parent, controller, tick_delay = 250, background = "#000000"):
         self.controller = controller
         self.tick_delay = tick_delay
         self.needsRefresh = False
@@ -12,7 +12,8 @@ class activeFrame(tk.Frame):
 
         tk.Frame.__init__(self,parent, 
             highlightthickness=0,
-            borderwidth = 0
+            borderwidth = 0,
+            background = background
             )
 
         self.bind("<<ShowFrame>>", self.on_show_frame) #Bind on_show_frame to showframe event so whenever the frame is raised by the controller it reloads
@@ -73,7 +74,7 @@ class activeFrame(tk.Frame):
     #Adds a task that gets called repetedly until it returns true
     #DON'T EVER PUT ANYTHING BLOCKING HERE
     #IT WILL CAUSE MAJOR SLOWDOWN
-    #THIS IS MEANT FOR THREADCHECKING
+    #THIS IS MEANT FOR THREADED VARIABLE CHECKING
     def add_waiting_task(self, taskname, constructor):
         self.waiting_tasks[taskname] = constructor
 

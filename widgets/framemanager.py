@@ -7,15 +7,13 @@ class frameManager(tk.Tk):
     def __init__(self, 
                 pages, #List of pages to put in outermost z-layer
                 geometry, #Startup size
-                async_threader, #object to easily deal with a few async function
-                image_sharer, #Simple tool to have one base location to lookup images
-                update_status = None #Whether or not the app needs an update
+                version,
+                update_status = None, #Whether or not the app needs an update
                 ): 
         tk.Tk.__init__(self)
         self.update_status = update_status
-        self.async_threader = async_threader
-        self.image_sharer = image_sharer
         self.geometry("{}x{}".format(geometry["width"],geometry["height"])) 
+        self.version_string = None
         # self.resizable(False, False)
 
         # the container is where we'll stack a bunch of frames
@@ -39,13 +37,12 @@ class frameManager(tk.Tk):
         else:
             print("No pages found")
 
+    def set_version(self, title):
+        self.version_string = title
+        self.title(title)
 
     def show_frame(self, page_name):
         #Show frame for the given page name
         frame = self.frames[page_name]
         frame.event_generate("<<ShowFrame>>")
         frame.tkraise()
-
-if __name__ == "__main__":
-    app = App()
-    app.mainloop()

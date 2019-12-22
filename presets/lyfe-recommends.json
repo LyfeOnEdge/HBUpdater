@@ -1,0 +1,12 @@
+{
+    "title": "lyfe-recommends",
+    "author": "Lyfe",
+    "version": "1",
+    "packages": [
+        "HomeBrew-Manager",
+        "appstore",
+        "Checkpoint",
+        "Atmosphere",
+        "SimpleModManager"
+    ]
+}

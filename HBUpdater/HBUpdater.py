@@ -62,7 +62,7 @@ class HBUpdater_handler(object):
         self.get_packages(silent = silent)
 
     def reload(self):
-        self.set_path(self.base_install_path)
+        self.set_path(self.base_install_path, silent = True)
 
     def check_path(self):
         return self.base_install_path
@@ -78,140 +78,175 @@ class HBUpdater_handler(object):
     #Progress function is a call to the gui to 
     #The reload function will call a gui reload at the end of the install process
     #Note: don't try to be clever and use a for loop and lambda functions passed to reload_function to essentially chain installs together. It *will* crash.
-    def install_package(self, repo_entry, version_index = 0, progress_function = None, reload_function = None, title_function = None, silent = False):
-        def do_progress_function(text_string, progress_precent):
-            if progress_function:
-                try:
-                    progress_function(text_string, progress_precent)
-                except:
-                    pass
-
-        def do_title_function(title_string):
-            if title_function:
-                try:
-                    title_function(title_string)
-                except:
-                    pass
-
-        if not self.check_path(): return self.warn_path_not_set()
-
-        do_progress_function("Paths set", 10)
-
-        if not repo_entry:
-            print("No repo entry data passed to appstore handler.")
-            print("Not continuing with install")
-            return
+    def install_package(self, repo_entry, version_index = 0, progress_function = None, reload_function = None, title_function = None, silent = False, error_function = None):
         try:
+            def do_progress_function(text_string, progress_precent):
+                if progress_function:
+                    try:
+                        progress_function(text_string, progress_precent)
+                    except:
+                        pass
+
+            def do_title_function(title_string):
+                if title_function:
+                    try:
+                        title_function(title_string)
+                    except:
+                        pass
+
+            def do_error_function(reason):
+                print(reason)
+                if error_function:
+                    error_function((repo_entry, reason))
+
+            if not self.check_path(): return self.warn_path_not_set()
+
+            do_progress_function("Paths set", 10)
+
+            if not repo_entry:
+                return do_error_function("No repo entry data passed to appstore handler. Not continuing with install. No data has been lost.")
+            try:
+                package = repo_entry["package"]
+            except:
+                do_error_function("Error - package name not found in repo data. Not continuing with install. No data has been lost.")
+                do_progress_function("Error - package name not found in repo data. No data has been lost.", 15)
+                return
+
+            do_progress_function("Package data passed", 20)
+
+            try:
+                version = repo_entry["github_content"][version_index]["tag_name"]
+            except:
+                do_progress_function("Error - package version not found in repo data. No data has been lost.", 25)
+                do_error_function("Error - package version not found in repo data. Not continuing with install. No data has been lost.")
+                return 
+
+            title = "Installing %s" % package
+            title +=  " - %s" % version
+
+            do_title_function(title)
+
+            if not self.check_if_get_init():
+                do_progress_function(".get folder not initiated, not continuing with install. No data has been lost.", 25)
+                do_error_function(".get folder not initiated. Not continuing with install. No data has been lost.")
+                return
+
+            do_progress_function("Get folder found", 30)
+
+            #Uninstall if already installed
+            removed_old_version = False
+            packages = self.get_packages(silent=True)
+            if packages:
+                if package in packages:
+                    print("Package already installed, removing for upgrade")
+                    removed_old_version = True
+                    if not self.uninstall_package(repo_entry):
+                        #If uninstall fails
+                        do_error_function("Uninstall failed. Not continuing with install. Data may have been lost")
+                        do_progress_function("Uninstall failed, not continuing with install.", 35) 
+                        return
+                    do_progress_function("Updating .", 35) 
+                else:
+                    print("Package not previously installed, proceeding...")
+
+            install_message = "Beginning install for package %s" % repo_entry["name"]
+
+            print(install_message)
+
+            do_progress_function(install_message, 50)
+
+            #Append base directory to packages directory
+            packagesdir = os.path.join(self.base_install_path, self.packages_dir)
+            if not os.path.isdir(packagesdir):
+                os.makedirs(packagesdir)
+            #Append package folder to packages directory
+            packagedir = os.path.join(packagesdir, package)
+            if not os.path.isdir(packagedir):
+                os.mkdir(packagedir)
+
+            do_progress_function("Downloading package %s" % package, 60)
+
+            #Download the package from github
+            downloadedfile = self.getPackage(repo_entry, version_index)
+            if not downloadedfile:
+                message = "Failed to download asset for package {}. Not continuing with install.".format(package)
+                if removed_old_version:
+                    message += " An older version was removed, you will have to install it again."
+                else:
+                    message += " No data was lost."
+                do_error_function(message)
+                do_progress_function("Failed to download asset for package {}".format(package), 70)
+                return
+
+            do_progress_function("Extracting...", 70)
+
+            print("Download successful, proceeding...")
+
+            #Move software to sd card
+            #Handles data differently depending on file type
+            installlocation = self.installfiletosd(downloadedfile, repo_entry["install_subfolder"])
+
+            do_progress_function("Extract complete", 80)
+
+            name = repo_entry["name"]
+            print("Installing {}".format(name))
+
+            #parse api link to a github project releases link
+            url = parse_api_to_standard_github(repo_entry["release_api"])
+            url = url.strip("/") + "/releases"
+
+            #Create empty appstore entry and populate it
+            entry = {}
+            entry["title"] = name
+            entry["author"] = repo_entry["author"]
+            entry["category"] = repo_entry["category"]
+            entry["license"] = repo_entry["license"]
+            entry["description"] = repo_entry["description"]
+            entry["url"] = url
             package = repo_entry["package"]
-        except:
-            print("Error - package name not found in repo data")
-            do_progress_function("Error - package name not found in repo data", 15)
-            print("Not continuing with install")
-            return
+            #Convert github version to store version
+            entry["version"] = self.clean_version(version, package)
+            
+                    
+            self.create_store_entry(entry,installlocation,package)
 
-        do_progress_function("Package data passed", 20)
+            do_progress_function("Wrote package manifest", 90)
+            do_progress_function("Wrote package info", 100)
 
-        try:
-            version = repo_entry["github_content"][version_index]["tag_name"]
-        except:
-            print("Error - package version not found in repo data")
-            do_progress_function("Error - package version not found in repo data", 25)
-            print("Not continuing with install")
-            return
+            print("Installed {} version {}".format(repo_entry["name"], version))
 
-        title = "Installing %s" % package
-        title +=  " - %s" % version
-
-        do_title_function(title)
-
-        if not self.check_if_get_init():
-            print("Get folder not initiated.")
-            print("Not continuing with install")
-            do_progress_function("Get folder not initiated, not continuing with install.", 25)
-            return
-
-        do_progress_function("Get folder found", 30)
-
-        #Uninstall if already installed
-        packages = self.get_packages(silent=True)
-        if packages:
-            if package in packages:
-                print("Package already installed, removing for upgrade")
-                if not self.uninstall_package(repo_entry):
-                    #If uninstall fails
-                    print("Uninstall failed.")
-                    print("Not continuing with install")
-                    do_progress_function("Uninstall failed, not continuing with install.", 35) 
-                    return
-                do_progress_function("Updating .", 35) 
+            #Refreshes the current packages
+            if reload_function:
+                reload_function()
+            self.reload()
+        except Exception as e:
+            if error_function:
+                error_function(e)
             else:
-                print("Package not previously installed, proceeding...")
+                print("Error installing package {} ~ {}".format(repo_entry["name"], e))
 
-        install_message = "Beginning install for package %s" % repo_entry["name"]
+    #Run this function async from any gui to install a list.
+    #pass a constructor that collects a list of failed packages and do something with this with a passed complete_function
+    def install_package_list(self, packages_list, version_index = 0, progress_function = None, reload_function = None, title_function = None, silent = False, error_function = None, complete_function = None):
+        errorstate = False
 
-        print(install_message)
+        def internal_error_function():
+            errorstate = True
+       
+        for package in packages_list:
+            try:
+                self.install_package(package, version_index, progress_function, reload_function, title_function, silent, internal_error_function)
+                if errorstate:
+                    if error_function:
+                        error_function(package)
+                    else:
+                        print("Error installing package {}".format(package["Title"]))
+                    errorstate = False
+            except Exception as e:
+                print("Error during install ~ {}".format(e))
 
-        do_progress_function(install_message, 50)
-
-        #Append base directory to packages directory
-        packagesdir = os.path.join(self.base_install_path, self.packages_dir)
-        if not os.path.isdir(packagesdir):
-            os.makedirs(packagesdir)
-        #Append package folder to packages directory
-        packagedir = os.path.join(packagesdir, package)
-        if not os.path.isdir(packagedir):
-            os.mkdir(packagedir)
-
-        do_progress_function("Downloading package %s" % package, 60)
-
-        #Download the package from github
-        downloadedfile = self.getPackage(repo_entry, version_index)
-        if not downloadedfile:
-            print("Failed to download asset for package {}".format(package))
-            do_progress_function("Failed to download asset for package {}".format(package), 70)
-            return
-
-        do_progress_function("Extracting...", 70)
-
-        print("Download successful, proceeding...")
-
-        #Move software to sd card
-        #Handles data differently depending on file type
-        installlocation = self.installfiletosd(downloadedfile, repo_entry["install_subfolder"])
-
-        do_progress_function("Extract complete", 80)
-
-        name = repo_entry["name"]
-        print("Installing {}".format(name))
-
-        #parse api link to a github project releases link
-        url = parse_api_to_standard_github(repo_entry["release_api"])
-        url = url.strip("/") + "/releases"
-
-        #Create empty appstore entry and populate it
-        entry = {}
-        entry["title"] = name
-        entry["author"] = repo_entry["author"]
-        entry["category"] = repo_entry["category"]
-        entry["license"] = repo_entry["license"]
-        entry["description"] = repo_entry["description"]
-        entry["url"] = url
-        package = repo_entry["package"]
-        #Convert github version to store version
-        entry["version"] = self.clean_version(version, package)
-        
-                
-        self.create_store_entry(entry,installlocation,package)
-
-        do_progress_function("Wrote package manifest", 90)
-        do_progress_function("Wrote package info", 100)
-
-        print("Installed {} version {}".format(repo_entry["name"], version))
-
-        #Refreshes the current packages
-        if reload_function:
-            reload_function()
-        self.reload()
+        if complete_function:
+            complete_function()
 
     def installfiletosd(self, filename,subfolder,remove_downloaded_file_after = True):
         def handleMove():

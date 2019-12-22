@@ -14,8 +14,10 @@ class asyncThreader():
         self.high_priority_threads = []
         self.medium_priority_threads = []
         self.low_priority_threads = []
-        self.unique_thread = {}
+        self.unique_threads = []
         self.running_threads = []
+
+        self.unique = None
 
         self.watchdog = None
         self.stopwatchdog = None
@@ -68,6 +70,13 @@ class asyncThreader():
             if self.start_threads_and_move_to_running(self.medium_priority_threads, force = self.force_medium_priority):
                 self.start_threads_and_move_to_running(self.low_priority_threads)
 
+        if self.unique:
+            if not self.unique.isAlive():
+                if self.unique_threads:
+                    self.do_next_unique()
+                else:
+                    self.unique = None
+
         if not self.stopwatchdog:
             #Schedule Self
             self.watchdog = threading.Timer(0.05, self.update_running_threads)
@@ -98,6 +107,23 @@ class asyncThreader():
             while do_start_and_move_to_running():
                 pass
             return True
+
+    def do_unique(self, func, arglist = []):
+        self.unique_threads.append(asyncThread(func, arglist))
+        if not self.unique:
+            self.do_next_unique()
+
+    def do_next_unique(self):
+        self.unique = self.unique_threads.pop(0) 
+        self.unique.begin()
+        self.running_threads.append(self.unique)
+
+    def is_unique_running(self):
+        try:
+            if self.unique:
+                return self.unique.isAlive()
+        except:
+            pass
 
     def exit(self):
         self.join()

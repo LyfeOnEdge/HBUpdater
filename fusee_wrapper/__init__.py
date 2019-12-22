@@ -44,3 +44,5 @@ if __name__ == "__main__":
 
     fusee = fusee_object(print)
     fusee.inject(payload)
+else:
+    injector = fusee_object()

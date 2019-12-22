@@ -1,0 +1,20 @@
+{
+    "title": "games-default",
+    "author": "Lyfe",
+    "version": "1",
+    "packages": [
+        "MarioBrosNX",
+        "Lugaru",
+        "InvadersNX",
+        "PacManNX",
+        "NXBlood",
+        "supermariowar-nx",
+        "spacenx",
+        "SlideNX",
+        "2048",
+        "SlitherlinkNX",
+        "TicTacToeNX",
+        "Kens-Labyrinth",
+        "BomberManNX"
+    ]
+}

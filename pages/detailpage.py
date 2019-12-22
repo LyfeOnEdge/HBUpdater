@@ -3,20 +3,21 @@ import tkinter as tk
 import tkinter.filedialog
 import locations
 from widgets import ThemedFrame, ThemedLabel, ThemedListbox, activeFrame, scrolledText, button, tooltip, ScrolledThemedListBox
+from HBUpdater import repo_parser, store_handler
 from customwidgets import progressFrame
 import style
 from appstore import getScreenImage
 from webhandler import opentab
 from .yesnopage import yesnoPage
-
+from asyncthreader import threader
 from PIL import Image, ImageTk
 
 class detailPage(activeFrame):
     def __init__(self, parent, controller):
         activeFrame.__init__(self,parent,controller)
         self.controller = controller
-        self.appstore_handler = controller.appstore_handler
-        self.repo_parser = controller.repo_parser
+        self.appstore_handler = store_handler
+        self.repo_parser = repo_parser
         self.selected_version = None
         self.version_index = None
         self.repo = None
@@ -157,7 +158,7 @@ class detailPage(activeFrame):
 
         self.package = package
 
-        self.controller.async_threader.do_async(self.update_banner)
+        threader.do_async(self.update_banner)
 
         github_content = repo["github_content"]
 
@@ -265,7 +266,7 @@ class detailPage(activeFrame):
 
     def show(self, repo):
         self.do_update_banner(locations.notfoundimage)
-        self.controller.async_threader.do_async(self.update_page, [repo], priority = "medium")
+        threader.do_async(self.update_page, [repo], priority = "medium")
         self.tkraise()
         for child in self.winfo_children():
             child.bind("<Escape>", self.leave)
@@ -286,7 +287,7 @@ class detailPage(activeFrame):
         if self.appstore_handler.check_path():
             if self.appstore_handler.check_if_get_init():
                 if self.repo:
-                    self.controller.async_threader.do_async(self.appstore_handler.install_package, [self.repo, self.version_index, self.progress_bar.update, self.reload_function, self.progress_bar.set_title], priority = "high")
+                    threader.do_async(self.appstore_handler.install_package, [self.repo, self.version_index, self.progress_bar.update, self.reload_function, self.progress_bar.set_title], priority = "high")
             else:
                 self.yesnoPage.getanswer("The homebrew appstore has not been initiated here yet, would you like to initiate it?", self.init_get_then_continue)
 
@@ -296,20 +297,20 @@ class detailPage(activeFrame):
 
     def trigger_uninstall(self):
         if self.repo:
-            self.controller.async_threader.do_async(self.appstore_handler.uninstall_package, [self.repo], priority = "high")
+            threader.do_async(self.appstore_handler.uninstall_package, [self.repo], priority = "high")
             self.controller.frames["appstorePage"].reload_category_frames()
             self.schedule_callback(self.reload(), 100)
 
     def reload(self):
-        self.controller.async_threader.do_async(self.update_page, [self.repo])
+        threader.do_async(self.update_page, [self.repo])
 
     def trigger_open_tab(self):
         if self.repo:
             try:
                 url = self.repo["projectpage"]
                 opentab(url)
-            except:
-                print("Failed to open tab for url {}".format(url))
+            except Exception as e:
+                print("Failed to open tab - {}".format(e))
 
     def set_sd(self):
         chosensdpath = tkinter.filedialog.askdirectory(initialdir="/",  title='Please select your SD card')

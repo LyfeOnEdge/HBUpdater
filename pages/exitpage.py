@@ -2,12 +2,13 @@ import os, sys
 import tkinter as tk
 from tkinter.constants import *
 from widgets import ThemedLabel, button
+from asyncthreader import threader
 import style
 
 class exitPage(tk.Frame):
     def __init__(self, parent, controller):
         tk.Frame.__init__(self,parent,background=style.color_1)
-        self.exit_callback = controller.async_threader.exit
+        self.exit_callback = threader.exit
 
         self.usertext = ThemedLabel(self, label_text="Exit?", label_font = style.hugeboldtext, anchor = "center", background = style.color_1, foreground = style.w)
         self.usertext.place(relwidth = 1, relheight = 1, height = - (style.buttonsize + 2 * style.offset))

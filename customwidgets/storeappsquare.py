@@ -1,10 +1,12 @@
 from PIL import Image, ImageTk
 import tkinter as tk
-from widgets import ThemedFrame, button, tooltip, ThemedLabel
+from widgets import ThemedFrame, button, tooltip, ThemedLabel, image_sharer
+from HBUpdater import repo_parser
 from appstore import getPackageIcon
 from locations import notfoundimage
 import style
-import platform 
+import platform
+from settings_tool import settings
 
 class storeAppSquare(ThemedFrame):
     def __init__(self, parent, controller, framework, category_frame, repo, callback, status_handler):
@@ -17,7 +19,7 @@ class storeAppSquare(ThemedFrame):
         self.callback = callback
         self.status_handler = status_handler
         self.active = True
-        self.image_sharer = self.controller.image_sharer
+        self.image_sharer = image_sharer
         self.imageset = False
         self.base_x = None #Stores the base x location to build the button from for dynamic building
         self.base_y = None #Stores the base y location to build the button from for dynamic building
@@ -48,7 +50,7 @@ class storeAppSquare(ThemedFrame):
             "huge" : (style.huge_thumbnail_height, style.huge_thumbnail_width)
         }
 
-        thumbnail_size = self.controller.settings.get_setting("thumbnail_size")
+        thumbnail_size = settings.get_setting("thumbnail_size")
         thumbnail_size = thumbnail_size_map.get(thumbnail_size)
 
         if thumbnail_size:
@@ -123,12 +125,14 @@ class storeAppSquare(ThemedFrame):
                     if self.status_handler.packages:
                         if package in self.status_handler.packages:
                             installed_version = self.status_handler.get_package_version(package)
-                            current_version = self.controller.repo_parser.package_dict[package]["github_content"][0]["tag_name"]
+                            current_version = repo_parser.package_dict[package]["github_content"][0]["tag_name"]
 
                             if self.status_handler.clean_version(installed_version, package) == self.status_handler.clean_version(current_version, package):
                                 status = "UPTODATE"
                             elif self.status_handler.clean_version(installed_version, package) < self.status_handler.clean_version(current_version, package):
                                 status = "NEEDSUPDATE"
+                            else:
+                                status = "UPTODATE"
                         else:
                             status = "NOTINSTALLED"
                     else:

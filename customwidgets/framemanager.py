@@ -1,32 +1,18 @@
 #Heavily customized class to manage frames in the outermost layer
 import tkinter as tk
-
+from settings_tool import settings
 #Frame handler, raises and pages in z layer,
-#also
+#also handles making core components like package handlers,
+#parsers, and other library-driven functions available to subsystems
 class frameManager(tk.Tk):
-    def __init__(self, 
+    def __init__(self,
                 pages, #List of pages to put in outermost z-layer
-                settings, #Settings handler
-                local_packages_handler, #Tool to manage local packages, payloads etc
-                appstore_handler, #Object to manage appstore sd content
-                repo_parser, #Object to deal with the appstore json
-                async_threader, #object to easily deal with a few async function
-                image_sharer, #Simple tool to have one base location to lookup images
-                updater, #Tool to handle updating
-                injector, #Tool to handle injection Switch RCM payloads
                 args,
                 ):  #Passed args to be accessed globally
 
         tk.Tk.__init__(self)
-        self.updater = updater
-        self.settings = settings
-        self.async_threader = async_threader
-        self.local_packages_handler = local_packages_handler
-        self.appstore_handler = appstore_handler
-        self.repo_parser = repo_parser
-        self.image_sharer = image_sharer
-        self.injector = injector
         self.args = args
+        self.version = None
         self.geometry("{}x{}".format(settings.get_setting("width"),settings.get_setting("height")))
         # self.resizable(False, False)
 
@@ -48,12 +34,17 @@ class frameManager(tk.Tk):
 
                 #place the frame to fill the whole window, stack them all in the same place
                 frame.grid(row=0, column=0, sticky="nsew")
+        else:
+            print("No pages to initialize.")
 
     def show_frame(self, page_name):
         #Show frame for the given page name
         frame = self.frames[page_name]
         frame.event_generate("<<ShowFrame>>")
         frame.tkraise()
+
+    def set_version(self, version_string):
+        self.version = version_string
 
 if __name__ == "__main__":
     app = App()

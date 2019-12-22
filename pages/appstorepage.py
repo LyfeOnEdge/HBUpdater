@@ -5,9 +5,12 @@ import style as style
 import locations
 from widgets import ThemedFrame, ThemedListbox, ThemedLabel, searchBox, activeFrame, scrolledText, button
 from customwidgets import categoryFrame, installed_categoryFrame, injector_categoryFrame
+from github_updater import updater
+from HBUpdater import repo_parser, store_handler
 from .yesnopage import yesnoPage
 from .settingspage import settingsPage
 from .exitpage import exitPage
+from .presetspage import presetsPage
 
 sort_option_default = "Sort: Default"
 sort_option_package_title_ascending = "Title A -> Z"
@@ -40,13 +43,13 @@ SORT_MAP = {
 class appstorePage(activeFrame):
 	def __init__(self, parent, controller):
 		self.controller = controller
-		self.appstore_handler = controller.appstore_handler
-		self.repo_parser = controller.repo_parser
-		self.image_sharer = controller.image_sharer
+		self.appstore_handler = store_handler
+		self.repo_parser = repo_parser
 		self.current_frame = None
 		self.current_frame_name = None
 		self.last_selection = None
 		self.last_sort_option = None
+		self.updater = updater
 		activeFrame.__init__(self,parent,controller)
 
 		self.column = ThemedFrame(self, background = style.color_1)
@@ -68,11 +71,6 @@ class appstorePage(activeFrame):
 		self.category_listbox.configure(activestyle = "none")
 		self.category_listbox.place(relwidth=1,relheight=1)
 		self.category_listbox.bind('<<ListboxSelect>>',self.select_frame)
-
-		# self.tool_listbox = ThemedListbox(self.column_body)
-		# self.tool_listbox.configure(activestyle = "none")
-		# self.tool_listbox.place(relwidth=1,relheight=0.5, rely = 0.5)
-		# self.tool_listbox.bind('<<ListboxSelect>>',self.select_frame)
 
 		self.column_footer = ThemedFrame(self.column, background = style.color_1)
 		self.column_footer.place(relx = 0, rely = 1, relwidth = 1, height = style.footerheight, y = - style.footerheight)
@@ -96,7 +94,7 @@ class appstorePage(activeFrame):
 		self.category_label = ThemedLabel(self.content_frame_header,"",anchor="nw",label_font=style.giantboldtext, background = style.color_1, foreground=style.lg)
 		self.category_label.place(x = + style.offset, relx = 0,rely = 0, relheight = 1, height = - (style.offset + 1), y = + style.offset)
 
-		self.content_frame_header_search_bar = searchBox(self.content_frame_header, command = self.search, entry_background=style.color_2, borderwidth = 0)
+		self.content_frame_header_search_bar = searchBox(self.content_frame_header, command = self.search, entry_background=style.color_2, borderwidth = 0, entry_foreground = style.w)
 
 		self.selected_sort_method = tk.StringVar()
 		self.selected_sort_method.set(SORT_OPTIONS[0])
@@ -110,7 +108,6 @@ class appstorePage(activeFrame):
 		self.content_stacking_frame = ThemedFrame(self.content_frame)
 		self.content_stacking_frame.place(relx = 0, y=(style.searchboxheight + style.offset), relwidth = 1, relheight = 1, height=-(style.searchboxheight + style.offset))
 
-
 		all_frame = categoryFrame(self.content_stacking_frame, self.controller, self, self.repo_parser.all)
 		media_frame = categoryFrame(self.content_stacking_frame, self.controller, self, self.repo_parser.media)
 		emus_frame = categoryFrame(self.content_stacking_frame, self.controller, self, self.repo_parser.emulators)
@@ -119,6 +116,7 @@ class appstorePage(activeFrame):
 		python_frame = categoryFrame(self.content_stacking_frame, self.controller, self, self.repo_parser.nxpythonlist)
 		cfw_frame = categoryFrame(self.content_stacking_frame, self.controller, self, self.repo_parser.customfirmwarelist)
 		installed_frame = installed_categoryFrame(self.content_stacking_frame, self.controller, self, self.repo_parser.all)
+		self.presets_frame = presets_frame = presetsPage(self.content_stacking_frame, self.controller)
 		injector_frame = injector_categoryFrame(self.content_stacking_frame, self.controller, self, self.repo_parser.payloadlist)
 		help_frame = helpFrame(self.content_stacking_frame)
 		about_frame = aboutFrame(self.content_stacking_frame)
@@ -161,6 +159,10 @@ class appstorePage(activeFrame):
 			"frame" : installed_frame,
 			"text" : "Installed"
 			},
+			# {
+			# "frame" : presets_frame,
+			# "text" : "Bundles (Beta)"
+			# },
 			{
 			"frame" : injector_frame,
 			"text" : "RCM Injector"
@@ -205,13 +207,14 @@ class appstorePage(activeFrame):
 
 		self.show_frame("All Apps")
 
-		if self.controller.updater.status:
-			print(self.controller.updater.status)
+		if self.updater.status:
+			print(self.updater.status)
 			self.yesnoPage = yesnoPage(self)
-			self.yesnoPage.getanswer("An update is available, would you like to download it?\nPatch notes:\n{}".format(self.controller.updater.status), self.controller.updater.update)
+			self.yesnoPage.getanswer("An update is available, would you like to download it?\nPatch notes:\n{}".format(self.updater.status), self.updater.update)
 
 		self.loaded()
 		self.add_on_refresh_callback(self.update_sd_path)
+		self.add_on_tick_callback(self.update_sd_path)
 		self.sort_check_loop()
 
 	def show_frame(self, page_name):
@@ -273,6 +276,7 @@ class appstorePage(activeFrame):
 		self.appstore_handler.set_path(chosensdpath)
 		self.reload_category_frames()
 		self.update_sd_path()
+		self.presets_frame.update_apply_frame()
 
 	def update_sd_path(self):
 		chosensdpath = self.appstore_handler.check_path()
@@ -285,6 +289,7 @@ class appstorePage(activeFrame):
 		else:
 			basepath = "Not Set"
 		self.column_sd_status_label.set("SD: {}".format(basepath))
+		self.presets_frame.update_sd_path()
 
 	def update_sort(self):
 		for frame in self.category_frames:
@@ -299,7 +304,6 @@ class appstorePage(activeFrame):
 
 		#schedule self
 		self.schedule_callback(self.sort_check_loop, 100)
-
 
 class textFrame(ThemedFrame):
 	def __init__(self,frame):

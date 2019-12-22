@@ -7,17 +7,18 @@ wd = sys.path[0]
 folders_to_init = []
 #Folder to hold cache folders
 cachefolder =  os.path.join(wd, "cache")
-folders_to_init.append(cachefolder)
 #Folder to cache repo jsons
 jsoncachefolder = os.path.join(cachefolder,"json")
-folders_to_init.append(jsoncachefolder)
 #Folder to cache author images
 imagecachefolder = os.path.join(cachefolder,"images")
-folders_to_init.append(imagecachefolder)
 #Download folder
 downloadsfolder = os.path.join(wd, "downloads")
-folders_to_init.append(downloadsfolder)
+#Folder for preset bundle jsons
+presetsfolder = os.path.join(wd, "presets")
 
+assetsfolder = os.path.join(wd, "assets")
+
+folders_to_init = [cachefolder, jsoncachefolder, imagecachefolder, downloadsfolder, presetsfolder]
 for folder in folders_to_init:
 	if not os.path.isdir(folder):
 		print("initializing folder {}".format(folder))

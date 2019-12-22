@@ -1,0 +1,9 @@
+{
+    "title": "media-tools",
+    "author": "Lyfe",
+    "version": "1",
+    "packages": [
+        "lennytube",
+        "pplay"
+    ]
+}

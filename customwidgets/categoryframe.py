@@ -6,6 +6,10 @@ import style
 from .storeappsquare import storeAppSquare
 from widgets import ThemedLabel
 from locations import notfoundimage
+from asyncthreader import threader
+from settings_tool import settings
+from HBUpdater import store_handler
+
 class categoryFrame(tk.Frame):
     def __init__(self,parent,controller,framework, repos):
         #list of repos to be displayed by this frame
@@ -13,10 +17,9 @@ class categoryFrame(tk.Frame):
         self.parent = parent
         self.controller = controller #Frame manager
         self.framework = framework #**Scheduler
-        self.appstore_handler = controller.appstore_handler #Tool to get installed package data etc
+        self.appstore_handler = store_handler #Tool to get installed package data etc
         self.buttons = []   #List to hold buttons for this page
         self.original_button_order = []
-        self.icon_dict = self.controller.image_sharer
         self.selected = False
         self.is_displaying = False #Debounce used for the display function to prevent multiple threads grabbing an updated image
         self.is_searching = True #Used to remember if we are currently searching
@@ -113,7 +116,7 @@ class categoryFrame(tk.Frame):
             "huge" : (style.huge_thumbnail_height, style.huge_thumbnail_width)
         }
 
-        thumbnail_size = self.controller.settings.get_setting("thumbnail_size")
+        thumbnail_size = settings.get_setting("thumbnail_size")
         thumbnail_size = thumbnail_size_map.get(thumbnail_size)
 
         if thumbnail_size:
@@ -229,7 +232,7 @@ class categoryFrame(tk.Frame):
                         if button.get_xy()[1]:
                             button_y_proportion = button.get_xy()[1] * ratio
                             if canvas_top < button_y_proportion and button_y_proportion < canvas_bottom:
-                                self.controller.async_threader.do_async(button.build_button, [], priority = "low")
+                                threader.do_async(button.build_button, [], priority = "low")
             self.is_displaying = False
 
     def clear_then_update(self):
@@ -247,7 +250,7 @@ class categoryFrame(tk.Frame):
         if self.is_searching:
             #.4 second delay on search debouncer
             if (timer() - self.searchtimer) > (0.25):
-                self.controller.async_threader.do_async(self.do_search_query, [], priority = "low")
+                threader.do_async(self.do_search_query, [], priority = "low")
             else:
                 self.controller.after(100, self.search_poll)
 

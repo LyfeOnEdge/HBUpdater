@@ -6,6 +6,8 @@ import style
 from .yesnopage import yesnoPage
 from .usermessagepage import usermessagePage
 import locations
+from asyncthreader import threader
+from settings_tool import settings
 
 class customOptionMenu(tk.OptionMenu):
 	def __init__(self, frame, opts):
@@ -23,7 +25,7 @@ truefalse_options = [ "true", "false"]
 class settingsPage(tk.Frame):
 	def __init__(self, parent, controller):
 		tk.Frame.__init__(self,parent,background=style.color_2)
-		self.settings = controller.settings
+		self.settings = settings
 		self.controller = controller
 
 		self.settings_page_header = ThemedLabel(self, label_text = "Most settings will not take effect until next launch", background = style.color_2, label_font = style.mediumboldtext)
@@ -57,7 +59,7 @@ class settingsPage(tk.Frame):
 		self.borderless_dropdown_label = ThemedLabel(self, label_text = "~ Borderless window (broken on some systems)", background = style.color_2)
 		self.borderless_dropdown_label.place(y = 5 * (style.offset + style.buttonsize), x = 200 + style.offset, height = style.buttonsize - 2 * style.offset, width = 401)
 
-		self.clear_cache_button = button(self, callback=self.clear_cache,text_string="Clear cache.",background=style.color_1)
+		self.clear_cache_button = button(self, callback=self.clear_cache,text_string="- clear cache -",background=style.color_1, font = style.smalltext)
 		self.clear_cache_button.place(y = 6 * (style.offset + style.buttonsize), x = style.offset, height = style.buttonsize - 2 * style.offset, width = 200 - style.offset)
 		self.clear_cache_label = ThemedLabel(self, label_text = "~ Clear image and json cache?", background = style.color_2)
 		self.clear_cache_label.place(y = 6 * (style.offset + style.buttonsize), x = 200 + style.offset, height = style.buttonsize - 2 * style.offset, width = 401)
@@ -83,7 +85,7 @@ class settingsPage(tk.Frame):
 			self.settings.set_setting("keep_topmost", self.topmost_dropdown.option.get())
 			self.settings.set_setting("borderless", self.borderless_dropdown.option.get())
 			self.settings.set_setting("gui_threads", self.gui_threads_dropdown.option.get())
-			self.controller.async_threader.set_max_threads(int(self.gui_threads_dropdown.option.get()))
+			threader.set_max_threads(int(self.gui_threads_dropdown.option.get()))
 			self.settings.save()
 			self.okpage.telluser("Settings saved successfully")
 		except Exception as e:

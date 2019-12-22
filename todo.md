@@ -5,6 +5,12 @@ Releases listbox - display if asset could be found. otherwise grey out download 
 
 splash on installed_category_frame when nothing present.
 
+Exclude option for readmes etc.
+
+Hekete ini editor
+
+Alert when files collide
+
 
 System-specific:
     - Linux

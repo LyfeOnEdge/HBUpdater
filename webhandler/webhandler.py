@@ -38,3 +38,6 @@ def getJson(softwarename, apiurl):
 	except:
 		print("failed to download json file for {}".format(softwarename))
 		return None
+
+def getCachedJson(softwarename):
+	return os.path.join(locations.jsoncachefolder, softwarename + ".json")
