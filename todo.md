@@ -11,6 +11,7 @@ Hekete ini editor
 
 Alert when files collide
 
+github oauth token for more local apps 
 
 System-specific:
     - Linux

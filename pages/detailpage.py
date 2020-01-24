@@ -281,13 +281,13 @@ class detailPage(activeFrame):
             self.reload()
 
     def trigger_install(self):
-        index = 0
+        index = self.version_index or 0
         if not self.appstore_handler.check_path():
             self.set_sd()
         if self.appstore_handler.check_path():
             if self.appstore_handler.check_if_get_init():
                 if self.repo:
-                    threader.do_async(self.appstore_handler.install_package, [self.repo, self.version_index, self.progress_bar.update, self.reload_function, self.progress_bar.set_title], priority = "high")
+                    threader.do_async(self.appstore_handler.install_package, [self.repo, index, self.progress_bar.update, self.reload_function, self.progress_bar.set_title], priority = "high")
             else:
                 self.yesnoPage.getanswer("The homebrew appstore has not been initiated here yet, would you like to initiate it?", self.init_get_then_continue)
 

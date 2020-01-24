@@ -3,11 +3,16 @@
 version = "2.4"
 print("HBUpdater version %s" % version)
 
-import os, sys, platform, json, threading, argparse
+import os
+import sys
+import platform
+import json
+import threading
+import argparse
 from timeit import default_timer as timer
 #print version, exit if minimum version requirements aren't met
 print("Using Python {}.{}".format(sys.version_info[0],sys.version_info[1]))
-if sys.version_info[0] < 3 or sys.version_info[1] < 6: #Trying to import tkinter in the new syntax after python 2 causes a crash
+if sys.hexversion < 0x03060000: #Trying to import tkinter in the new syntax after python 2 causes a crash
 	sys.exit("Python 3.6 or greater is required to run this program.")
 
 #This is called before the below module imports to ensure no exception is encountered trying to import tk
@@ -33,7 +38,7 @@ except:
 	sys.exit()
 
 #Import local modules
-from customwidgets import frameManager
+from widgets import frameManager
 from appstore import getPackageIcon
 from HBUpdater import repo_parser, store_handler, local_packages_handler
 from webhandler import getJson, getCachedJson
@@ -107,7 +112,11 @@ def startGUI(args = None):
 	#frameManager serves to load all pages and stack them on top of each other (all 2 of them)
 	#also serves to make many important objects and functions easily available to children frames
 	gui = frameManager(pagelist,
-		args
+		args,
+		{
+		"width" : settings.get_setting("width"),
+		"height" : settings.get_setting("height")
+		}
 		)
 
 	#Set title formatted with version

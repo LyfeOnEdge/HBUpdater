@@ -1,5 +1,4 @@
 import tkinter as tk
-from style import *
 #Custom button
 #A tkinter label with a bound on-click event to fix some issues 
 #that were happening with normal tkinter buttons on MacOS.
@@ -9,26 +8,28 @@ from style import *
 #an on_click event. Feel free to use this in other projects where mac
 #compatibility is an issue, also special thanks to Kabiigon for testing
 #this widget until I got it right since I don't have a mac
+#Copywrite LyfeOnEdge 2019
+#GPL3
 class button(tk.Label):
-	def __init__(self,frame,callback=None,image_object= None,text_string=None,background=w, font=smallboldtext, borderwidth = 0):
+	def __init__(self, frame, callback = None, tk_image_object = None, text = None, background = "white", foreground = "black", font = ("Corbel",10), anchor = "center", borderwidth = 0):
 		self.callback = callback
 		self.background = background
 		self.selected = False
 
 		tk.Label.__init__(self,frame,
-			background=background,
-			foreground= w,
-			borderwidth= borderwidth,
-			activebackground=color_1,
-			image=image_object,
-			text = text_string,
+			background = self.background,
+			foreground = "white",
+			borderwidth = borderwidth,
+			activebackground = "black",
+			image = tk_image_object,
+			text = text,
 			font = font,
-			anchor="center"
+			anchor = anchor
 			)
 		self.bind('<Button-1>', self.on_click)
 
 	#Use callback when our makeshift "button" clicked
-	def on_click(self, event=None):
+	def on_click(self, event = None):
 		self.configure(background = lg)
 		if not self.selected:
 			self.after(100, self.on_click_color_change)
@@ -37,15 +38,15 @@ class button(tk.Label):
 	
 	#Function to set the button's image
 	def setimage(self,image):
-		self.configure(image=image)
+		self.configure(image = image)
 
 	#Function to set the button's text
 	def settext(self,text):
-		self.configure(text=text)
+		self.configure(text = text)
 
 	def select(self):
 		self.selected = True
-		self.configure(background = lg)
+		self.configure(background = "grey")
 
 	def deselect(self):
 		self.selected = False

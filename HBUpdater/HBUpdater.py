@@ -116,7 +116,8 @@ class HBUpdater_handler(object):
 
             try:
                 version = repo_entry["github_content"][version_index]["tag_name"]
-            except:
+            except Exception as e:
+                print("Error installing package ~ {}".format(e))
                 do_progress_function("Error - package version not found in repo data. No data has been lost.", 25)
                 do_error_function("Error - package version not found in repo data. Not continuing with install. No data has been lost.")
                 return 

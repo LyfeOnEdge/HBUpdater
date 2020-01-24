@@ -1,19 +1,19 @@
 #Heavily customized class to manage frames in the outermost layer
 import tkinter as tk
-
 #Frame handler, raises and pages in z layer,
-#also
+#also handles making core components like package handlers,
+#parsers, and other library-driven functions available to subsystems
 class frameManager(tk.Tk):
-    def __init__(self, 
+    def __init__(self,
                 pages, #List of pages to put in outermost z-layer
-                geometry, #Startup size
-                version,
-                update_status = None, #Whether or not the app needs an update
-                ): 
+                args,
+                geometry
+                ):  #Passed args to be accessed globally
+
         tk.Tk.__init__(self)
-        self.update_status = update_status
-        self.geometry("{}x{}".format(geometry["width"],geometry["height"])) 
-        self.version_string = None
+        self.args = args
+        self.version = None
+        self.geometry("{}x{}".format(geometry["width"],geometry["height"]))
         # self.resizable(False, False)
 
         # the container is where we'll stack a bunch of frames
@@ -35,14 +35,18 @@ class frameManager(tk.Tk):
                 #place the frame to fill the whole window, stack them all in the same place
                 frame.grid(row=0, column=0, sticky="nsew")
         else:
-            print("No pages found")
-
-    def set_version(self, title):
-        self.version_string = title
-        self.title(title)
+            print("No pages to initialize.")
 
     def show_frame(self, page_name):
         #Show frame for the given page name
         frame = self.frames[page_name]
         frame.event_generate("<<ShowFrame>>")
         frame.tkraise()
+        print("raised - {}".format(page_name))
+
+    def set_version(self, version_string):
+        self.version = version_string
+
+if __name__ == "__main__":
+    app = App()
+    app.mainloop()
